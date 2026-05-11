@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solvra Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fc;
+            color: #111827;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #f8f9fc;
+            min-height: 100vh;
+            padding: 24px 20px 40px;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #111827;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Welcome */
+        .welcome {
+            margin-bottom: 20px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #0f172a;
+            letter-spacing: -0.3px;
+        }
+
+        .welcome p {
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(180deg, #4c6ef5 0%, #1e3aa9 100%);
+            border-radius: 20px;
+            padding: 22px 24px;
+            margin-bottom: 24px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(30, 58, 169, 0.2);
+        }
+
+        .balance-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 10px;
+        }
+
+        .eye-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            color: rgba(255,255,255,0.75);
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .eye-btn:hover {
+            color: white;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            min-height: 40px;
+        }
+
+        .balance-change {
+            font-size: 13px;
+            font-weight: 600;
+            color: #34d399;
+        }
+
+        .balance-chart {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 155px;
+            height: 78px;
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background: #ffffff;
+            border: none;
+            border-radius: 16px;
+            padding: 20px 10px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.15s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+
+        .action-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4c6ef5;
+        }
+
+        .action-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        /* Market Rates */
+        .rates-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .rates-header h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .view-all {
+            font-size: 13px;
+            color: #4c6ef5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .rate-item {
+            display: flex;
+            align-items: center;
+            padding: 13px 0;
+        }
+
+        .coin-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            margin-right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 17px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .coin-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .coin-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #0f172a;
+        }
+
+        .coin-ticker {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .mini-chart {
+            width: 72px;
+            height: 32px;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        .rate-value {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .rate-price {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #0f172a;
+        }
+
+        .rate-change {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .positive { color: #22c55e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="/" class="logo">
+                <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 2L4 9v14l12 7 12-7V9L16 2z" stroke="#4c6ef5" stroke-width="2.2" fill="none"/>
+                    <path d="M16 8v16M10 12l6-4 6 4" stroke="#4c6ef5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Solvra
+            </a>
+        </div>
+
+        <!-- Welcome -->
+        <div class="welcome">
+            <h1>Dashboard</h1>
+            <p id="greeting">Welcome back 👋</p>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="balance-header">
+                Total Balance
+                <button class="eye-btn" id="eyeBtn" aria-label="Toggle balance visibility">
+                    <svg id="eyeOpen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <svg id="eyeClosed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                        <line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="balance-amount" id="balanceAmount">$0.00</div>
+            <div class="balance-change" id="balanceChange">+0.00% (24h)</div>
+            <svg class="balance-chart" viewBox="0 0 155 78" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#34d399;stop-opacity:0.2" />
+                        <stop offset="100%" style="stop-color:#34d399;stop-opacity:0" />
+                    </linearGradient>
+                </defs>
+                <path d="M0,58 Q6,56 12,54 T24,50 T36,46 T48,42 T60,44 T72,38 T84,32 T96,28 T108,30 T120,24 T132,18 T144,14 T155,10" 
+                      fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="155" cy="10" r="4.5" fill="#34d399"/>
+                <path d="M0,58 Q6,56 12,54 T24,50 T36,46 T48,42 T60,44 T72,38 T84,32 T96,28 T108,30 T120,24 T132,18 T144,14 T155,10 L155,78 L0,78 Z" 
+                      fill="url(#chartGrad)"/>
+            </svg>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="action-btn">
+                <div class="action-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14M5 12l7 7 7-7"/>
+                    </svg>
+                </div>
+                <span class="action-label">Deposit</span>
+            </button>
+            <button class="action-btn">
+                <div class="action-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 19V5M5 12l7-7 7 7"/>
+                    </svg>
+                </div>
+                <span class="action-label">Withdraw</span>
+            </button>
+            <button class="action-btn">
+                <div class="action-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 10h14l-4-4"/>
+                        <path d="M17 14H3l4 4"/>
+                        <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>
+                    </svg>
+                </div>
+                <span class="action-label">Rate</span>
+            </button>
+        </div>
+
+        <!-- Market Rates -->
+        <div class="rates-header">
+            <h2>Market Rates</h2>
+            <a href="#" class="view-all">View all</a>
+        </div>
+
+        <div id="ratesList"></div>
+    </div>
+
+    <script>
+        // ============================================================
+        // BACKEND DATA OBJECT — all prices are in USD
+        // Replace this entire object with data from your API/database
+        // ============================================================
+        const dashboardData = {
+            user: {
+                firstName: "John"
+            },
+            balance: {
+                amount: 12842.21,
+                currency: "$",
+                changePercent: 2.59,
+                changeLabel: "(24h)"
+            },
+            rates: [
+                { name: "US Dollar", ticker: "USD", icon: "$", price: 1.00, change: 0.02, color: "#22c55e" },
+                { name: "British Pound", ticker: "GBP", icon: "£", price: 1.30, change: 0.15, color: "#3b82f6" },
+                { name: "Japanese Yen", ticker: "JPY", icon: "¥", price: 0.0067, change: 0.08, color: "#ef4444" },
+                { name: "Euro", ticker: "EUR", icon: "€", price: 1.08, change: 0.11, color: "#3b82f6" },
+                { name: "Bitcoin", ticker: "BTC", icon: "₿", price: 67842.21, change: 2.59, color: "#f7931a" },
+                { name: "Ethereum", ticker: "ETH", icon: "◆", price: 3312.18, change: 1.45, color: "#6366f1" },
+                { name: "Solana", ticker: "SOL", icon: "S", price: 152.69, change: 3.02, color: "#000000" },
+                { name: "Cardano", ticker: "ADA", icon: "A", price: 0.45, change: 2.15, color: "#0033ad" },
+                { name: "XRP", ticker: "XRP", icon: "X", price: 0.62, change: 1.82, color: "#23292f" },
+                { name: "Dogecoin", ticker: "DOGE", icon: "Ð", price: 0.16, change: 4.20, color: "#c2a633" },
+                { name: "Tether", ticker: "USDT", icon: "₮", price: 1.00, change: 0.01, color: "#26a17b" },
+                { name: "Binance Coin", ticker: "BNB", icon: "B", price: 598.35, change: 1.28, color: "#f0b90b" }
+            ]
+        };
+
+        // ============================================================
+        // RENDER FUNCTIONS
+        // ============================================================
+
+        function formatUSD(value) {
+            if (value >= 1000) {
+                return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            } else if (value >= 0.01) {
+                return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+            } else {
+                return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+            }
+        }
+
+        // Render greeting
+        const greetingEl = document.getElementById('greeting');
+        if (dashboardData.user.firstName) {
+            greetingEl.textContent = `Welcome back, ${dashboardData.user.firstName} 👋`;
+        } else {
+            greetingEl.textContent = 'Welcome back 👋';
+        }
+
+        // Render balance
+        const balanceAmountEl = document.getElementById('balanceAmount');
+        const balanceChangeEl = document.getElementById('balanceChange');
+        const realBalanceText = dashboardData.balance.currency + dashboardData.balance.amount.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        balanceAmountEl.textContent = realBalanceText;
+        balanceChangeEl.textContent = `+${dashboardData.balance.changePercent}% ${dashboardData.balance.changeLabel}`;
+
+        // Render market rates list
+        const ratesListEl = document.getElementById('ratesList');
+        
+        dashboardData.rates.forEach(rate => {
+            const item = document.createElement('div');
+            item.className = 'rate-item';
+            
+            const wavePath = `M0,${18 + Math.random() * 4} Q9,${16 + Math.random() * 4} 18,${17 + Math.random() * 4} T36,${15 + Math.random() * 4} T54,${17 + Math.random() * 4} T72,${14 + Math.random() * 4}`;
+
+            item.innerHTML = `
+                <div class="coin-icon" style="background: ${rate.color};">${rate.icon}</div>
+                <div class="coin-info">
+                    <div class="coin-name">${rate.name}</div>
+                    <div class="coin-ticker">${rate.ticker}</div>
+                </div>
+                <svg class="mini-chart" viewBox="0 0 72 32">
+                    <path d="${wavePath}" fill="none" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <div class="rate-value">
+                    <div class="rate-price">${formatUSD(rate.price)}</div>
+                    <div class="rate-change positive">+${rate.change}%</div>
+                </div>
+            `;
+            
+            ratesListEl.appendChild(item);
+        });
+
+        // ============================================================
+        // INTERACTIONS
+        // ============================================================
+
+        const eyeBtn = document.getElementById('eyeBtn');
+        const eyeOpen = document.getElementById('eyeOpen');
+        const eyeClosed = document.getElementById('eyeClosed');
+        let isHidden = false;
+
+        eyeBtn.addEventListener('click', () => {
+            isHidden = !isHidden;
+            if (isHidden) {
+                balanceAmountEl.textContent = '•••••••';
+                eyeOpen.style.display = 'none';
+                eyeClosed.style.display = 'block';
+            } else {
+                balanceAmountEl.textContent = realBalanceText;
+                eyeOpen.style.display = 'block';
+                eyeClosed.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.97)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 120);
+            });
+        });
+
+        // ============================================================
+        // BACKEND INTEGRATION EXAMPLE (uncomment when ready)
+        // ============================================================
+        /*
+        async function loadFromBackend() {
+            const response = await fetch('https://your-api.com/dashboard', {
+                headers: { 'Authorization': 'Bearer YOUR_TOKEN' }
+            });
+            const data = await response.json();
+            
+            dashboardData.user.firstName = data.user.firstName;
+            dashboardData.balance.amount = data.balance.amount;
+            dashboardData.balance.changePercent = data.balance.changePercent;
+            dashboardData.rates = data.rates;
+            
+            location.reload();
+        }
+        loadFromBackend();
+        */
+    </script>
+</body>
+</html>
