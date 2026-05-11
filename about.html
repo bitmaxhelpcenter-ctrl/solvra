@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Solvra — Building the Future of Finance</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet" />
+  <style>
+    /* ── REUSING YOUR CORE STYLES ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0D1B4B;
+      --blue: #1A2FCC;
+      --blue-light: #EEF0FF;
+      --green: #22C55E;
+      --bg: #F4F5FB;
+      --white: #FFFFFF;
+      --border: #E2E5F0;
+      --muted: #8A91A8;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV (Exact Match) ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--white);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 19px;
+      color: var(--navy);
+      text-decoration: none;
+    }
+
+    .nav-btns { display: flex; align-items: center; gap: 10px; }
+
+    .btn-outline {
+      padding: 9px 18px;
+      border: 1.5px solid var(--navy);
+      border-radius: 10px;
+      background: transparent;
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      color: var(--navy);
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      padding: 9px 18px;
+      border: none;
+      border-radius: 10px;
+      background: var(--blue);
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      color: var(--white);
+      font-family: inherit;
+    }
+
+    /* ── HAMBURGER & MENU ── */
+    .hamburger { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 1001; }
+    .hamburger span { display: block; height: 2.5px; border-radius: 99px; background: var(--navy); transition: 0.3s; }
+    .hamburger span:nth-child(1) { width: 22px; }
+    .hamburger span:nth-child(2) { width: 16px; }
+    .hamburger span:nth-child(3) { width: 22px; }
+
+    .hamburger.active span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    .mobile-dropdown {
+      position: fixed;
+      top: 63px;
+      left: 0;
+      width: 100%;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out, padding 0.3s ease;
+      z-index: 999;
+    }
+
+    .mobile-dropdown.open { max-height: 300px; padding: 10px 20px 30px; border-bottom: 1px solid var(--border); }
+    .mobile-dropdown a { text-decoration: none; color: var(--navy); font-size: 17px; font-weight: 600; padding: 18px 0; border-bottom: 1px solid var(--bg); }
+
+    /* ── ABOUT CONTENT ── */
+    .about-hero {
+      padding: 60px 20px 40px;
+      text-align: center;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .about-hero h1 { font-size: 34px; font-weight: 800; margin-bottom: 16px; line-height: 1.1; }
+    .about-hero p { color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 500px; margin: 0 auto; }
+
+    .content-section {
+      background: var(--white);
+      margin: 0 16px 24px;
+      padding: 30px 24px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .content-section h2 { font-size: 22px; font-weight: 800; margin-bottom: 12px; color: var(--blue); }
+    .content-section p { font-size: 15px; color: var(--navy); line-height: 1.7; margin-bottom: 20px; opacity: 0.9; }
+
+    .pillar-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .pillar-card {
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 16px;
+    }
+
+    .pillar-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .pillar-card p { font-size: 13.5px; color: var(--muted); margin-bottom: 0; }
+
+    /* ── SECURITY BAR (Consistent with Index) ── */
+    .security-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--blue-light);
+      margin: 20px 16px 40px;
+      border-radius: 16px;
+      padding: 18px 16px;
+    }
+
+    .sec-icon { font-size: 22px; }
+    .sec-title { font-weight: 700; font-size: 13.5px; margin-bottom: 3px; }
+    .sec-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    footer { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">
+    <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+      <rect width="36" height="36" rx="8" fill="#EEF0FF"/>
+      <path d="M18 8L28 13.5V22.5L18 28L8 22.5V13.5L18 8Z" stroke="#1A2FCC" stroke-width="2" fill="none"/>
+      <path d="M18 8L18 28M8 13.5L28 22.5M28 13.5L8 22.5" stroke="#1A2FCC" stroke-width="1.5" opacity="0.4"/>
+    </svg>
+    Solvra
+  </a>
+  <div class="nav-btns">
+    <a href="signin.html" style="text-decoration: none;"><button class="btn-outline">Sign In</button></a>
+    <button class="hamburger" id="hamburgerBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-dropdown" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact us</a>
+</div>
+
+<header class="about-hero">
+  <h1>Beyond Banking.</h1>
+  <p>We're on a mission to simplify the way the world moves money, between crypto and cash.</p>
+</header>
+
+<section class="content-section">
+  <h2>Our Story</h2>
+  <p>Solvra started with a simple question: Why is it so hard to use your crypto like real cash? Traditional banks are too slow, and crypto exchanges are too complex. We built Solvra to be the bridge.</p>
+  
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <h3>The Mission</h3>
+      <p>To provide financial freedom by making high-end financial tools accessible to everyone, anywhere in the world.</p>
+    </div>
+    <div class="pillar-card">
+      <h3>The Vision</h3>
+      <p>A world where currency borders don't exist, and your assets are always ready to spend, send, or grow.</p>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <h2>Why Solvra?</h2>
+  <p>We aren't just another wallet. We are a complete financial ecosystem designed for the modern era.</p>
+  <ul style="list-style: none; margin-top: 10px;">
+    <li style="margin-bottom: 15px; display: flex; gap: 10px; font-size: 14px;">
+      <span style="color: var(--green);">✔</span> <strong>Instant Liquidity:</strong> Convert crypto to cash in seconds.
+    </li>
+    <li style="margin-bottom: 15px; display: flex; gap: 10px; font-size: 14px;">
+      <span style="color: var(--green);">✔</span> <strong>No Hidden Fees:</strong> What you see is what you get.
+    </li>
+    <li style="margin-bottom: 15px; display: flex; gap: 10px; font-size: 14px;">
+      <span style="color: var(--green);">✔</span> <strong>Global Scale:</strong> Access your accounts from over 150 countries.
+    </li>
+  </ul>
+</section>
+
+<div class="security-bar">
+  <div class="sec-icon">🔒</div>
+  <div>
+    <div class="sec-title">Trusted & Regulated</div>
+    <div class="sec-desc">Your security is our top priority. We use bank-grade encryption to protect your assets.</div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 Solvra Technologies. All rights reserved.
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('hamburgerBtn');
+    const menu = document.getElementById('mobileMenu');
+
+    if (btn && menu) {
+      btn.onclick = () => {
+        btn.classList.toggle('active');
+        menu.classList.toggle('open');
+      };
+    }
+  });
+</script>
+
+</body>
+</html>
