@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Solvra — Create Account</title>
@@ -1239,6 +1239,15 @@
     }
   }
 </script>  
+  <script>
+  // This connects your website to your specific database
+  const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co'
+  const supabaseKey = 'EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhdHlpZnNkaWVzb2p2Y3BzbGRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MjIzMzAsImV4cCI6MjA5NDA5ODMzMH0.lUy5J5clkjCrh_uUO8faQSyqWcHNM2CGofZRVNdvLnA'
+  const _supabase = supabase.createClient(supabaseUrl, supabaseKey)
+
+  console.log("Connection successful!");
+  </script>
+  
   
 </body>
 </html>"
