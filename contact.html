@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Solvra — We're here to help.</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet" />
+  <style>
+    /* ── REUSING CORE BRAND STYLES ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0D1B4B;
+      --blue: #1A2FCC;
+      --blue-light: #EEF0FF;
+      --bg: #F4F5FB;
+      --white: #FFFFFF;
+      --border: #E2E5F0;
+      --muted: #8A91A8;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV (Exact Match) ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--white);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 19px;
+      color: var(--navy);
+      text-decoration: none;
+    }
+
+    .hamburger { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 1001; }
+    .hamburger span { display: block; height: 2.5px; border-radius: 99px; background: var(--navy); transition: 0.3s; }
+    .hamburger span:nth-child(1) { width: 22px; }
+    .hamburger span:nth-child(2) { width: 16px; }
+    .hamburger span:nth-child(3) { width: 22px; }
+
+    .hamburger.active span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    .mobile-dropdown {
+      position: fixed;
+      top: 63px;
+      left: 0;
+      width: 100%;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+      z-index: 999;
+    }
+
+    .mobile-dropdown.open { max-height: 300px; padding: 10px 20px 30px; border-bottom: 1px solid var(--border); }
+    .mobile-dropdown a { text-decoration: none; color: var(--navy); font-size: 17px; font-weight: 600; padding: 18px 0; border-bottom: 1px solid var(--bg); }
+
+    /* ── CONTACT CONTENT ── */
+    .contact-header {
+      padding: 60px 20px 30px;
+      text-align: center;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .contact-header h1 { font-size: 34px; font-weight: 800; margin-bottom: 12px; }
+    .contact-header p { color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+    .contact-container {
+      padding: 0 16px 40px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .info-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .info-item:last-child { margin-bottom: 0; }
+
+    .info-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--blue-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .info-text h3 { font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .info-text p { font-size: 16px; font-weight: 600; color: var(--navy); line-height: 1.4; }
+
+    /* ── FORM ── */
+    .contact-form {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 30px 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--navy); }
+    
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--blue); }
+
+    .btn-send {
+      width: 100%;
+      padding: 16px;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-send:hover { opacity: 0.9; }
+
+    footer { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">
+    <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+      <rect width="36" height="36" rx="8" fill="#EEF0FF"/>
+      <path d="M18 8L28 13.5V22.5L18 28L8 22.5V13.5L18 8Z" stroke="#1A2FCC" stroke-width="2" fill="none"/>
+      <path d="M18 8L18 28M8 13.5L28 22.5M28 13.5L8 22.5" stroke="#1A2FCC" stroke-width="1.5" opacity="0.4"/>
+    </svg>
+    Solvra
+  </a>
+  <div class="nav-btns">
+    <button class="hamburger" id="hamburgerBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-dropdown" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact us</a>
+</div>
+
+<header class="contact-header">
+  <h1>Get in touch</h1>
+  <p>Have questions about your account or our services? Our U.S. based support team is ready to assist you.</p>
+</header>
+
+<div class="contact-container">
+  <div class="info-card">
+    <div class="info-item">
+      <div class="info-icon">📍</div>
+      <div class="info-text">
+        <h3>Headquarters</h3>
+        <p>240 Greenwich St, New York,<br>NY 10007, United States</p>
+      </div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">📞</div>
+      <div class="info-text">
+        <h3>Phone Support</h3>
+        <p>+1 (808) 650-4852</p>
+      </div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">✉️</div>
+      <div class="info-text">
+        <h3>Email</h3>
+        <p>support@solvra.io</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-form">
+    <form action="#">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="e.g. John Doe" required>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="john@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea rows="5" placeholder="How can we help you today?" required></textarea>
+      </div>
+      <button type="submit" class="btn-send">Send Message</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 Solvra Technologies Inc. | New York, USA
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('hamburgerBtn');
+    const menu = document.getElementById('mobileMenu');
+
+    if (btn && menu) {
+      btn.onclick = () => {
+        btn.classList.toggle('active');
+        menu.classList.toggle('open');
+      };
+    }
+  });
+</script>
+
+</body>
+</html>
