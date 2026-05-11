@@ -398,7 +398,7 @@
     /* scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
   </style>
 </head>
 <body>
@@ -538,10 +538,65 @@
     <span class="market-title">Market overview</span>
     <span class="view-all">View all</span>
   </div>
+
+  <div class="crypto-row">
+    <div class="crypto-logo" style="background:#22C55E;">$</div>
+    <div><div class="crypto-name">US Dollar</div><div class="crypto-ticker">USD</div></div>
+    <div style="margin-left:auto; text-align:right;"><div class="crypto-price">1.0000</div><div class="crypto-change">0.00%</div></div>
+  </div>
+
+  <div class="crypto-row">
+    <div class="crypto-logo" style="background:#1A2FCC;">€</div>
+    <div><div class="crypto-name">Euro</div><div class="crypto-ticker">EUR</div></div>
+    <div style="margin-left:auto; text-align:right;"><div class="crypto-price">1.0824</div><div class="crypto-change" id="change-eur">+0.12%</div></div>
+  </div>
+
+  <div class="crypto-row">
+    <div class="crypto-logo" style="background:#6D28D9;">£</div>
+    <div><div class="crypto-name">British Pound</div><div class="crypto-ticker">GBP</div></div>
+    <div style="margin-left:auto; text-align:right;"><div class="crypto-price">1.2641</div><div class="crypto-change" id="change-gbp">+0.08%</div></div>
+  </div>
+
   <div class="crypto-row">
     <div class="crypto-logo" style="background:#F7931A;">₿</div>
     <div><div class="crypto-name">Bitcoin</div><div class="crypto-ticker">BTC</div></div>
     <div style="margin-left:auto; text-align:right;"><div class="crypto-price">$67,842.21</div><div class="crypto-change">+2.35%</div></div>
+  </div>
+
+  <div class="crypto-row">
+    <div class="crypto-logo" style="background:#627EEA;">Ξ</div>
+    <div><div class="crypto-name">Ethereum</div><div class="crypto-ticker">ETH</div></div>
+    <div style="margin-left:auto; text-align:right;"><div class="crypto-price">$3,512.18</div><div class="crypto-change">+1.45%</div></div>
+  </div>
+
+  <div class="crypto-row">
+    <div class="crypto-logo" style="background:#14F195; color: #000;">◎</div>
+    <div><div class="crypto-name">Solana</div><div class="crypto-ticker">SOL</div></div>
+    <div style="margin-left:auto; text-align:right;"><div class="crypto-price">$145.62</div><div class="crypto-change">+4.12%</div></div>
+  </div>
+
+  <div class="crypto-row">
+    <div class="crypto-logo" style="background:#23292F;">✕</div>
+    <div><div class="crypto-name">Ripple</div><div class="crypto-ticker">XRP</div></div>
+    <div style="margin-left:auto; text-align:right;"><div class="crypto-price">$0.6241</div><div class="crypto-change down">-0.52%</div></div>
+  </div>
+
+  <div class="crypto-row">
+    <div class="crypto-logo" style="background:#0033AD;">₳</div>
+    <div><div class="crypto-name">Cardano</div><div class="crypto-ticker">ADA</div></div>
+    <div style="margin-left:auto; text-align:right;"><div class="crypto-price">$0.5812</div><div class="crypto-change">+0.88%</div></div>
+  </div>
+
+  <div class="crypto-row">
+    <div class="crypto-logo" style="background:#E6007A;">●</div>
+    <div><div class="crypto-name">Polkadot</div><div class="crypto-ticker">DOT</div></div>
+    <div style="margin-left:auto; text-align:right;"><div class="crypto-price">$9.42</div><div class="crypto-change down">-1.24%</div></div>
+  </div>
+
+  <div class="crypto-row">
+    <div class="crypto-logo" style="background:#2A5ADA;">🔗</div>
+    <div><div class="crypto-name">Chainlink</div><div class="crypto-ticker">LINK</div></div>
+    <div style="margin-left:auto; text-align:right;"><div class="crypto-price">$18.24</div><div class="crypto-change">+3.15%</div></div>
   </div>
 </div>
 
