@@ -522,7 +522,6 @@
 </head>
 <body>
 
-<!-- ── NAV ── -->
 <nav>
   <a class="logo" href="solvra-homepage.html">
     <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
@@ -535,10 +534,8 @@
   <span class="sign-in-link">Have an account? <a href="#">Sign In</a></span>
 </nav>
 
-<!-- ── MAIN ── -->
 <div class="page-wrap">
 
-  <!-- Step Tracker -->
   <div class="step-tracker" id="stepTracker">
     <div class="step-node">
       <div class="step-circle active" id="sc1">1</div>
@@ -562,35 +559,28 @@
     </div>
   </div>
 
-  <!-- Progress bar -->
   <div class="progress-bar-wrap">
     <div class="progress-bar-fill" id="progressFill" style="width:20%"></div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       STEP 1 — Account Details
-  ════════════════════════════════════════ -->
   <div class="step-panel active" id="panel1">
     <div class="form-card">
       <div class="step-header">
         <h2>Create your account</h2>
         <p>Let's start with your personal details</p>
       </div>
-      <!-- Full Name -->
       <div class="field">
         <label>Full Name <span class="req">*</span></label>
         <input type="text" id="fullName" placeholder="John Doe" autocomplete="name" />
         <div class="err-msg" id="err-fullName">Please enter your full name (first &amp; last)</div>
       </div>
 
-      <!-- Email -->
       <div class="field">
         <label>Email Address <span class="req">*</span></label>
         <input type="email" id="email" placeholder="john@example.com" autocomplete="email" />
         <div class="err-msg" id="err-email">Enter a valid email address</div>
       </div>
 
-      <!-- Password -->
       <div class="field">
         <label>Password <span class="req">*</span></label>
         <input type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkPwStrength()" />
@@ -606,7 +596,6 @@
         <div class="err-msg" id="err-password">Password must be at least 8 characters</div>
       </div>
 
-      <!-- Confirm Password -->
       <div class="field">
         <label>Confirm Password <span class="req">*</span></label>
         <input type="password" id="confirmPassword" placeholder="Re-enter password" autocomplete="new-password" />
@@ -624,9 +613,6 @@
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       STEP 2 — Location & Date of Birth
-  ════════════════════════════════════════ -->
   <div class="step-panel" id="panel2">
     <div class="form-card">
       <button class="btn-back" onclick="goStep(2,1,true)">← Back</button>
@@ -635,7 +621,6 @@
         <p>We need this for compliance and security purposes</p>
       </div>
 
-      <!-- Country -->
       <div class="field">
         <label>Country of Residence <span class="req">*</span></label>
         <div class="select-wrap">
@@ -690,21 +675,18 @@
         <div class="err-msg" id="err-country">Please select your country</div>
       </div>
 
-      <!-- Date of Birth -->
       <div class="field">
         <label>Date of Birth <span class="req">*</span></label>
         <input type="date" id="dob" />
         <div class="err-msg" id="err-dob">You must be at least 18 years old</div>
       </div>
 
-      <!-- Home Address -->
       <div class="field">
         <label>Home Address <span class="req">*</span></label>
         <input type="text" id="homeAddress" placeholder="123 Main Street, Apt 4B" autocomplete="street-address" />
         <div class="err-msg" id="err-homeAddress">Please enter your home address</div>
       </div>
 
-      <!-- City & Postal -->
       <div class="two-col">
         <div class="field">
           <label>City <span class="req">*</span></label>
@@ -722,9 +704,6 @@
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       STEP 3 — Financial Info
-  ════════════════════════════════════════ -->
   <div class="step-panel" id="panel3">
     <div class="form-card">
       <button class="btn-back" onclick="goStep(3,2,true)">← Back</button>
@@ -733,7 +712,6 @@
         <p>Required for regulatory compliance (AML / KYC)</p>
       </div>
 
-      <!-- Source of Funds -->
       <div class="field">
         <label>Source of Funds <span class="req">*</span></label>
         <div class="select-wrap">
@@ -753,7 +731,6 @@
         <div class="err-msg" id="err-sourceOfFund">Please select a source of funds</div>
       </div>
 
-      <!-- Referral Code -->
       <div class="field">
         <label>Referral Code <span class="opt">(optional)</span></label>
         <div class="icon-input">
@@ -764,7 +741,6 @@
         <div class="referral-ok" id="referralOk">✓ Referral code applied — you'll both get a reward!</div>
       </div>
 
-      <!-- Info banner -->
       <div class="info-banner">
         <span style="font-size:18px;flex-shrink:0;">ℹ️</span>
         <p>This information is collected to comply with anti-money laundering (AML) regulations.
@@ -775,9 +751,6 @@
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       STEP 4 — Document Upload
-  ════════════════════════════════════════ -->
   <div class="step-panel" id="panel4">
     <div class="form-card">
       <button class="btn-back" onclick="goStep(4,3,true)">← Back</button>
@@ -786,7 +759,6 @@
         <p>Upload a government-issued ID to complete KYC</p>
       </div>
 
-      <!-- Doc type tabs -->
       <label style="font-size:13px;font-weight:600;color:var(--navy);display:block;margin-bottom:10px;">
         Document Type <span style="color:var(--blue)">*</span>
       </label>
@@ -796,7 +768,6 @@
         <button class="doc-tab" onclick="switchDocType('drivers',this)">Driver's License</button>
       </div>
 
-      <!-- Front -->
       <label style="font-size:13px;font-weight:600;color:var(--navy);display:block;margin-bottom:8px;" id="frontLabel">
         Passport Photo Page <span style="color:var(--blue)">*</span>
       </label>
@@ -823,7 +794,6 @@
       </div>
       <div class="upload-err" id="err-front">Please upload the front of your document</div>
 
-      <!-- Back (hidden for passport) -->
       <div id="backSection" style="display:none;">
         <label style="font-size:13px;font-weight:600;color:var(--navy);display:block;margin-bottom:8px;" id="backLabel">
           Back of Document <span style="color:var(--blue)">*</span>
@@ -852,7 +822,6 @@
         <div class="upload-err" id="err-back">Please upload the back of your document</div>
       </div>
 
-      <!-- Selfie -->
       <label style="font-size:13px;font-weight:600;color:var(--navy);display:block;margin-bottom:8px;margin-top:4px;">
         Selfie Holding Document <span style="color:var(--blue)">*</span>
       </label>
@@ -879,7 +848,6 @@
       </div>
       <div class="upload-err" id="err-selfie">Please upload a selfie holding your document</div>
 
-      <!-- Tips -->
       <div class="warn-banner" style="margin-top:16px;">
         <div class="warn-title">📸 Photo tips for best results</div>
         <ul>
@@ -897,9 +865,6 @@
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       STEP 5 — Success
-  ════════════════════════════════════════ -->
   <div class="step-panel" id="panel5">
     <div class="form-card">
       <div class="success-wrap">
@@ -911,7 +876,6 @@
         <p>Your account has been created successfully.<br>
            We're reviewing your documents — this usually takes just a few minutes.</p>
 
-        <!-- Summary -->
         <div class="summary-box">
           <div class="summary-title">Account Summary</div>
           <div class="summary-row">
@@ -951,9 +915,7 @@
     </div>
   </div>
 
-</div><!-- /page-wrap -->
-
-<script>
+</div><script>
   /* ══════════════════════════════════════════════════
      STATE
   ══════════════════════════════════════════════════ */
@@ -1279,4 +1241,4 @@
 </script>  
   
 </body>
-</html>
+</html>"
