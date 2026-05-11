@@ -653,4 +653,630 @@
             <option>Congo</option><option>Costa Rica</option><option>Croatia</option>
             <option>Cuba</option><option>Cyprus</option><option>Czech Republic</option>
             <option>Denmark</option><option>Dominican Republic</option><option>Ecuador</option>
-            <option>Egypt</option><option>El Salvador</opt
+            <option>Egypt</option><option>El Salvador</option><option>Estonia</option>
+            <option>Ethiopia</option><option>Finland</option><option>France</option>
+            <option>Gabon</option><option>Georgia</option><option>Germany</option>
+            <option>Ghana</option><option>Greece</option><option>Guatemala</option>
+            <option>Honduras</option><option>Hungary</option><option>Iceland</option>
+            <option>India</option><option>Indonesia</option><option>Iran</option>
+            <option>Iraq</option><option>Ireland</option><option>Israel</option>
+            <option>Italy</option><option>Jamaica</option><option>Japan</option>
+            <option>Jordan</option><option>Kazakhstan</option><option>Kenya</option>
+            <option>Kuwait</option><option>Latvia</option><option>Lebanon</option>
+            <option>Libya</option><option>Lithuania</option><option>Luxembourg</option>
+            <option>Malaysia</option><option>Mali</option><option>Malta</option>
+            <option>Mexico</option><option>Moldova</option><option>Mongolia</option>
+            <option>Morocco</option><option>Mozambique</option><option>Myanmar</option>
+            <option>Namibia</option><option>Nepal</option><option>Netherlands</option>
+            <option>New Zealand</option><option>Nicaragua</option><option>Nigeria</option>
+            <option>Norway</option><option>Oman</option><option>Pakistan</option>
+            <option>Panama</option><option>Paraguay</option><option>Peru</option>
+            <option>Philippines</option><option>Poland</option><option>Portugal</option>
+            <option>Qatar</option><option>Romania</option><option>Russia</option>
+            <option>Rwanda</option><option>Saudi Arabia</option><option>Senegal</option>
+            <option>Serbia</option><option>Sierra Leone</option><option>Singapore</option>
+            <option>Slovakia</option><option>Slovenia</option><option>Somalia</option>
+            <option>South Africa</option><option>South Korea</option><option>Spain</option>
+            <option>Sri Lanka</option><option>Sudan</option><option>Sweden</option>
+            <option>Switzerland</option><option>Syria</option><option>Taiwan</option>
+            <option>Tanzania</option><option>Thailand</option><option>Tunisia</option>
+            <option>Turkey</option><option>Uganda</option><option>Ukraine</option>
+            <option>United Arab Emirates</option><option>United Kingdom</option>
+            <option>United States</option><option>Uruguay</option><option>Uzbekistan</option>
+            <option>Venezuela</option><option>Vietnam</option><option>Yemen</option>
+            <option>Zambia</option><option>Zimbabwe</option>
+          </select>
+        </div>
+        <div class="err-msg" id="err-country">Please select your country</div>
+      </div>
+
+      <!-- Date of Birth -->
+      <div class="field">
+        <label>Date of Birth <span class="req">*</span></label>
+        <input type="date" id="dob" />
+        <div class="err-msg" id="err-dob">You must be at least 18 years old</div>
+      </div>
+
+      <!-- Home Address -->
+      <div class="field">
+        <label>Home Address <span class="req">*</span></label>
+        <input type="text" id="homeAddress" placeholder="123 Main Street, Apt 4B" autocomplete="street-address" />
+        <div class="err-msg" id="err-homeAddress">Please enter your home address</div>
+      </div>
+
+      <!-- City & Postal -->
+      <div class="two-col">
+        <div class="field">
+          <label>City <span class="req">*</span></label>
+          <input type="text" id="city" placeholder="New York" autocomplete="address-level2" />
+          <div class="err-msg" id="err-city">City is required</div>
+        </div>
+        <div class="field">
+          <label>Postal / ZIP <span class="req">*</span></label>
+          <input type="text" id="postalCode" placeholder="100001" autocomplete="postal-code" />
+          <div class="err-msg" id="err-postalCode">Postal code required</div>
+        </div>
+      </div>
+
+      <button class="btn-primary-lg" onclick="goStep(2,3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       STEP 3 — Financial Info
+  ════════════════════════════════════════ -->
+  <div class="step-panel" id="panel3">
+    <div class="form-card">
+      <button class="btn-back" onclick="goStep(3,2,true)">← Back</button>
+      <div class="step-header">
+        <h2>Financial details</h2>
+        <p>Required for regulatory compliance (AML / KYC)</p>
+      </div>
+
+      <!-- Source of Funds -->
+      <div class="field">
+        <label>Source of Funds <span class="req">*</span></label>
+        <div class="select-wrap">
+          <select id="sourceOfFund">
+            <option value="">Select primary income source</option>
+            <option>Employment / Salary</option>
+            <option>Business Income</option>
+            <option>Investment Returns</option>
+            <option>Savings</option>
+            <option>Inheritance / Gift</option>
+            <option>Pension / Retirement</option>
+            <option>Freelance / Contract Work</option>
+            <option>Rental Income</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="err-msg" id="err-sourceOfFund">Please select a source of funds</div>
+      </div>
+
+      <!-- Referral Code -->
+      <div class="field">
+        <label>Referral Code <span class="opt">(optional)</span></label>
+        <div class="icon-input">
+          <span class="input-icon">🏷️</span>
+          <input type="text" id="referralCode" placeholder="e.g. SOLV-ABCD1234"
+            maxlength="16" oninput="this.value=this.value.toUpperCase();checkReferral()" />
+        </div>
+        <div class="referral-ok" id="referralOk">✓ Referral code applied — you'll both get a reward!</div>
+      </div>
+
+      <!-- Info banner -->
+      <div class="info-banner">
+        <span style="font-size:18px;flex-shrink:0;">ℹ️</span>
+        <p>This information is collected to comply with anti-money laundering (AML) regulations.
+           Your data is encrypted and never shared without your consent.</p>
+      </div>
+
+      <button class="btn-primary-lg" onclick="goStep(3,4)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       STEP 4 — Document Upload
+  ════════════════════════════════════════ -->
+  <div class="step-panel" id="panel4">
+    <div class="form-card">
+      <button class="btn-back" onclick="goStep(4,3,true)">← Back</button>
+      <div class="step-header">
+        <h2>Verify your identity</h2>
+        <p>Upload a government-issued ID to complete KYC</p>
+      </div>
+
+      <!-- Doc type tabs -->
+      <label style="font-size:13px;font-weight:600;color:var(--navy);display:block;margin-bottom:10px;">
+        Document Type <span style="color:var(--blue)">*</span>
+      </label>
+      <div class="doc-type-tabs">
+        <button class="doc-tab active" onclick="switchDocType('passport',this)">Passport</button>
+        <button class="doc-tab" onclick="switchDocType('national_id',this)">National ID</button>
+        <button class="doc-tab" onclick="switchDocType('drivers',this)">Driver's License</button>
+      </div>
+
+      <!-- Front -->
+      <label style="font-size:13px;font-weight:600;color:var(--navy);display:block;margin-bottom:8px;" id="frontLabel">
+        Passport Photo Page <span style="color:var(--blue)">*</span>
+      </label>
+      <div class="upload-box" id="uploadFront"
+        ondragover="dragOver(event,'uploadFront')"
+        ondragleave="dragLeave('uploadFront')"
+        ondrop="dropFile(event,'uploadFront','prevFront','prevFrontThumb','prevFrontName')">
+        <input type="file" id="fileFront" accept="image/*,.pdf"
+          onchange="handleFile(this,'uploadFront','prevFront','prevFrontThumb','prevFrontName')" />
+        <div class="upload-icon">🪪</div>
+        <div class="upload-title" id="frontBoxTitle">Upload passport photo page</div>
+        <div class="upload-sub">Tap to browse or drag &amp; drop</div>
+        <div class="upload-hint">JPG, PNG or PDF · Max 10 MB</div>
+      </div>
+      <div class="upload-box uploaded" id="prevFront" style="display:none;">
+        <div class="upload-preview">
+          <div class="preview-thumb" id="prevFrontThumb">📄</div>
+          <div class="preview-info">
+            <div class="preview-name" id="prevFrontName"></div>
+            <div class="preview-ok">✓ Uploaded successfully</div>
+          </div>
+          <button class="preview-remove" onclick="removeFile('uploadFront','prevFront','fileFront')">✕</button>
+        </div>
+      </div>
+      <div class="upload-err" id="err-front">Please upload the front of your document</div>
+
+      <!-- Back (hidden for passport) -->
+      <div id="backSection" style="display:none;">
+        <label style="font-size:13px;font-weight:600;color:var(--navy);display:block;margin-bottom:8px;" id="backLabel">
+          Back of Document <span style="color:var(--blue)">*</span>
+        </label>
+        <div class="upload-box" id="uploadBack"
+          ondragover="dragOver(event,'uploadBack')"
+          ondragleave="dragLeave('uploadBack')"
+          ondrop="dropFile(event,'uploadBack','prevBack','prevBackThumb','prevBackName')">
+          <input type="file" id="fileBack" accept="image/*,.pdf"
+            onchange="handleFile(this,'uploadBack','prevBack','prevBackThumb','prevBackName')" />
+          <div class="upload-icon">📋</div>
+          <div class="upload-title">Upload back side of ID</div>
+          <div class="upload-sub">Tap to browse or drag &amp; drop</div>
+          <div class="upload-hint">JPG, PNG or PDF · Max 10 MB</div>
+        </div>
+        <div class="upload-box uploaded" id="prevBack" style="display:none;">
+          <div class="upload-preview">
+            <div class="preview-thumb" id="prevBackThumb">📄</div>
+            <div class="preview-info">
+              <div class="preview-name" id="prevBackName"></div>
+              <div class="preview-ok">✓ Uploaded successfully</div>
+            </div>
+            <button class="preview-remove" onclick="removeFile('uploadBack','prevBack','fileBack')">✕</button>
+          </div>
+        </div>
+        <div class="upload-err" id="err-back">Please upload the back of your document</div>
+      </div>
+
+      <!-- Selfie -->
+      <label style="font-size:13px;font-weight:600;color:var(--navy);display:block;margin-bottom:8px;margin-top:4px;">
+        Selfie Holding Document <span style="color:var(--blue)">*</span>
+      </label>
+      <div class="upload-box" id="uploadSelfie"
+        ondragover="dragOver(event,'uploadSelfie')"
+        ondragleave="dragLeave('uploadSelfie')"
+        ondrop="dropFile(event,'uploadSelfie','prevSelfie','prevSelfieThumb','prevSelfieName')">
+        <input type="file" id="fileSelfie" accept="image/*"
+          onchange="handleFile(this,'uploadSelfie','prevSelfie','prevSelfieThumb','prevSelfieName')" />
+        <div class="upload-icon">🤳</div>
+        <div class="upload-title">Upload selfie</div>
+        <div class="upload-sub">Upload a clear selfie with your face fully visible</div>
+        <div class="upload-hint">JPG or PNG · Max 10 MB</div>
+      </div>
+      <div class="upload-box uploaded" id="prevSelfie" style="display:none;">
+        <div class="upload-preview">
+          <div class="preview-thumb" id="prevSelfieThumb">🤳</div>
+          <div class="preview-info">
+            <div class="preview-name" id="prevSelfieName"></div>
+            <div class="preview-ok">✓ Uploaded successfully</div>
+          </div>
+          <button class="preview-remove" onclick="removeFile('uploadSelfie','prevSelfie','fileSelfie')">✕</button>
+        </div>
+      </div>
+      <div class="upload-err" id="err-selfie">Please upload a selfie holding your document</div>
+
+      <!-- Tips -->
+      <div class="warn-banner" style="margin-top:16px;">
+        <div class="warn-title">📸 Photo tips for best results</div>
+        <ul>
+          <li>Ensure the full document is visible with no cut-off edges</li>
+          <li>Good lighting — avoid glare, shadows, or flash reflections</li>
+          <li>All text, photo, and expiry date must be clearly readable</li>
+          <li>Do not cover any part of the document with your fingers</li>
+        </ul>
+      </div>
+
+      <button class="btn-primary-lg" id="submitBtn" onclick="submitForm()">
+        <span id="submitText">Submit &amp; Verify →</span>
+        <div class="spinner" id="submitSpinner"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       STEP 5 — Success
+  ════════════════════════════════════════ -->
+  <div class="step-panel" id="panel5">
+    <div class="form-card">
+      <div class="success-wrap">
+        <div class="success-circle" id="successCircle">✓</div>
+
+        <div class="badge-pending">⏳ Verification in progress</div>
+
+        <h2 id="successName">You're all set! 🎉</h2>
+        <p>Your account has been created successfully.<br>
+           We're reviewing your documents — this usually takes just a few minutes.</p>
+
+        <!-- Summary -->
+        <div class="summary-box">
+          <div class="summary-title">Account Summary</div>
+          <div class="summary-row">
+            <span class="s-key">Full Name</span>
+            <span class="s-val" id="sumName">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="s-key">Email</span>
+            <span class="s-val" id="sumEmail">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="s-key">Country</span>
+            <span class="s-val" id="sumCountry">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="s-key">Date of Birth</span>
+            <span class="s-val" id="sumDob">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="s-key">Source of Funds</span>
+            <span class="s-val" id="sumFund">—</span>
+          </div>
+          <div class="summary-row" id="sumRefRow" style="display:none;">
+            <span class="s-key">Referral Code</span>
+            <span class="s-val" id="sumRef">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="s-key">ID Verification</span>
+            <span class="s-val" style="color:var(--amber);">⏳ Under Review</span>
+          </div>
+        </div>
+
+        <button class="btn-primary-lg" onclick="window.location.href='solvra-homepage.html'">
+          Go to Dashboard →
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+  /* ══════════════════════════════════════════════════
+     STATE
+  ══════════════════════════════════════════════════ */
+  let currentStep = 1;
+  let docType = 'passport';
+  const TOTAL_STEPS = 5;
+
+  // Set max DOB date (must be 18+)
+  (function () {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - 18);
+    document.getElementById('dob').max = d.toISOString().split('T')[0];
+  })();
+
+  /* ══════════════════════════════════════════════════
+     STEP NAVIGATION
+  ══════════════════════════════════════════════════ */
+  function goStep(from, to, isBack) {
+    if (!isBack && !validateStep(from)) return;
+
+    const panels = document.querySelectorAll('.step-panel');
+    panels.forEach(p => { p.classList.remove('active','back'); });
+
+    const next = document.getElementById('panel' + to);
+    if (isBack) next.classList.add('back');
+    next.classList.add('active');
+
+    currentStep = to;
+    updateTracker();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Pop the success circle
+    if (to === 5) {
+      populateSummary();
+      setTimeout(() => document.getElementById('successCircle').classList.add('pop'), 100);
+    }
+  }
+
+  function updateTracker() {
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const circle = document.getElementById('sc' + i);
+      const label  = document.getElementById('sl' + i);
+      circle.classList.remove('active','done');
+      label.classList.remove('active','done');
+
+      if (i < currentStep) {
+        circle.classList.add('done');
+        circle.textContent = '✓';
+        label.classList.add('done');
+      } else if (i === currentStep) {
+        circle.classList.add('active');
+        circle.textContent = i;
+        label.classList.add('active');
+      } else {
+        circle.textContent = i;
+      }
+    }
+    const pct = ((currentStep - 1) / (TOTAL_STEPS - 1)) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  /* ══════════════════════════════════════════════════
+     VALIDATION
+  ══════════════════════════════════════════════════ */
+  function showErr(id, show) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('show', show);
+    const input = document.getElementById(id.replace('err-',''));
+    if (input) input.classList.toggle('error', show);
+  }
+
+  function validateStep(step) {
+    let ok = true;
+
+    if (step === 1) {
+      const name  = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const pw    = document.getElementById('password').value;
+      const cpw   = document.getElementById('confirmPassword').value;
+
+      const nameOk = name.split(' ').filter(Boolean).length >= 2;
+      showErr('err-fullName', !nameOk);
+      if (!nameOk) ok = false;
+
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      showErr('err-email', !emailOk);
+      if (!emailOk) ok = false;
+
+      const pwOk = pw.length >= 8;
+      showErr('err-password', !pwOk);
+      if (!pwOk) ok = false;
+
+      const cpwOk = pw === cpw;
+      showErr('err-confirmPassword', !cpwOk);
+      if (!cpwOk) ok = false;
+    }
+
+    if (step === 2) {
+      const country  = document.getElementById('country').value;
+      const dob      = document.getElementById('dob').value;
+      const address  = document.getElementById('homeAddress').value.trim();
+      const city     = document.getElementById('city').value.trim();
+      const postal   = document.getElementById('postalCode').value.trim();
+
+      showErr('err-country', !country);
+      if (!country) ok = false;
+
+      let dobOk = false;
+      if (dob) {
+        const age = (new Date() - new Date(dob)) / (365.25*24*60*60*1000);
+        dobOk = age >= 18;
+      }
+      showErr('err-dob', !dobOk);
+      if (!dobOk) ok = false;
+
+      showErr('err-homeAddress', !address);
+      if (!address) ok = false;
+
+      showErr('err-city', !city);
+      if (!city) ok = false;
+
+      showErr('err-postal', !postal);
+      if (!postal) ok = false;
+    }
+
+    if (step === 3) {
+      const fund = document.getElementById('sourceOfFund').value;
+      showErr('err-sourceOfFund', !fund);
+      if (!fund) ok = false;
+    }
+
+    if (step === 4) {
+      const hasFront  = document.getElementById('prevFront').style.display  !== 'none';
+      const hasBack   = document.getElementById('prevBack').style.display   !== 'none';
+      const hasSelfie = document.getElementById('prevSelfie').style.display !== 'none';
+
+      document.getElementById('err-front').classList.toggle('show', !hasFront);
+      if (!hasFront) ok = false;
+
+      if (docType !== 'passport') {
+        document.getElementById('err-back').classList.toggle('show', !hasBack);
+        if (!hasBack) ok = false;
+      }
+
+      document.getElementById('err-selfie').classList.toggle('show', !hasSelfie);
+      if (!hasSelfie) ok = false;
+    }
+
+    return ok;
+  }
+
+  /* ══════════════════════════════════════════════════
+     PASSWORD STRENGTH
+  ══════════════════════════════════════════════════ */
+  function checkPwStrength() {
+    const pw = document.getElementById('password').value;
+    const wrap = document.getElementById('pwStrengthWrap');
+    if (!pw) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+
+    let score = 0;
+    if (pw.length >= 8)          score++;
+    if (/[A-Z]/.test(pw))        score++;
+    if (/[0-9]/.test(pw))        score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+    const colors = ['','#EF4444','#F59E0B','#3B82F6','#22C55E'];
+    const labels = ['','Weak','Fair','Good','Strong'];
+
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('pb' + i).style.background = i <= score ? colors[score] : 'var(--border)';
+    }
+    const lbl = document.getElementById('pwLabel');
+    lbl.textContent = labels[score];
+    lbl.style.color = colors[score];
+  }
+
+  /* ══════════════════════════════════════════════════
+     REFERRAL CODE
+  ══════════════════════════════════════════════════ */
+  function checkReferral() {
+    const val = document.getElementById('referralCode').value;
+    document.getElementById('referralOk').classList.toggle('show', val.length >= 6);
+  }
+
+  /* ══════════════════════════════════════════════════
+     DOCUMENT TYPE SWITCH
+  ══════════════════════════════════════════════════ */
+  function switchDocType(type, btn) {
+    docType = type;
+    document.querySelectorAll('.doc-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+
+    const backSection = document.getElementById('backSection');
+    const frontLabel  = document.getElementById('frontLabel');
+    const frontTitle  = document.getElementById('frontBoxTitle');
+
+    if (type === 'passport') {
+      backSection.style.display = 'none';
+      frontLabel.innerHTML = 'Passport Photo Page <span style="color:var(--blue)">*</span>';
+      frontTitle.textContent = 'Upload passport photo page';
+    } else if (type === 'national_id') {
+      backSection.style.display = 'block';
+      frontLabel.innerHTML = 'Front of National ID <span style="color:var(--blue)">*</span>';
+      frontTitle.textContent = 'Upload front side of ID';
+    } else {
+      backSection.style.display = 'block';
+      frontLabel.innerHTML = "Front of Driver's License <span style=\"color:var(--blue)\">*</span>";
+      frontTitle.textContent = "Upload front of driver's license";
+    }
+
+    // Reset uploads on switch
+    removeFile('uploadFront','prevFront','fileFront');
+    removeFile('uploadBack','prevBack','fileBack');
+  }
+
+  /* ══════════════════════════════════════════════════
+     FILE UPLOAD HELPERS
+  ══════════════════════════════════════════════════ */
+  function handleFile(input, boxId, prevId, thumbId, nameId) {
+    const file = input.files[0];
+    if (!file) return;
+    renderFile(file, boxId, prevId, thumbId, nameId);
+  }
+
+  function renderFile(file, boxId, prevId, thumbId, nameId) {
+    const box  = document.getElementById(boxId);
+    const prev = document.getElementById(prevId);
+    const name = document.getElementById(nameId);
+    const thumb = document.getElementById(thumbId);
+
+    name.textContent = file.name;
+
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        thumb.innerHTML = '<img src="' + e.target.result + '" alt="preview" />';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      thumb.innerHTML = '📄';
+    }
+
+    box.style.display  = 'none';
+    prev.style.display = 'block';
+  }
+
+  function removeFile(boxId, prevId, inputId) {
+    const box  = document.getElementById(boxId);
+    const prev = document.getElementById(prevId);
+    const inp  = document.getElementById(inputId);
+    if (box)  box.style.display  = 'block';
+    if (prev) prev.style.display = 'none';
+    if (inp)  inp.value = '';
+  }
+
+  function dragOver(e, boxId) {
+    e.preventDefault();
+    document.getElementById(boxId).classList.add('drag-over');
+  }
+
+  function dragLeave(boxId) {
+    document.getElementById(boxId).classList.remove('drag-over');
+  }
+
+  function dropFile(e, boxId, prevId, thumbId, nameId) {
+    e.preventDefault();
+    dragLeave(boxId);
+    const file = e.dataTransfer.files[0];
+    if (file) renderFile(file, boxId, prevId, thumbId, nameId);
+  }
+
+  /* ══════════════════════════════════════════════════
+     SUBMIT WITH LOADING STATE
+  ══════════════════════════════════════════════════ */
+  function submitForm() {
+    if (!validateStep(4)) return;
+
+    const btn     = document.getElementById('submitBtn');
+    const txt     = document.getElementById('submitText');
+    const spinner = document.getElementById('submitSpinner');
+
+    btn.disabled        = true;
+    txt.style.display   = 'none';
+    spinner.style.display = 'block';
+
+    // Simulate async submission
+    setTimeout(() => {
+      btn.disabled        = false;
+      txt.style.display   = 'inline';
+      spinner.style.display = 'none';
+      goStep(4, 5);
+    }, 2000);
+  }
+
+  /* ══════════════════════════════════════════════════
+     SUMMARY
+  ══════════════════════════════════════════════════ */
+  function populateSummary() {
+    const name   = document.getElementById('fullName').value.trim();
+    const email  = document.getElementById('email').value.trim();
+    const country= document.getElementById('country').value;
+    const dob    = document.getElementById('dob').value;
+    const fund   = document.getElementById('sourceOfFund').value;
+    const ref    = document.getElementById('referralCode').value;
+
+    const firstName = name.split(' ')[0];
+    document.getElementById('successName').textContent = "You're all set, " + firstName + "! 🎉";
+    document.getElementById('sumName').textContent    = name;
+    document.getElementById('sumEmail').textContent   = email;
+    document.getElementById('sumCountry').textContent = country;
+    document.getElementById('sumDob').textContent     = dob
+      ? new Date(dob + 'T00:00:00').toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})
+      : '—';
+    document.getElementById('sumFund').textContent    = fund;
+
+    if (ref) {
+      document.getElementById('sumRef').textContent    = ref;
+      document.getElementById('sumRefRow').style.display = 'flex';
+    }
+  }
+</script>
+
+</body>
+</html>
