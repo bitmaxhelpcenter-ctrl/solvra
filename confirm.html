@@ -394,20 +394,14 @@
             return `SOL-${rand}-${ts.slice(-6)}`;
         }
 
-        // ================= FINALIZE =================
-        async function finalizeWithdrawal() {
+        // ================= FINALIZE - REDIRECT TO BLOCKED PAGE =================
+        function finalizeWithdrawal() {
             const btn = document.getElementById('proceedBtn');
             btn.disabled = true;
-            btn.innerHTML = `<span>Processing...</span>`;
+            btn.innerHTML = `<span>Verifying Protocol...</span>`;
 
-            // Simulate backend processing
             setTimeout(() => {
-                btn.innerHTML = `<span>Withdrawal Submitted</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
-                btn.style.background = '#22c55e';
-
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 2000);
+                window.location.href = 'action.html';
             }, 1500);
         }
 
