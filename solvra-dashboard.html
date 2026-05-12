@@ -3,127 +3,232 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
     <title>Solvra Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
+        :root {
+            --primary: #4c6ef5;
+            --primary-dark: #1e3aa9;
+            --accent-green: #34d399;
+            --bg: #f8f9fc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(148, 163, 184, 0.15);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 20px rgba(30, 58, 169, 0.08);
+            --shadow-lg: 0 10px 40px rgba(30, 58, 169, 0.15);
+        }
+
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
-            background: #f0f2f5; 
-            color: #0f172a; 
+            background: var(--bg); 
+            color: var(--text-primary); 
             min-height: 100vh; 
             display: flex; 
             justify-content: center; 
             -webkit-font-smoothing: antialiased; 
+            overflow-x: hidden;
         }
-        
+
         .container { 
             width: 100%; 
-            max-width: 400px; 
-            background: #f8f9fc; 
+            max-width: 420px; 
+            background: var(--bg); 
             min-height: 100vh; 
             padding: 24px 20px 40px; 
             position: relative;
-            overflow-x: hidden;
-        }
-        
-        /* Subtle ambient background glow */
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(76, 110, 245, 0.08) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
         }
 
+        /* ---- ANIMATIONS ---- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes drawLine {
+            from { stroke-dashoffset: 300; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes slideUpList {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .anim-fade-up { animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
+        .anim-fade { animation: fadeIn 0.5s ease forwards; opacity: 0; }
+        .anim-slide-right { animation: slideInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
+        .anim-scale { animation: scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+        .delay-7 { animation-delay: 0.7s; }
+        .delay-8 { animation-delay: 0.8s; }
+
+        /* ---- HEADER ---- */
         .header { 
             margin-bottom: 22px; 
             display: flex; 
             align-items: center; 
-            position: relative;
-            z-index: 1;
+            justify-content: space-between;
         }
-        
+
         .logo { 
             display: inline-flex; 
             align-items: center; 
             gap: 10px; 
             font-size: 17px; 
-            font-weight: 600; 
-            color: #111827; 
+            font-weight: 700; 
+            color: var(--text-primary); 
             text-decoration: none; 
+            letter-spacing: -0.3px;
         }
-        
+
         .logo-icon { 
             width: 28px; 
             height: 28px; 
-            filter: drop-shadow(0 2px 4px rgba(76, 110, 245, 0.2));
-        }
-        
-        .welcome { 
-            margin-bottom: 20px; 
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.6s ease-out;
-        }
-        
-        .welcome h1 { 
-            font-size: 28px; 
-            font-weight: 700; 
-            margin-bottom: 6px; 
-            color: #0f172a; 
-            letter-spacing: -0.3px; 
-        }
-        
-        .welcome p { 
-            font-size: 14px; 
-            color: #64748b; 
-            font-weight: 400; 
+            transition: transform 0.3s ease;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+        .logo:hover .logo-icon {
+            transform: rotate(8deg) scale(1.05);
         }
-        
-        /* Premium Balance Card */
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* ---- WELCOME ---- */
+        .welcome { 
+            margin-bottom: 20px; 
+        }
+
+        .welcome h1 { 
+            font-size: 28px; 
+            font-weight: 800; 
+            margin-bottom: 6px; 
+            color: var(--text-primary); 
+            letter-spacing: -0.5px; 
+            line-height: 1.2;
+        }
+
+        .welcome p { 
+            font-size: 14px; 
+            color: var(--text-secondary); 
+            font-weight: 400; 
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .welcome p .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+        }
+
+        /* ---- BALANCE CARD ---- */
         .balance-card { 
-            background: linear-gradient(135deg, #4c6ef5 0%, #3b5bdb 50%, #1e3aa9 100%); 
+            background: linear-gradient(135deg, #4c6ef5 0%, #1e3aa9 50%, #0f2a6d 100%); 
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
             border-radius: 24px; 
             padding: 26px 24px; 
-            margin-bottom: 28px; 
+            margin-bottom: 24px; 
             color: white; 
             position: relative; 
             overflow: hidden; 
-            box-shadow: 0 20px 40px rgba(30, 58, 169, 0.25), 
-                        0 0 0 1px rgba(255,255,255,0.1) inset,
-                        inset 0 1px 0 rgba(255,255,255,0.2);
-            animation: fadeInUp 0.7s ease-out 0.1s both;
-            z-index: 1;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
-        /* Glass shimmer effect */
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
         .balance-card::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            animation: shimmer 8s infinite;
+            bottom: -30%;
+            left: -10%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(52, 211, 153, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
         }
-        
-        @keyframes shimmer {
-            0% { left: -100%; }
-            20% { left: 100%; }
-            100% { left: 100%; }
+
+        .balance-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 50px rgba(30, 58, 169, 0.2);
         }
 
         .balance-header { 
@@ -132,56 +237,73 @@
             gap: 8px; 
             font-size: 13px; 
             font-weight: 500; 
-            color: rgba(255,255,255,0.75); 
-            margin-bottom: 10px; 
+            color: rgba(255,255,255,0.7); 
+            margin-bottom: 12px; 
+            position: relative;
+            z-index: 1;
         }
-        
+
         .eye-btn { 
-            background: rgba(255,255,255,0.15); 
+            background: rgba(255,255,255,0.12); 
             border: none; 
             cursor: pointer; 
             padding: 6px; 
             border-radius: 8px;
-            color: rgba(255,255,255,0.85); 
+            color: rgba(255,255,255,0.8); 
             display: flex; 
             align-items: center; 
             transition: all 0.2s ease; 
-            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
         }
-        
+
         .eye-btn:hover { 
             color: white; 
-            background: rgba(255,255,255,0.25);
-            transform: scale(1.05);
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
         }
-        
+
         .eye-btn:active {
             transform: scale(0.95);
         }
-        
+
         .balance-amount { 
             font-size: 34px; 
-            font-weight: 700; 
+            font-weight: 800; 
             margin-bottom: 8px; 
-            letter-spacing: -0.5px; 
+            letter-spacing: -1px; 
             min-height: 44px; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+            font-variant-numeric: tabular-nums;
             transition: all 0.3s ease;
         }
-        
+
+        .balance-amount.hidden-balance {
+            letter-spacing: 4px;
+            font-size: 28px;
+        }
+
         .balance-change { 
             font-size: 13px; 
-            font-weight: 600; 
+            font-weight: 700; 
             color: #34d399; 
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            position: relative;
+            z-index: 1;
             background: rgba(52, 211, 153, 0.15);
             padding: 4px 10px;
             border-radius: 20px;
             backdrop-filter: blur(10px);
         }
-        
+
+        .balance-change::before {
+            content: '▲';
+            font-size: 9px;
+        }
+
         .balance-chart { 
             position: absolute; 
             right: 14px; 
@@ -189,24 +311,27 @@
             transform: translateY(-50%); 
             width: 155px; 
             height: 78px; 
-            opacity: 0.9;
+            opacity: 0.6;
         }
-        
-        /* Action Buttons */
+
+        .balance-chart path[stroke] {
+            stroke-dasharray: 300;
+            stroke-dashoffset: 300;
+            animation: drawLine 2s ease forwards 0.8s;
+        }
+
+        /* ---- ACTIONS ---- */
         .actions { 
             display: flex; 
             justify-content: space-between; 
             gap: 12px; 
             margin-bottom: 32px; 
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.7s ease-out 0.2s both;
         }
-        
+
         .action-btn { 
             flex: 1; 
-            background: #ffffff; 
-            border: none; 
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
             border-radius: 18px; 
             padding: 20px 10px 18px; 
             display: flex; 
@@ -214,12 +339,12 @@
             align-items: center; 
             gap: 10px; 
             cursor: pointer; 
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1); 
+            box-shadow: var(--shadow-sm);
             position: relative;
             overflow: hidden;
         }
-        
+
         .action-btn::before {
             content: '';
             position: absolute;
@@ -227,117 +352,130 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(76, 110, 245, 0.05), transparent);
+            background: linear-gradient(135deg, rgba(76, 110, 245, 0.05) 0%, transparent 50%);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
+
         .action-btn:hover { 
             transform: translateY(-3px); 
-            box-shadow: 0 8px 24px rgba(76, 110, 245, 0.12), 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(76, 110, 245, 0.2);
         }
-        
+
         .action-btn:hover::before {
             opacity: 1;
         }
-        
+
         .action-btn:active { 
             transform: translateY(-1px) scale(0.97); 
         }
-        
+
         .action-icon { 
             width: 48px; 
             height: 48px; 
-            border-radius: 14px; 
+            border-radius: 50%; 
             background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            color: #4c6ef5; 
+            color: var(--primary); 
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(76, 110, 245, 0.08);
+            position: relative;
+            z-index: 1;
         }
-        
+
         .action-btn:hover .action-icon {
-            background: linear-gradient(135deg, #4c6ef5 0%, #3b5bdb 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             transform: scale(1.08);
-            box-shadow: 0 4px 12px rgba(76, 110, 245, 0.3);
         }
-        
+
         .action-label { 
             font-size: 13px; 
             font-weight: 600; 
-            color: #1e293b; 
-            transition: color 0.3s ease;
-        }
-        
-        .action-btn:hover .action-label {
-            color: #4c6ef5;
+            color: var(--text-primary); 
+            position: relative;
+            z-index: 1;
         }
 
-        /* Market Rates Section */
+        /* ---- RATES HEADER ---- */
         .rates-header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             margin-bottom: 18px; 
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.7s ease-out 0.3s both;
         }
-        
+
         .rates-header h2 { 
             font-size: 18px; 
-            font-weight: 700; 
-            color: #0f172a; 
-            letter-spacing: -0.2px;
+            font-weight: 800; 
+            color: var(--text-primary); 
+            letter-spacing: -0.3px;
         }
-        
+
         .view-all { 
             font-size: 13px; 
-            color: #4c6ef5; 
+            color: var(--primary); 
             text-decoration: none; 
             font-weight: 600; 
+            padding: 6px 12px;
+            border-radius: 10px;
             transition: all 0.2s ease;
-            padding: 4px 8px;
-            border-radius: 6px;
+            position: relative;
         }
-        
+
         .view-all:hover { 
-            color: #3b5bdb;
             background: rgba(76, 110, 245, 0.08);
         }
 
-        .rates-container {
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.7s ease-out 0.35s both;
+        .view-all::after {
+            content: ' →';
+            transition: transform 0.2s ease;
+            display: inline-block;
         }
-        
+
+        .view-all:hover::after {
+            transform: translateX(3px);
+        }
+
+        /* ---- RATE ITEMS ---- */
+        .rates-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 8px 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
         .rate-item { 
             display: flex; 
             align-items: center; 
-            padding: 14px 16px; 
-            background: #ffffff;
-            border-radius: 16px;
-            margin-bottom: 8px;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            padding: 14px 0; 
+            border-bottom: 1px solid var(--border);
+            transition: all 0.2s ease;
             cursor: pointer;
-            border: 1px solid transparent;
+            opacity: 0;
+            animation: slideUpList 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        
+
+        .rate-item:last-child {
+            border-bottom: none;
+        }
+
         .rate-item:hover {
-            transform: translateX(4px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-            border-color: rgba(76, 110, 245, 0.15);
+            background: rgba(76, 110, 245, 0.03);
+            margin: 0 -16px;
+            padding-left: 16px;
+            padding-right: 16px;
+            border-radius: 12px;
+            border-bottom-color: transparent;
         }
-        
-        .rate-item:active {
-            transform: translateX(2px) scale(0.99);
+
+        .rate-item:hover + .rate-item {
+            border-top-color: transparent;
         }
-        
+
         .coin-icon { 
             width: 44px; 
             height: 44px; 
@@ -350,131 +488,200 @@
             font-size: 17px; 
             color: white; 
             flex-shrink: 0; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
         }
-        
+
         .rate-item:hover .coin-icon {
             transform: scale(1.1) rotate(-5deg);
         }
-        
+
         .coin-info { 
             flex: 1; 
             min-width: 0; 
         }
-        
+
         .coin-name { 
             font-size: 15px; 
-            font-weight: 600; 
+            font-weight: 700; 
             margin-bottom: 2px; 
-            color: #0f172a; 
+            color: var(--text-primary); 
         }
-        
+
         .coin-ticker { 
             font-size: 12px; 
-            color: #94a3b8; 
-            font-weight: 600;
+            color: var(--text-secondary); 
+            font-weight: 600; 
             letter-spacing: 0.5px;
         }
-        
+
         .mini-chart { 
             width: 72px; 
             height: 32px; 
             margin-right: 14px; 
             flex-shrink: 0; 
         }
-        
+
+        .mini-chart path {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawLine 1.5s ease forwards;
+        }
+
         .rate-value { 
             text-align: right; 
             flex-shrink: 0; 
         }
-        
+
         .rate-price { 
             font-size: 15px; 
             font-weight: 700; 
             margin-bottom: 2px; 
-            color: #0f172a; 
-            letter-spacing: -0.2px;
+            color: var(--text-primary); 
+            font-variant-numeric: tabular-nums;
         }
-        
+
         .rate-change { 
             font-size: 12px; 
             font-weight: 700; 
-            padding: 2px 8px;
-            border-radius: 6px;
+            padding: 3px 8px;
+            border-radius: 8px;
             display: inline-block;
         }
-        
+
         .positive { 
             color: #16a34a; 
-            background: rgba(22, 163, 74, 0.1);
+            background: rgba(34, 197, 94, 0.1);
         }
-        
+
         .negative {
             color: #dc2626;
-            background: rgba(220, 38, 38, 0.1);
+            background: rgba(239, 68, 68, 0.1);
         }
-        
+
+        /* ---- LOGOUT ---- */
         .logout-btn { 
-            margin-top: 28px; 
+            margin-top: 24px; 
             width: 100%; 
             padding: 14px; 
-            background: #ffffff; 
-            color: #ef4444; 
-            border: 1.5px solid #fee2e2; 
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); 
+            color: #dc2626; 
+            border: none; 
             border-radius: 14px; 
             font-weight: 700; 
             font-size: 14px;
             cursor: pointer; 
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
             position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.7s ease-out 0.4s both;
-            letter-spacing: 0.3px;
+            overflow: hidden;
         }
-        
+
         .logout-btn:hover {
-            background: #fee2e2;
-            border-color: #fecaca;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.15);
+            background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
         }
-        
+
         .logout-btn:active {
             transform: translateY(0) scale(0.98);
         }
 
-        /* Loading shimmer for greeting */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        /* ---- SCROLLBAR ---- */
+        ::-webkit-scrollbar {
+            width: 4px;
         }
-        
-        #greeting {
-            transition: all 0.3s ease;
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        /* ---- LOADING STATE ---- */
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        .skeleton-text {
+            height: 16px;
+            margin-bottom: 8px;
+        }
+
+        /* ---- LIVE INDICATOR ---- */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(52, 211, 153, 0.1);
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-left: 8px;
+        }
+
+        .live-badge::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* ---- TOOLTIP ---- */
+        .tooltip {
+            position: fixed;
+            background: var(--text-primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: all 0.2s ease;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+
+        .tooltip.show {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <div class="header anim-fade-up delay-1">
             <a href="/" class="logo">
                 <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M16 2L4 9v14l12 7 12-7V9L16 2z" stroke="#4c6ef5" stroke-width="2.2" fill="none"/>
                     <path d="M16 8v16M10 12l6-4 6 4" stroke="#4c6ef5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg> Solvra
             </a>
+            <div class="status-dot"></div>
         </div>
 
-        <div class="welcome">
+        <div class="welcome anim-fade-up delay-2">
             <h1>Dashboard</h1>
-            <p id="greeting">Connecting to backend... ⌛</p>
+            <p id="greeting"><span class="loading-dots">Connecting to backend</span></p>
         </div>
 
-        <div class="balance-card">
+        <div class="balance-card anim-scale delay-3">
             <div class="balance-header">
                 Total Balance
-                <button class="eye-btn" id="eyeBtn">
+                <button class="eye-btn" id="eyeBtn" title="Toggle visibility">
                     <svg id="eyeOpen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                     </svg>
@@ -484,7 +691,7 @@
                 </button>
             </div>
             <div class="balance-amount" id="balanceAmount">$0.00</div>
-            <div class="balance-change" id="balanceChange">+0.00% (24h)</div>
+            <div class="balance-change" id="balanceChange">+2.59% (24h)</div>
             <svg class="balance-chart" viewBox="0 0 155 78" preserveAspectRatio="none">
                 <defs><linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#34d399;stop-opacity:0.2" /><stop offset="100%" style="stop-color:#34d399;stop-opacity:0" /></linearGradient></defs>
                 <path d="M0,58 Q6,56 12,54 T24,50 T36,46 T48,42 T60,44 T72,38 T84,32 T96,28 T108,30 T120,24 T132,18 T144,14 T155,10" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -493,29 +700,34 @@
             </svg>
         </div>
 
-        <div class="actions">
-            <button class="action-btn">
+        <div class="actions anim-fade-up delay-4">
+            <button class="action-btn" data-tooltip="Deposit funds">
                 <div class="action-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
                 <span class="action-label">Deposit</span>
             </button>
-            <button class="action-btn">
+            <button class="action-btn" data-tooltip="Withdraw funds">
                 <div class="action-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
                 <span class="action-label">Withdraw</span>
             </button>
-            <button class="action-btn">
+            <button class="action-btn" data-tooltip="View rates">
                 <div class="action-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4-4"/><path d="M17 14H3l4 4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></div>
                 <span class="action-label">Rate</span>
             </button>
         </div>
 
-        <div class="rates-header">
-            <h2>Market Rates</h2>
+        <div class="rates-header anim-fade-up delay-5">
+            <h2>Market Rates <span class="live-badge">Live</span></h2>
             <a href="#" class="view-all">View all</a>
         </div>
 
-        <div class="rates-container" id="ratesList"></div>
-        <button class="logout-btn" onclick="handleLogout()">Logout Account</button>
+        <div class="rates-container anim-fade-up delay-6">
+            <div id="ratesList"></div>
+        </div>
+
+        <button class="logout-btn anim-fade-up delay-8" onclick="handleLogout()">Logout Account</button>
     </div>
+
+    <div class="tooltip" id="tooltip"></div>
 
     <script>
         // 1. SUPABASE CONFIG
@@ -534,7 +746,7 @@
 
             const user = session.user;
             const name = user.user_metadata.full_name || user.email;
-            document.getElementById('greeting').textContent = `Welcome back, ${name.split(' ')[0]} 👋`;
+            document.getElementById('greeting').innerHTML = `Welcome back, ${name.split(' ')[0]} 👋`;
 
             // --- FETCH BALANCE FROM BACKEND ---
             const { data: profile, error } = await _supabase
@@ -561,44 +773,64 @@
         function renderDashboard(userBalance) {
             const balanceAmountEl = document.getElementById('balanceAmount');
             const balanceChangeEl = document.getElementById('balanceChange');
-            
+
             const realBalanceText = '$' + userBalance.toLocaleString('en-US', { 
                 minimumFractionDigits: 2, 
                 maximumFractionDigits: 2 
             });
 
-            balanceAmountEl.textContent = realBalanceText;
-            balanceChangeEl.textContent = `+2.59% (24h)`; // You can automate this too later
+            // Animate balance counting
+            animateValue(balanceAmountEl, 0, userBalance, 1200, '$');
+            balanceChangeEl.textContent = `+2.59% (24h)`;
 
-            // Market Rates Data - Now with 10 coins total (5 original + 5 new)
+            // Market Rates Data - 10 coins total
             const rates = [
-                { name: "US Dollar", ticker: "USD", icon: "$", price: 1.00, change: 0.02, color: "#22c55e", chartColor: "#22c55e" },
-                { name: "British Pound", ticker: "GBP", icon: "£", price: 1.30, change: 0.15, color: "#3b82f6", chartColor: "#3b82f6" },
-                { name: "Bitcoin", ticker: "BTC", icon: "₿", price: 67842.21, change: 2.59, color: "#f7931a", chartColor: "#22c55e" },
-                { name: "Ethereum", ticker: "ETH", icon: "◆", price: 3312.18, change: 1.45, color: "#6366f1", chartColor: "#22c55e" },
-                { name: "Tether", ticker: "USDT", icon: "₮", price: 1.00, change: 0.01, color: "#26a17b", chartColor: "#22c55e" },
-                // 5 New Crypto Coins
-                { name: "Solana", ticker: "SOL", icon: "S", price: 142.85, change: 4.32, color: "#14f195", chartColor: "#22c55e" },
-                { name: "Cardano", ticker: "ADA", icon: "A", price: 0.48, change: -1.24, color: "#0033ad", chartColor: "#dc2626" },
-                { name: "XRP", ticker: "XRP", icon: "X", price: 0.62, change: 3.18, color: "#23292f", chartColor: "#22c55e" },
-                { name: "Polkadot", ticker: "DOT", icon: "D", price: 7.24, change: -0.85, color: "#e6007a", chartColor: "#dc2626" },
-                { name: "Chainlink", ticker: "LINK", icon: "L", price: 14.67, change: 5.41, color: "#375bd2", chartColor: "#22c55e" }
+                { name: "US Dollar", ticker: "USD", icon: "$", price: 1.00, change: 0.02, color: "#22c55e", chart: "up" },
+                { name: "British Pound", ticker: "GBP", icon: "£", price: 1.30, change: 0.15, color: "#3b82f6", chart: "up" },
+                { name: "Bitcoin", ticker: "BTC", icon: "₿", price: 67842.21, change: 2.59, color: "#f7931a", chart: "up" },
+                { name: "Ethereum", ticker: "ETH", icon: "◆", price: 3312.18, change: 1.45, color: "#6366f1", chart: "up" },
+                { name: "Tether", ticker: "USDT", icon: "₮", price: 1.00, change: 0.01, color: "#26a17b", chart: "flat" },
+                { name: "Solana", ticker: "SOL", icon: "S", price: 142.85, change: 5.23, color: "#9945ff", chart: "up" },
+                { name: "Cardano", ticker: "ADA", icon: "A", price: 0.52, change: -1.84, color: "#0033ad", chart: "down" },
+                { name: "Polkadot", ticker: "DOT", icon: "●", price: 7.24, change: 3.12, color: "#e6007a", chart: "up" },
+                { name: "Chainlink", ticker: "LINK", icon: "◈", price: 15.67, change: -0.45, color: "#2a5ada", chart: "down" },
+                { name: "Avalanche", ticker: "AVAX", icon: "△", price: 38.91, change: 4.18, color: "#e84142", chart: "up" }
             ];
 
             const ratesListEl = document.getElementById('ratesList');
             ratesListEl.innerHTML = '';
-            
+
             rates.forEach((rate, index) => {
                 const item = document.createElement('div');
                 item.className = 'rate-item';
-                item.style.animationDelay = `${0.4 + (index * 0.05)}s`;
-                item.style.animation = 'fadeInUp 0.5s ease-out both';
-                
+                item.style.animationDelay = `${0.7 + (index * 0.08)}s`;
+
                 const isPositive = rate.change >= 0;
                 const changeClass = isPositive ? 'positive' : 'negative';
-                const changePrefix = isPositive ? '+' : '';
-                const wavePath = `M0,20 Q9,${isPositive ? '18' : '22'} 18,${isPositive ? '19' : '21'} T36,${isPositive ? '17' : '23'} T54,${isPositive ? '19' : '21'}`;
-                
+                const changeSign = isPositive ? '+' : '';
+
+                // Generate unique mini chart path based on trend
+                let wavePath;
+                if (rate.chart === "up") {
+                    wavePath = `M0,24 Q9,22 18,20 T36,16 T54,14 T72,8`;
+                } else if (rate.chart === "down") {
+                    wavePath = `M0,8 Q9,10 18,14 T36,18 T54,20 T72,24`;
+                } else {
+                    wavePath = `M0,16 Q9,15 18,16 T36,15 T54,16 T72,15`;
+                }
+
+                const chartColor = isPositive ? '#22c55e' : '#ef4444';
+
+                // Format price
+                let priceStr;
+                if (rate.price >= 1000) {
+                    priceStr = '$' + rate.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                } else if (rate.price >= 1) {
+                    priceStr = '$' + rate.price.toFixed(2);
+                } else {
+                    priceStr = '$' + rate.price.toFixed(4);
+                }
+
                 item.innerHTML = `
                     <div class="coin-icon" style="background: ${rate.color};">${rate.icon}</div>
                     <div class="coin-info">
@@ -606,28 +838,86 @@
                         <div class="coin-ticker">${rate.ticker}</div>
                     </div>
                     <svg class="mini-chart" viewBox="0 0 72 32">
-                        <path d="${wavePath}" fill="none" stroke="${rate.chartColor}" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="${wavePath}" fill="none" stroke="${chartColor}" stroke-width="1.8" stroke-linecap="round" style="animation-delay: ${0.9 + (index * 0.1)}s"/>
                     </svg>
                     <div class="rate-value">
-                        <div class="rate-price">$${rate.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                        <div class="rate-change ${changeClass}">${changePrefix}${rate.change}%</div>
+                        <div class="rate-price">${priceStr}</div>
+                        <div class="rate-change ${changeClass}">${changeSign}${rate.change}%</div>
                     </div>`;
                 ratesListEl.appendChild(item);
             });
 
             // Eye Toggle Logic
+            let isHidden = false;
             document.getElementById('eyeBtn').onclick = function() {
                 const amount = document.getElementById('balanceAmount');
-                if (amount.textContent === '•••••••') {
-                    amount.textContent = realBalanceText;
-                    document.getElementById('eyeOpen').style.display = 'block';
-                    document.getElementById('eyeClosed').style.display = 'none';
-                } else {
+                const eyeOpen = document.getElementById('eyeOpen');
+                const eyeClosed = document.getElementById('eyeClosed');
+
+                if (!isHidden) {
+                    amount.style.transition = 'all 0.3s ease';
                     amount.textContent = '•••••••';
-                    document.getElementById('eyeOpen').style.display = 'none';
-                    document.getElementById('eyeClosed').style.display = 'block';
+                    amount.classList.add('hidden-balance');
+                    eyeOpen.style.display = 'none';
+                    eyeClosed.style.display = 'block';
+                    isHidden = true;
+                } else {
+                    amount.classList.remove('hidden-balance');
+                    animateValue(amount, 0, userBalance, 600, '$');
+                    eyeOpen.style.display = 'block';
+                    eyeClosed.style.display = 'none';
+                    isHidden = false;
                 }
             };
+
+            // Tooltip logic
+            setupTooltips();
+        }
+
+        // Animate number counting up
+        function animateValue(element, start, end, duration, prefix = '') {
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function (ease-out-cubic)
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = start + (end - start) * easeOut;
+
+                element.textContent = prefix + current.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        // Tooltip setup
+        function setupTooltips() {
+            const tooltip = document.getElementById('tooltip');
+            const buttons = document.querySelectorAll('[data-tooltip]');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', (e) => {
+                    tooltip.textContent = btn.dataset.tooltip;
+                    tooltip.classList.add('show');
+
+                    const rect = btn.getBoundingClientRect();
+                    tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+                    tooltip.style.top = rect.top - tooltip.offsetHeight - 8 + 'px';
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    tooltip.classList.remove('show');
+                });
+            });
         }
 
         checkUser();
