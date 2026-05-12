@@ -923,7 +923,7 @@
      SUPABASE CONNECTION
   ══════════════════════════════════════════════════ */
   const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
-  const supabaseKey = 'EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhdHlpZnNkaWVzb2p2Y3BzbGRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MjIzMzAsImV4cCI6MjA5NDA5ODMzMH0.lUy5J5clkjCrh_uUO8faQSyqWcHNM2CGofZRVNdvLnA';
+  const supabaseKey = 'Sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
   const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
   /* ══════════════════════════════════════════════════
@@ -1067,8 +1067,9 @@
       if (!hasFront) ok = false;
 
       if (docType !== 'passport') {
-        document.getElementById('err-back').classList.toggle('show', !hasBack);
-        if (!hasBack) ok = false;
+        const hasBackConfirm = document.getElementById('prevBack').style.display !== 'none';
+        document.getElementById('err-back').classList.toggle('show', !hasBackConfirm);
+        if (!hasBackConfirm) ok = false;
       }
 
       document.getElementById('err-selfie').classList.toggle('show', !hasSelfie);
@@ -1115,7 +1116,7 @@
 
       if (error) throw error;
 
-      // If no error, proceed to success screen
+      // Proceed to success screen
       goStep(4, 5);
 
     } catch (err) {
@@ -1170,14 +1171,10 @@
       backSection.style.display = 'none';
       frontLabel.innerHTML = 'Passport Photo Page <span style="color:var(--blue)">*</span>';
       frontTitle.textContent = 'Upload passport photo page';
-    } else if (type === 'national_id') {
-      backSection.style.display = 'block';
-      frontLabel.innerHTML = 'Front of National ID <span style="color:var(--blue)">*</span>';
-      frontTitle.textContent = 'Upload front side of ID';
     } else {
       backSection.style.display = 'block';
-      frontLabel.innerHTML = "Front of Driver's License <span style=\"color:var(--blue)\">*</span>";
-      frontTitle.textContent = "Upload front of driver's license";
+      frontLabel.innerHTML = (type === 'national_id' ? 'Front of National ID' : "Front of Driver's License") + ' <span style="color:var(--blue)">*</span>';
+      frontTitle.textContent = 'Upload front side';
     }
 
     removeFile('uploadFront','prevFront','fileFront');
