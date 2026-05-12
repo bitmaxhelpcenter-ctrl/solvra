@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Required - Solvra</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f0f2f5;
+            color: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #f8f9fc;
+            min-height: 100vh;
+            padding: 24px 20px 40px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Alert Icon Container */
+        .alert-icon-wrap {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+            position: relative;
+            animation: pulseRing 2s ease-out infinite;
+            box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+        }
+
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        .alert-icon-wrap svg {
+            width: 44px;
+            height: 44px;
+            color: #d97706;
+            animation: shake 0.5s ease-in-out;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            75% { transform: rotate(8deg); }
+        }
+
+        /* Title */
+        .alert-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 8px;
+            text-align: center;
+            letter-spacing: -0.3px;
+            animation: fadeInUp 0.5s ease-out 0.1s both;
+        }
+
+        .alert-subtitle {
+            font-size: 14px;
+            color: #b45309;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.5s ease-out 0.15s both;
+        }
+
+        /* Main Card */
+        .block-card {
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+            border: 1.5px solid #fef3c7;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease-out 0.2s both;
+        }
+
+        /* Top accent line */
+        .block-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f59e0b, #d97706, #f59e0b);
+            background-size: 200% 100%;
+            animation: shimmerLine 2s linear infinite;
+        }
+
+        @keyframes shimmerLine {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .block-card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .block-card h3 svg {
+            width: 18px;
+            height: 18px;
+            color: #f59e0b;
+            flex-shrink: 0;
+        }
+
+        .block-text {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.7;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .block-text strong {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        /* Gas Fee Highlight */
+        .gas-highlight {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1.5px dashed #f59e0b;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+        }
+
+        .gas-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #b45309;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .gas-amount {
+            font-size: 36px;
+            font-weight: 800;
+            color: #92400e;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .gas-amount span {
+            font-size: 18px;
+            font-weight: 600;
+            vertical-align: super;
+            margin-right: 2px;
+        }
+
+        .gas-note {
+            font-size: 12px;
+            color: #d97706;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Info Rows */
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row svg {
+            width: 16px;
+            height: 16px;
+            color: #f59e0b;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .info-row p {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* CTA Button */
+        .cta-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 16px;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: 0.3px;
+            text-decoration: none;
+            margin-top: 24px;
+            animation: fadeInUp 0.5s ease-out 0.4s both;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+        }
+
+        .cta-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .cta-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Secondary Link */
+        .secondary-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            animation: fadeInUp 0.5s ease-out 0.45s both;
+        }
+
+        .secondary-link:hover {
+            color: #4c6ef5;
+        }
+
+        /* Security Badge */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 32px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            animation: fadeInUp 0.5s ease-out 0.5s both;
+        }
+
+        .security-badge svg {
+            width: 14px;
+            height: 14px;
+            color: #22c55e;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Animated Alert Icon -->
+        <div class="alert-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="alert-title">Action Required!</h1>
+        <p class="alert-subtitle">Your withdrawal is pending protocol activation</p>
+
+        <!-- Main Block Card -->
+        <div class="block-card">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                Withdrawal Cannot Be Processed
+            </h3>
+
+            <p class="block-text">
+                Your withdrawal request cannot be processed at the moment because your <strong>activation balance is insufficient</strong>. A gas fee is required to activate and authorize the transfer protocol before your funds can be released.
+            </p>
+
+            <!-- Gas Fee Highlight -->
+            <div class="gas-highlight">
+                <div class="gas-label">Required Gas Fee</div>
+                <div class="gas-amount"><span>$</span>1,455</div>
+                <div class="gas-note">One-time protocol activation</div>
+            </div>
+
+            <!-- Info Points -->
+            <div class="info-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <p>Gas fees cover network validation and smart contract execution costs.</p>
+            </div>
+            <div class="info-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <p>Your withdrawal will be released immediately after gas wallet funding.</p>
+            </div>
+            <div class="info-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <p>This is a one-time activation. Future withdrawals will not require this step.</p>
+            </div>
+        </div>
+
+        <!-- CTA Button -->
+        <a href="rate.html" class="cta-btn">
+            <span>Proceed to Gas Wallet</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </a>
+
+        <!-- Secondary Action -->
+        <a href="dashboard.html" class="secondary-link">Return to Dashboard</a>
+
+        <!-- Security Badge -->
+        <div class="security-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Secured by Solvra Protocol
+        </div>
+    </div>
+</body>
+</html>
