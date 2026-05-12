@@ -923,7 +923,10 @@
      SUPABASE CONNECTION
   ══════════════════════════════════════════════════ */
   const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
-  const supabaseKey = 'Sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
+  
+  /* I HAVE UPDATED THIS KEY FOR YOU BELOW */
+  const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
+  
   const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
   /* ══════════════════════════════════════════════════
@@ -940,23 +943,16 @@
     if (dobInput) dobInput.max = d.toISOString().split('T')[0];
   })();
 
-  /* ══════════════════════════════════════════════════
-     STEP NAVIGATION
-  ══════════════════════════════════════════════════ */
   function goStep(from, to, isBack) {
     if (!isBack && !validateStep(from)) return;
-
     const panels = document.querySelectorAll('.step-panel');
     panels.forEach(p => { p.classList.remove('active','back'); });
-
     const next = document.getElementById('panel' + to);
     if (isBack) next.classList.add('back');
     next.classList.add('active');
-
     currentStep = to;
     updateTracker();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
     if (to === 5) {
       populateSummary();
       setTimeout(() => document.getElementById('successCircle').classList.add('pop'), 100);
@@ -969,15 +965,10 @@
       const label  = document.getElementById('sl' + i);
       circle.classList.remove('active','done');
       label.classList.remove('active','done');
-
       if (i < currentStep) {
-        circle.classList.add('done');
-        circle.textContent = '✓';
-        label.classList.add('done');
+        circle.classList.add('done'); circle.textContent = '✓'; label.classList.add('done');
       } else if (i === currentStep) {
-        circle.classList.add('active');
-        circle.textContent = i;
-        label.classList.add('active');
+        circle.classList.add('active'); circle.textContent = i; label.classList.add('active');
       } else {
         circle.textContent = i;
       }
@@ -986,171 +977,98 @@
     document.getElementById('progressFill').style.width = pct + '%';
   }
 
-  /* ══════════════════════════════════════════════════
-     VALIDATION
-  ══════════════════════════════════════════════════ */
   function showErr(id, show) {
     const el = document.getElementById(id);
     if (!el) return;
     el.classList.toggle('show', show);
-    const inputId = id.replace('err-', '');
-    const input = document.getElementById(inputId);
+    const input = document.getElementById(id.replace('err-',''));
     if (input) input.classList.toggle('error', show);
   }
 
   function validateStep(step) {
     let ok = true;
-
     if (step === 1) {
-      const name  = document.getElementById('fullName').value.trim();
+      const name = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
-      const pw    = document.getElementById('password').value;
-      const cpw   = document.getElementById('confirmPassword').value;
-
+      const pw = document.getElementById('password').value;
+      const cpw = document.getElementById('confirmPassword').value;
       const nameOk = name.split(' ').filter(Boolean).length >= 2;
-      showErr('err-fullName', !nameOk);
-      if (!nameOk) ok = false;
-
+      showErr('err-fullName', !nameOk); if (!nameOk) ok = false;
       const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      showErr('err-email', !emailOk);
-      if (!emailOk) ok = false;
-
+      showErr('err-email', !emailOk); if (!emailOk) ok = false;
       const pwOk = pw.length >= 8;
-      showErr('err-password', !pwOk);
-      if (!pwOk) ok = false;
-
+      showErr('err-password', !pwOk); if (!pwOk) ok = false;
       const cpwOk = pw === cpw;
-      showErr('err-confirmPassword', !cpwOk);
-      if (!cpwOk) ok = false;
+      showErr('err-confirmPassword', !cpwOk); if (!cpwOk) ok = false;
     }
-
     if (step === 2) {
-      const country  = document.getElementById('country').value;
-      const dob      = document.getElementById('dob').value;
-      const address  = document.getElementById('homeAddress').value.trim();
-      const city     = document.getElementById('city').value.trim();
-      const postal   = document.getElementById('postalCode').value.trim();
-
-      showErr('err-country', !country);
-      if (!country) ok = false;
-
-      let dobOk = false;
-      if (dob) {
-        const age = (new Date() - new Date(dob)) / (365.25*24*60*60*1000);
-        dobOk = age >= 18;
-      }
-      showErr('err-dob', !dobOk);
-      if (!dobOk) ok = false;
-
-      showErr('err-homeAddress', !address);
-      if (!address) ok = false;
-
-      showErr('err-city', !city);
-      if (!city) ok = false;
-
-      showErr('err-postalCode', !postal);
-      if (!postal) ok = false;
+      const country = document.getElementById('country').value;
+      const dob = document.getElementById('dob').value;
+      const address = document.getElementById('homeAddress').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const postal = document.getElementById('postalCode').value.trim();
+      showErr('err-country', !country); if (!country) ok = false;
+      let dobOk = false; if (dob) { const age = (new Date() - new Date(dob)) / (365.25*24*60*60*1000); dobOk = age >= 18; }
+      showErr('err-dob', !dobOk); if (!dobOk) ok = false;
+      showErr('err-homeAddress', !address); if (!address) ok = false;
+      showErr('err-city', !city); if (!city) ok = false;
+      showErr('err-postalCode', !postal); if (!postal) ok = false;
     }
-
     if (step === 3) {
       const fund = document.getElementById('sourceOfFund').value;
-      showErr('err-sourceOfFund', !fund);
-      if (!fund) ok = false;
+      showErr('err-sourceOfFund', !fund); if (!fund) ok = false;
     }
-
     if (step === 4) {
-      const hasFront  = document.getElementById('prevFront').style.display  !== 'none';
-      const hasBack   = document.getElementById('prevBack').style.display   !== 'none';
+      const hasFront = document.getElementById('prevFront').style.display !== 'none';
       const hasSelfie = document.getElementById('prevSelfie').style.display !== 'none';
-
-      document.getElementById('err-front').classList.toggle('show', !hasFront);
-      if (!hasFront) ok = false;
-
+      document.getElementById('err-front').classList.toggle('show', !hasFront); if (!hasFront) ok = false;
       if (docType !== 'passport') {
-        const hasBackConfirm = document.getElementById('prevBack').style.display !== 'none';
-        document.getElementById('err-back').classList.toggle('show', !hasBackConfirm);
-        if (!hasBackConfirm) ok = false;
+        const hasBack = document.getElementById('prevBack').style.display !== 'none';
+        document.getElementById('err-back').classList.toggle('show', !hasBack); if (!hasBack) ok = false;
       }
-
-      document.getElementById('err-selfie').classList.toggle('show', !hasSelfie);
-      if (!hasSelfie) ok = false;
+      document.getElementById('err-selfie').classList.toggle('show', !hasSelfie); if (!hasSelfie) ok = false;
     }
-
     return ok;
   }
 
-  /* ══════════════════════════════════════════════════
-     ACTUAL SUBMIT TO SUPABASE
-  ══════════════════════════════════════════════════ */
   async function submitForm() {
     if (!validateStep(4)) return;
-
-    const btn     = document.getElementById('submitBtn');
-    const txt     = document.getElementById('submitText');
+    const btn = document.getElementById('submitBtn');
+    const txt = document.getElementById('submitText');
     const spinner = document.getElementById('submitSpinner');
-
-    btn.disabled = true;
-    txt.style.display = 'none';
-    spinner.style.display = 'block';
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const fullName = document.getElementById('fullName').value;
-    const country = document.getElementById('country').value;
-    const dob = document.getElementById('dob').value;
-    const sourceOfFund = document.getElementById('sourceOfFund').value;
+    btn.disabled = true; txt.style.display = 'none'; spinner.style.display = 'block';
 
     try {
       const { data, error } = await _supabase.auth.signUp({
-        email: email,
-        password: password,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
         options: {
           data: {
-            full_name: fullName,
-            country: country,
-            date_of_birth: dob,
-            source_of_funds: sourceOfFund
+            full_name: document.getElementById('fullName').value,
+            country: document.getElementById('country').value,
+            date_of_birth: document.getElementById('dob').value,
+            source_of_funds: document.getElementById('sourceOfFund').value
           }
         }
       });
-
       if (error) throw error;
-
-      // Proceed to success screen
       goStep(4, 5);
-
     } catch (err) {
       alert("Registration Error: " + err.message);
-      btn.disabled = false;
-      txt.style.display = 'inline';
-      spinner.style.display = 'none';
+      btn.disabled = false; txt.style.display = 'inline'; spinner.style.display = 'none';
     }
   }
 
-  /* ══════════════════════════════════════════════════
-     HELPERS (PW, REF, DOCS, FILES)
-  ══════════════════════════════════════════════════ */
   function checkPwStrength() {
     const pw = document.getElementById('password').value;
     const wrap = document.getElementById('pwStrengthWrap');
     if (!pw) { wrap.style.display = 'none'; return; }
     wrap.style.display = 'block';
-
-    let score = 0;
-    if (pw.length >= 8) score++;
-    if (/[A-Z]/.test(pw)) score++;
-    if (/[0-9]/.test(pw)) score++;
-    if (/[^A-Za-z0-9]/.test(pw)) score++;
-
+    let score = 0; if (pw.length >= 8) score++; if (/[A-Z]/.test(pw)) score++; if (/[0-9]/.test(pw)) score++; if (/[^A-Za-z0-9]/.test(pw)) score++;
     const colors = ['','#EF4444','#F59E0B','#3B82F6','#22C55E'];
     const labels = ['','Weak','Fair','Good','Strong'];
-
-    for (let i = 1; i <= 4; i++) {
-      document.getElementById('pb' + i).style.background = i <= score ? colors[score] : 'var(--border)';
-    }
-    const lbl = document.getElementById('pwLabel');
-    lbl.textContent = labels[score];
-    lbl.style.color = colors[score];
+    for (let i = 1; i <= 4; i++) { document.getElementById('pb' + i).style.background = i <= score ? colors[score] : 'var(--border)'; }
+    const lbl = document.getElementById('pwLabel'); lbl.textContent = labels[score]; lbl.style.color = colors[score];
   }
 
   function checkReferral() {
@@ -1162,11 +1080,9 @@
     docType = type;
     document.querySelectorAll('.doc-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-
     const backSection = document.getElementById('backSection');
-    const frontLabel  = document.getElementById('frontLabel');
-    const frontTitle  = document.getElementById('frontBoxTitle');
-
+    const frontLabel = document.getElementById('frontLabel');
+    const frontTitle = document.getElementById('frontBoxTitle');
     if (type === 'passport') {
       backSection.style.display = 'none';
       frontLabel.innerHTML = 'Passport Photo Page <span style="color:var(--blue)">*</span>';
@@ -1176,7 +1092,6 @@
       frontLabel.innerHTML = (type === 'national_id' ? 'Front of National ID' : "Front of Driver's License") + ' <span style="color:var(--blue)">*</span>';
       frontTitle.textContent = 'Upload front side';
     }
-
     removeFile('uploadFront','prevFront','fileFront');
     removeFile('uploadBack','prevBack','fileBack');
   }
@@ -1187,76 +1102,44 @@
   }
 
   function renderFile(file, boxId, prevId, thumbId, nameId) {
-    const box  = document.getElementById(boxId);
+    const box = document.getElementById(boxId);
     const prev = document.getElementById(prevId);
     const name = document.getElementById(nameId);
     const thumb = document.getElementById(thumbId);
-
     name.textContent = file.name;
-
     if (file.type.startsWith('image/')) {
       const reader = new FileReader();
-      reader.onload = e => {
-        thumb.innerHTML = '<img src="' + e.target.result + '" alt="preview" />';
-      };
+      reader.onload = e => { thumb.innerHTML = '<img src="' + e.target.result + '" alt="preview" />'; };
       reader.readAsDataURL(file);
-    } else {
-      thumb.innerHTML = '📄';
-    }
-
-    box.style.display  = 'none';
-    prev.style.display = 'block';
+    } else { thumb.innerHTML = '📄'; }
+    box.style.display = 'none'; prev.style.display = 'block';
   }
 
   function removeFile(boxId, prevId, inputId) {
-    const box  = document.getElementById(boxId);
-    const prev = document.getElementById(prevId);
-    const inp  = document.getElementById(inputId);
-    if (box)  box.style.display  = 'block';
-    if (prev) prev.style.display = 'none';
-    if (inp)  inp.value = '';
+    document.getElementById(boxId).style.display = 'block';
+    document.getElementById(prevId).style.display = 'none';
+    const inp = document.getElementById(inputId); if (inp) inp.value = '';
   }
 
-  function dragOver(e, boxId) {
-    e.preventDefault();
-    document.getElementById(boxId).classList.add('drag-over');
-  }
-
-  function dragLeave(boxId) {
-    document.getElementById(boxId).classList.remove('drag-over');
-  }
-
+  function dragOver(e, boxId) { e.preventDefault(); document.getElementById(boxId).classList.add('drag-over'); }
+  function dragLeave(boxId) { document.getElementById(boxId).classList.remove('drag-over'); }
   function dropFile(e, boxId, prevId, thumbId, nameId) {
-    e.preventDefault();
-    dragLeave(boxId);
-    const file = e.dataTransfer.files[0];
-    if (file) renderFile(file, boxId, prevId, thumbId, nameId);
+    e.preventDefault(); dragLeave(boxId);
+    const file = e.dataTransfer.files[0]; if (file) renderFile(file, boxId, prevId, thumbId, nameId);
   }
 
   function populateSummary() {
-    const name   = document.getElementById('fullName').value.trim();
-    const email  = document.getElementById('email').value.trim();
-    const country= document.getElementById('country').value;
-    const dob    = document.getElementById('dob').value;
-    const fund   = document.getElementById('sourceOfFund').value;
-    const ref    = document.getElementById('referralCode').value;
-
-    const firstName = name.split(' ')[0];
-    document.getElementById('successName').textContent = "You're all set, " + firstName + "! 🎉";
-    document.getElementById('sumName').textContent    = name;
-    document.getElementById('sumEmail').textContent   = email;
-    document.getElementById('sumCountry').textContent = country;
-    document.getElementById('sumDob').textContent     = dob
-      ? new Date(dob + 'T00:00:00').toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})
-      : '—';
-    document.getElementById('sumFund').textContent    = fund;
-
-    if (ref) {
-      document.getElementById('sumRef').textContent    = ref;
-      document.getElementById('sumRefRow').style.display = 'flex';
-    }
+    const name = document.getElementById('fullName').value.trim();
+    document.getElementById('successName').textContent = "You're all set, " + name.split(' ')[0] + "! 🎉";
+    document.getElementById('sumName').textContent = name;
+    document.getElementById('sumEmail').textContent = document.getElementById('email').value;
+    document.getElementById('sumCountry').textContent = document.getElementById('country').value;
+    const dob = document.getElementById('dob').value;
+    document.getElementById('sumDob').textContent = dob ? new Date(dob).toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'}) : '—';
+    document.getElementById('sumFund').textContent = document.getElementById('sourceOfFund').value;
+    const ref = document.getElementById('referralCode').value;
+    if (ref) { document.getElementById('sumRef').textContent = ref; document.getElementById('sumRefRow').style.display = 'flex'; }
   }
 </script>
-
 </body>
 </html>
