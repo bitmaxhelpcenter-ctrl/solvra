@@ -8,464 +8,85 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --navy:       #0D1B4B;
-      --blue:       #1A2FCC;
-      --blue-light: #EEF0FF;
-      --green:      #22C55E;
-      --green-light:#E6F9F0;
-      --bg:         #F4F5FB;
-      --white:      #FFFFFF;
-      --border:     #E2E5F0;
-      --muted:      #8A91A8;
-      --red:        #EF4444;
-      --red-light:  #FEF2F2;
+      --navy:       #0D1B4B; --blue:       #1A2FCC; --blue-light: #EEF0FF;
+      --green:      #22C55E; --green-light:#E6F9F0; --bg:         #F4F5FB;
+      --white:      #FFFFFF; --border:     #E2E5F0; --muted:      #8A91A8;
+      --red:        #EF4444; --red-light:  #FEF2F2;
     }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--navy);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── NAV ── */
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 24px;
-      background: var(--white);
-      box-shadow: 0 1px 0 var(--border);
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-weight: 800;
-      font-size: 19px;
-      color: var(--navy);
-      text-decoration: none;
-    }
-    .nav-right {
-      font-size: 13.5px;
-      color: var(--muted);
-      font-weight: 500;
-    }
-    .nav-right a {
-      color: var(--blue);
-      font-weight: 700;
-      text-decoration: none;
-    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--navy); min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; background: var(--white); box-shadow: 0 1px 0 var(--border); }
+    .logo { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 19px; color: var(--navy); text-decoration: none; }
+    .nav-right { font-size: 13.5px; color: var(--muted); font-weight: 500; }
+    .nav-right a { color: var(--blue); font-weight: 700; text-decoration: none; }
     .nav-right a:hover { text-decoration: underline; }
-
-    /* ── LAYOUT ── */
-    .page {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 16px 60px;
-    }
-
-    .card-wrap {
-      width: 100%;
-      max-width: 420px;
-      animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── CARD ── */
-    .card {
-      background: var(--white);
-      border-radius: 24px;
-      padding: 40px 32px 36px;
-      box-shadow: 0 4px 32px rgba(13,27,75,0.08);
-    }
-
-    /* Header */
-    .card-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    .header-logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 800;
-      font-size: 20px;
-      color: var(--navy);
-      text-decoration: none;
-      margin-bottom: 22px;
-    }
-    .card-header h1 {
-      font-size: 25px;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 7px;
-      letter-spacing: -0.3px;
-    }
-    .card-header p {
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    /* ── FIELDS ── */
+    .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 16px 60px; }
+    .card-wrap { width: 100%; max-width: 420px; animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .card { background: var(--white); border-radius: 24px; padding: 40px 32px 36px; box-shadow: 0 4px 32px rgba(13,27,75,0.08); }
+    .card-header { text-align: center; margin-bottom: 32px; }
+    .header-logo { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; font-size: 20px; color: var(--navy); text-decoration: none; margin-bottom: 22px; }
+    .card-header h1 { font-size: 25px; font-weight: 800; color: var(--navy); margin-bottom: 7px; letter-spacing: -0.3px; }
+    .card-header p { font-size: 14px; color: var(--muted); }
     .field { margin-bottom: 20px; }
-
-    .field-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-    .field-top label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--navy);
-    }
-    .forgot-link {
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--blue);
-      cursor: pointer;
-      text-decoration: none;
-      background: none;
-      border: none;
-      font-family: inherit;
-      padding: 0;
-    }
+    .field-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .field-top label { font-size: 13px; font-weight: 600; color: var(--navy); }
+    .forgot-link { font-size: 12.5px; font-weight: 600; color: var(--blue); cursor: pointer; text-decoration: none; background: none; border: none; font-family: inherit; padding: 0; }
     .forgot-link:hover { text-decoration: underline; }
-
     .input-wrap { position: relative; }
-
-    .input-wrap input {
-      width: 100%;
-      padding: 14px 46px 14px 46px;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      font-size: 15px;
-      font-family: inherit;
-      color: var(--navy);
-      background: var(--white);
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
+    .input-wrap input { width: 100%; padding: 14px 46px 14px 46px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; font-family: inherit; color: var(--navy); background: var(--white); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
     .input-wrap input::placeholder { color: var(--muted); }
-    .input-wrap input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(26,47,204,0.09);
-    }
+    .input-wrap input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,47,204,0.09); }
     .input-wrap input.error { border-color: var(--red); }
-    .input-wrap input.error:focus {
-      border-color: var(--red);
-      box-shadow: 0 0 0 3px rgba(239,68,68,0.09);
-    }
-
-    .field-icon {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 17px;
-      pointer-events: none;
-      line-height: 1;
-    }
-
-    .toggle-pw {
-      position: absolute;
-      right: 13px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      transition: color 0.2s;
-    }
+    .input-wrap input.error:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(239,68,68,0.09); }
+    .field-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 17px; pointer-events: none; line-height: 1; }
+    .toggle-pw { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px; color: var(--muted); display: flex; align-items: center; transition: color 0.2s; }
     .toggle-pw:hover { color: var(--navy); }
-
-    .err-msg {
-      font-size: 12px;
-      color: var(--red);
-      margin-top: 6px;
-      display: none;
-    }
+    .err-msg { font-size: 12px; color: var(--red); margin-top: 6px; display: none; }
     .err-msg.show { display: block; }
-
-    /* ── ALERT ── */
-    .alert {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      padding: 13px 16px;
-      border-radius: 12px;
-      font-size: 13.5px;
-      font-weight: 500;
-      margin-bottom: 20px;
-    }
+    .alert { display: none; align-items: center; gap: 10px; padding: 13px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 500; margin-bottom: 20px; }
     .alert.show { display: flex; }
-    .alert.error {
-      background: var(--red-light);
-      border: 1px solid #FECACA;
-      color: #991B1B;
-      animation: shake 0.4s ease;
-    }
-    .alert.success {
-      background: var(--green-light);
-      border: 1px solid #A7F3D0;
-      color: #065F46;
-    }
-
-    @keyframes shake {
-      0%,100% { transform: translateX(0); }
-      20%      { transform: translateX(-5px); }
-      40%      { transform: translateX(5px); }
-      60%      { transform: translateX(-3px); }
-      80%      { transform: translateX(3px); }
-    }
-
-    /* ── REMEMBER ME ── */
-    .remember-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 24px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .check-box {
-      width: 20px;
-      height: 20px;
-      border: 1.5px solid var(--border);
-      border-radius: 6px;
-      background: var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: all 0.2s;
-      font-size: 12px;
-      font-weight: 800;
-      color: transparent;
-    }
-    .check-box.on {
-      background: var(--blue);
-      border-color: var(--blue);
-      color: var(--white);
-    }
-    .remember-row span {
-      font-size: 13.5px;
-      color: var(--navy);
-      font-weight: 500;
-    }
-
-    /* ── BUTTON ── */
-    .btn-signin {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 13px;
-      background: var(--blue);
-      color: var(--white);
-      font-weight: 800;
-      font-size: 16px;
-      font-family: inherit;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      letter-spacing: 0.2px;
-      transition: opacity 0.2s, transform 0.15s;
-      margin-bottom: 22px;
-    }
+    .alert.error { background: var(--red-light); border: 1px solid #FECACA; color: #991B1B; animation: shake 0.4s ease; }
+    .alert.success { background: var(--green-light); border: 1px solid #A7F3D0; color: #065F46; }
+    @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
+    .remember-row { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; cursor: pointer; user-select: none; }
+    .check-box { width: 20px; height: 20px; border: 1.5px solid var(--border); border-radius: 6px; background: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; font-size: 12px; font-weight: 800; color: transparent; }
+    .check-box.on { background: var(--blue); border-color: var(--blue); color: var(--white); }
+    .remember-row span { font-size: 13.5px; color: var(--navy); font-weight: 500; }
+    .btn-signin { width: 100%; padding: 15px; border: none; border-radius: 13px; background: var(--blue); color: var(--white); font-weight: 800; font-size: 16px; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 0.2px; transition: opacity 0.2s, transform 0.15s; margin-bottom: 22px; }
     .btn-signin:hover  { opacity: 0.88; }
     .btn-signin:active { transform: scale(0.98); }
-    .btn-signin:disabled {
-      background: #C5CAE9;
-      cursor: not-allowed;
-      transform: none;
-      opacity: 1;
-    }
-
+    .btn-signin:disabled { background: #C5CAE9; cursor: not-allowed; transform: none; opacity: 1; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .spinner {
-      width: 18px; height: 18px;
-      border: 2.5px solid rgba(255,255,255,0.35);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.65s linear infinite;
-      display: none;
-    }
-
-    /* ── SIGNUP LINK ── */
-    .signup-line {
-      text-align: center;
-      font-size: 13.5px;
-      color: var(--muted);
-    }
-    .signup-line a {
-      color: var(--blue);
-      font-weight: 700;
-      text-decoration: none;
-    }
+    .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; animation: spin 0.65s linear infinite; display: none; }
+    .signup-line { text-align: center; font-size: 13.5px; color: var(--muted); }
+    .signup-line a { color: var(--blue); font-weight: 700; text-decoration: none; }
     .signup-line a:hover { text-decoration: underline; }
-
-    /* ── TRUST ── */
-    .trust {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      margin-top: 26px;
-      padding-top: 22px;
-      border-top: 1px solid var(--border);
-      flex-wrap: wrap;
-    }
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11.5px;
-      color: var(--muted);
-      font-weight: 500;
-    }
-
-    /* ── FORGOT MODAL ── */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(13,27,75,0.4);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s;
-    }
-    .overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-    .modal {
-      background: var(--white);
-      border-radius: 20px;
-      padding: 32px 28px;
-      width: 100%;
-      max-width: 390px;
-      box-shadow: 0 20px 60px rgba(13,27,75,0.15);
-      transform: translateY(16px) scale(0.97);
-      opacity: 0;
-      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s;
-    }
-    .overlay.open .modal {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-    }
-    .modal-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
+    .trust { display: flex; justify-content: center; gap: 18px; margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+    .trust-item { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--muted); font-weight: 500; }
+    .overlay { position: fixed; inset: 0; background: rgba(13,27,75,0.4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: var(--white); border-radius: 20px; padding: 32px 28px; width: 100%; max-width: 390px; box-shadow: 0 20px 60px rgba(13,27,75,0.15); transform: translateY(16px) scale(0.97); opacity: 0; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s; }
+    .overlay.open .modal { transform: translateY(0) scale(1); opacity: 1; }
+    .modal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .modal-top h3 { font-size: 19px; font-weight: 800; color: var(--navy); }
-    .modal-close {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: none;
-      cursor: pointer;
-      font-size: 15px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-    }
+    .modal-close { width: 30px; height: 30px; border-radius: 50%; background: var(--bg); border: none; cursor: pointer; font-size: 15px; color: var(--muted); display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
     .modal-close:hover { background: var(--border); }
-    .modal > p {
-      font-size: 13.5px;
-      color: var(--muted);
-      margin-bottom: 22px;
-      line-height: 1.6;
-    }
+    .modal > p { font-size: 13.5px; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
     .modal .field { margin-bottom: 16px; }
-    .modal .field label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 7px;
-    }
-    .modal .field input {
-      width: 100%;
-      padding: 13px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      font-size: 14.5px;
-      font-family: inherit;
-      color: var(--navy);
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .modal .field input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(26,47,204,0.09);
-    }
-    .modal-err {
-      font-size: 12px;
-      color: var(--red);
-      margin-top: 5px;
-      display: none;
-    }
+    .modal .field label { display: block; font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 7px; }
+    .modal .field input { width: 100%; padding: 13px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14.5px; font-family: inherit; color: var(--navy); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .modal .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,47,204,0.09); }
+    .modal-err { font-size: 12px; color: var(--red); margin-top: 5px; display: none; }
     .modal-err.show { display: block; }
-
-    .btn-modal {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: var(--blue);
-      color: var(--white);
-      font-weight: 700;
-      font-size: 15px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
+    .btn-modal { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--blue); color: var(--white); font-weight: 700; font-size: 15px; font-family: inherit; cursor: pointer; transition: opacity 0.2s; }
     .btn-modal:hover { opacity: 0.88; }
-
-    .modal-sent {
-      text-align: center;
-      padding: 8px 0 4px;
-      display: none;
-    }
+    .modal-sent { text-align: center; padding: 8px 0 4px; display: none; }
     .modal-sent .sent-icon { font-size: 46px; margin-bottom: 14px; }
     .modal-sent h4 { font-size: 19px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
     .modal-sent p  { font-size: 13.5px; color: var(--muted); line-height: 1.65; margin-bottom: 22px; }
     .modal-sent strong { color: var(--navy); }
-
-    /* ── FOOTER ── */
-    footer {
-      text-align: center;
-      padding: 18px;
-      font-size: 12px;
-      color: var(--muted);
-    }
+    footer { text-align: center; padding: 18px; font-size: 12px; color: var(--muted); }
     footer a { color: var(--muted); text-decoration: none; }
     footer a:hover { color: var(--blue); }
   </style>
@@ -473,7 +94,7 @@
 <body>
 
 <nav>
-  <a class="logo" href="solvra-homepage.html">
+  <a class="logo" href="index.html">
     <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
       <rect width="36" height="36" rx="8" fill="#EEF0FF"/>
       <path d="M18 8L28 13.5V22.5L18 28L8 22.5V13.5L18 8Z" stroke="#1A2FCC" stroke-width="2" fill="none"/>
@@ -481,15 +102,14 @@
     </svg>
     Solvra
   </a>
-  <span class="nav-right">No account? <a href="solvra-signup.html">Sign up free</a></span>
+  <span class="nav-right">No account? <a href="signup.html">Sign up free</a></span>
 </nav>
 
 <div class="page">
   <div class="card-wrap">
     <div class="card">
-
       <div class="card-header">
-        <a class="header-logo" href="solvra-homepage.html">
+        <a class="header-logo" href="index.html">
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
             <rect width="36" height="36" rx="8" fill="#EEF0FF"/>
             <path d="M18 8L28 13.5V22.5L18 28L8 22.5V13.5L18 8Z" stroke="#1A2FCC" stroke-width="2" fill="none"/>
@@ -507,19 +127,10 @@
       </div>
 
       <div class="field">
-        <div class="field-top">
-          <label for="email">Email Address</label>
-        </div>
+        <div class="field-top"><label for="email">Email Address</label></div>
         <div class="input-wrap">
           <span class="field-icon">✉️</span>
-          <input
-            type="email"
-            id="email"
-            placeholder="john@example.com"
-            autocomplete="email"
-            oninput="clearErr()"
-            onkeydown="if(event.key==='Enter')signIn()"
-          />
+          <input type="email" id="email" placeholder="john@example.com" autocomplete="email" oninput="clearErr()" onkeydown="if(event.key==='Enter')signIn()" />
         </div>
         <div class="err-msg" id="err-email">Please enter a valid email address</div>
       </div>
@@ -531,19 +142,10 @@
         </div>
         <div class="input-wrap">
           <span class="field-icon">🔒</span>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            autocomplete="current-password"
-            oninput="clearErr()"
-            onkeydown="if(event.key==='Enter')signIn()"
-          />
+          <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" oninput="clearErr()" onkeydown="if(event.key==='Enter')signIn()" />
           <button class="toggle-pw" onclick="togglePw()" title="Show / hide password">
-            <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
+            <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
             </svg>
           </button>
         </div>
@@ -560,82 +162,55 @@
         <div class="spinner" id="spinner"></div>
       </button>
 
-      <p class="signup-line">
-        Don't have an account? <a href="solvra-signup.html">Create one free →</a>
-      </p>
+      <p class="signup-line">Don't have an account? <a href="signup.html">Create one free →</a></p>
 
       <div class="trust">
         <div class="trust-item">🔒 256-bit SSL</div>
         <div class="trust-item">🛡️ Bank-grade security</div>
         <div class="trust-item">✅ 2FA protected</div>
       </div>
-
-    </div></div>
+    </div>
+  </div>
 </div>
 
-<footer>
-  © 2025 Solvra &nbsp;·&nbsp;
-  <a href="#">Privacy</a> &nbsp;·&nbsp;
-  <a href="#">Terms</a> &nbsp;·&nbsp;
-  <a href="#">Support</a>
-</footer>
+<footer>© 2025 Solvra &nbsp;·&nbsp; <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a> &nbsp;·&nbsp; <a href="#">Support</a></footer>
 
 <div class="overlay" id="overlay" onclick="outsideClose(event)">
   <div class="modal">
-
     <div id="mForm">
-      <div class="modal-top">
-        <h3>Reset password</h3>
-        <button class="modal-close" onclick="closeForgot()">✕</button>
-      </div>
+      <div class="modal-top"><h3>Reset password</h3><button class="modal-close" onclick="closeForgot()">✕</button></div>
       <p>Enter your email and we'll send you a link to reset your password.</p>
-
       <div class="field">
         <label>Email Address</label>
-        <input type="email" id="resetEmail" placeholder="john@example.com"
-          onkeydown="if(event.key==='Enter')sendReset()" />
+        <input type="email" id="resetEmail" placeholder="john@example.com" onkeydown="if(event.key==='Enter')sendReset()" />
         <div class="modal-err" id="resetErr">Please enter a valid email address</div>
       </div>
-
       <button class="btn-modal" onclick="sendReset()">Send Reset Link →</button>
     </div>
-
     <div class="modal-sent" id="mSent">
       <div class="sent-icon">📧</div>
       <h4>Check your inbox!</h4>
-      <p>
-        A password reset link has been sent to<br>
-        <strong id="sentEmail"></strong>.<br><br>
-        Didn't receive it? Check your spam folder.
-      </p>
+      <p>A password reset link has been sent to<br><strong id="sentEmail"></strong>.<br><br>Didn't receive it? Check your spam folder.</p>
       <button class="btn-modal" onclick="closeForgot()">Done</button>
     </div>
-
   </div>
 </div>
 
 <script>
-  /* ══════════════════════════════════════════════════
-     2. INITIALIZE SUPABASE
-  ══════════════════════════════════════════════════ */
+  /* 1. INITIALIZE SUPABASE */
   const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
   const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
   const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-  /* password toggle */
   let pwShown = false;
   function togglePw() {
     pwShown = !pwShown;
     document.getElementById('password').type = pwShown ? 'text' : 'password';
     document.getElementById('eyeIcon').innerHTML = pwShown
-      ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
-         <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
-         <line x1="1" y1="1" x2="23" y2="23"/>`
-      : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-         <circle cx="12" cy="12" r="3"/>`;
+      ? `<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`
+      : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
   }
 
-  /* remember me */
   let remembered = false;
   function toggleRemember() {
     remembered = !remembered;
@@ -644,7 +219,6 @@
     chk.textContent = remembered ? '✓' : '';
   }
 
-  /* clear errors */
   function clearErr() {
     document.getElementById('alert').className = 'alert';
     document.getElementById('email').classList.remove('error');
@@ -655,102 +229,70 @@
 
   function showAlert(type, icon, msg) {
     const el = document.getElementById('alert');
-    el.className = 'alert';
-    void el.offsetWidth; // retrigger animation
     el.className = 'alert ' + type + ' show';
     document.getElementById('alertIcon').textContent = icon;
     document.getElementById('alertMsg').textContent  = msg;
   }
 
-  /* ══════════════════════════════════════════════════
-     3. MODIFIED SIGN IN FUNCTION
-  ══════════════════════════════════════════════════ */
+  /* 2. UPDATED SIGN IN FUNCTION */
   async function signIn() {
     const email = document.getElementById('email').value.trim();
     const pw    = document.getElementById('password').value;
     clearErr();
 
-    let valid = true;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       document.getElementById('err-email').classList.add('show');
       document.getElementById('email').classList.add('error');
-      valid = false;
+      return;
     }
     if (!pw) {
       document.getElementById('err-password').classList.add('show');
       document.getElementById('password').classList.add('error');
-      valid = false;
+      return;
     }
-    if (!valid) return;
 
-    /* loading state */
     const btn = document.getElementById('signinBtn');
     document.getElementById('btnTxt').style.display  = 'none';
     document.getElementById('spinner').style.display = 'block';
     btn.disabled = true;
 
     try {
-      // THE REAL AUTH CALL
-      const { data, error } = await _supabase.auth.signInWithPassword({
-        email: email,
-        password: pw,
-      });
-
+      const { data, error } = await _supabase.auth.signInWithPassword({ email, password: pw });
       if (error) throw error;
 
-      // SUCCESS
-      showAlert('success', '✅', 'Signed in successfully! Redirecting…');
-      setTimeout(() => { 
-        // Redirecting to dashboard
-        window.location.href = 'solvra-dashboard.html'; 
-      }, 1500);
+      showAlert('success', '✅', 'Signed in successfully! Entering dashboard...');
+      
+      // Give the session a moment to store in browser memory
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
 
     } catch (err) {
-      // ERROR
       showAlert('error', '⚠️', err.message);
       document.getElementById('email').classList.add('error');
       document.getElementById('password').classList.add('error');
       document.getElementById('password').value = '';
-    } finally {
+      btn.disabled = false;
       document.getElementById('btnTxt').style.display  = 'inline';
       document.getElementById('spinner').style.display = 'none';
-      btn.disabled = false;
     }
   }
 
-  /* forgot password logic remains local view only for now */
   function openForgot() {
     document.getElementById('mForm').style.display = 'block';
     document.getElementById('mSent').style.display = 'none';
-    document.getElementById('resetEmail').value    = document.getElementById('email').value;
-    document.getElementById('resetErr').classList.remove('show');
+    document.getElementById('resetEmail').value = document.getElementById('email').value;
     document.getElementById('overlay').classList.add('open');
-    setTimeout(() => document.getElementById('resetEmail').focus(), 300);
   }
-  function closeForgot() {
-    document.getElementById('overlay').classList.remove('open');
-  }
-  function outsideClose(e) {
-    if (e.target === document.getElementById('overlay')) closeForgot();
-  }
+  function closeForgot() { document.getElementById('overlay').classList.remove('open'); }
+  function outsideClose(e) { if (e.target === document.getElementById('overlay')) closeForgot(); }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeForgot(); });
 
   async function sendReset() {
     const email = document.getElementById('resetEmail').value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      document.getElementById('resetErr').classList.add('show');
-      return;
-    }
-    
-    // Optional: Real Supabase Password Reset call
-    // await _supabase.auth.resetPasswordForEmail(email)
-
-    document.getElementById('resetErr').classList.remove('show');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('resetErr').classList.add('show'); return; }
     document.getElementById('sentEmail').textContent = email;
-    document.getElementById('mForm').style.display   = 'none';
-    document.getElementById('mSent').style.display   = 'block';
+    document.getElementById('mForm').style.display = 'none';
+    document.getElementById('mSent').style.display = 'block';
   }
 </script>
-
 </body>
 </html>
