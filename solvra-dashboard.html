@@ -40,8 +40,6 @@
         .rate-price { font-size: 15px; font-weight: 600; margin-bottom: 2px; color: #0f172a; }
         .rate-change { font-size: 13px; font-weight: 600; }
         .positive { color: #22c55e; }
-        
-        /* Logout Button Style */
         .logout-btn { margin-top: 20px; width: 100%; padding: 12px; background: #fee2e2; color: #ef4444; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
@@ -52,20 +50,19 @@
                 <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M16 2L4 9v14l12 7 12-7V9L16 2z" stroke="#4c6ef5" stroke-width="2.2" fill="none"/>
                     <path d="M16 8v16M10 12l6-4 6 4" stroke="#4c6ef5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Solvra
+                </svg> Solvra
             </a>
         </div>
 
         <div class="welcome">
             <h1>Dashboard</h1>
-            <p id="greeting">Loading session... ⌛</p>
+            <p id="greeting">Connecting to backend... ⌛</p>
         </div>
 
         <div class="balance-card">
             <div class="balance-header">
                 Total Balance
-                <button class="eye-btn" id="eyeBtn" aria-label="Toggle balance visibility">
+                <button class="eye-btn" id="eyeBtn">
                     <svg id="eyeOpen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                     </svg>
@@ -105,64 +102,78 @@
         </div>
 
         <div id="ratesList"></div>
-
         <button class="logout-btn" onclick="handleLogout()">Logout Account</button>
     </div>
 
     <script>
-        // 1. SUPABASE INITIALIZATION
+        // 1. SUPABASE CONFIG
         const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
         const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // 2. CHECK USER SESSION (GATEKEEPER)
+        // 2. SESSION GATEKEEPER & DATA FETCH
         async function checkUser() {
-            const { data: { user }, error } = await _supabase.auth.getUser();
+            const { data: { session } } = await _supabase.auth.getSession();
 
-            if (error || !user) {
-                // Not logged in -> Kick to signin
+            if (!session) {
                 window.location.href = 'signin.html';
-            } else {
-                // Logged in! Update Greeting
-                const name = user.user_metadata.full_name || user.email;
-                document.getElementById('greeting').textContent = `Welcome back, ${name.split(' ')[0]} 👋`;
-                renderDashboard();
+                return;
             }
+
+            const user = session.user;
+            const name = user.user_metadata.full_name || user.email;
+            document.getElementById('greeting').textContent = `Welcome back, ${name.split(' ')[0]} 👋`;
+
+            // --- FETCH BALANCE FROM BACKEND ---
+            const { data: profile, error } = await _supabase
+                .from('profiles')
+                .select('balance')
+                .eq('id', user.id)
+                .single();
+
+            let realBalance = 0; // default if no row exists yet
+            if (profile) {
+                realBalance = profile.balance;
+            }
+
+            // Pass the backend balance to the UI renderer
+            renderDashboard(realBalance);
         }
 
-        // 3. LOGOUT FUNCTION
         async function handleLogout() {
             await _supabase.auth.signOut();
             window.location.href = 'signin.html';
         }
 
-        // 4. RENDER DASHBOARD UI
-        function renderDashboard() {
-            const dashboardData = {
-                balance: { amount: 12842.21, currency: "$", changePercent: 2.59, changeLabel: "(24h)" },
-                rates: [
-                    { name: "US Dollar", ticker: "USD", icon: "$", price: 1.00, change: 0.02, color: "#22c55e" },
-                    { name: "British Pound", ticker: "GBP", icon: "£", price: 1.30, change: 0.15, color: "#3b82f6" },
-                    { name: "Bitcoin", ticker: "BTC", icon: "₿", price: 67842.21, change: 2.59, color: "#f7931a" },
-                    { name: "Ethereum", ticker: "ETH", icon: "◆", price: 3312.18, change: 1.45, color: "#6366f1" },
-                    { name: "Tether", ticker: "USDT", icon: "₮", price: 1.00, change: 0.01, color: "#26a17b" }
-                ]
-            };
-
+        // 3. UI RENDERER
+        function renderDashboard(userBalance) {
             const balanceAmountEl = document.getElementById('balanceAmount');
             const balanceChangeEl = document.getElementById('balanceChange');
-            const realBalanceText = dashboardData.balance.currency + dashboardData.balance.amount.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            
+            const realBalanceText = '$' + userBalance.toLocaleString('en-US', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            });
 
             balanceAmountEl.textContent = realBalanceText;
-            balanceChangeEl.textContent = `+${dashboardData.balance.changePercent}% ${dashboardData.balance.changeLabel}`;
+            balanceChangeEl.textContent = `+2.59% (24h)`; // You can automate this too later
+
+            // Market Rates Data
+            const rates = [
+                { name: "US Dollar", ticker: "USD", icon: "$", price: 1.00, change: 0.02, color: "#22c55e" },
+                { name: "British Pound", ticker: "GBP", icon: "£", price: 1.30, change: 0.15, color: "#3b82f6" },
+                { name: "Bitcoin", ticker: "BTC", icon: "₿", price: 67842.21, change: 2.59, color: "#f7931a" },
+                { name: "Ethereum", ticker: "ETH", icon: "◆", price: 3312.18, change: 1.45, color: "#6366f1" },
+                { name: "Tether", ticker: "USDT", icon: "₮", price: 1.00, change: 0.01, color: "#26a17b" }
+            ];
 
             const ratesListEl = document.getElementById('ratesList');
-            ratesListEl.innerHTML = ''; // Clear loading
+            ratesListEl.innerHTML = '';
             
-            dashboardData.rates.forEach(rate => {
+            rates.forEach(rate => {
                 const item = document.createElement('div');
                 item.className = 'rate-item';
-                const wavePath = `M0,${18 + Math.random() * 4} Q9,${16 + Math.random() * 4} 18,${17 + Math.random() * 4} T36,${15 + Math.random() * 4} T54,${17 + Math.random() * 4} T72,${14 + Math.random() * 4}`;
+                const wavePath = `M0,20 Q9,18 18,19 T36,17 T54,19 T72,16`;
                 item.innerHTML = `
                     <div class="coin-icon" style="background: ${rate.color};">${rate.icon}</div>
                     <div class="coin-info"><div class="coin-name">${rate.name}</div><div class="coin-ticker">${rate.ticker}</div></div>
@@ -171,8 +182,8 @@
                 ratesListEl.appendChild(item);
             });
 
-            // Re-bind eye button logic
-            document.getElementById('eyeBtn').addEventListener('click', function() {
+            // Eye Toggle Logic
+            document.getElementById('eyeBtn').onclick = function() {
                 const amount = document.getElementById('balanceAmount');
                 if (amount.textContent === '•••••••') {
                     amount.textContent = realBalanceText;
@@ -183,10 +194,9 @@
                     document.getElementById('eyeOpen').style.display = 'none';
                     document.getElementById('eyeClosed').style.display = 'block';
                 }
-            });
+            };
         }
 
-        // Run Gatekeeper on load
         checkUser();
     </script>
 </body>
