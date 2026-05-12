@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solvra Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; 
+            background: #f0f2f5; 
+            color: #0f172a; 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            -webkit-font-smoothing: antialiased; 
+        }
+        
+        .container { 
+            width: 100%; 
+            max-width: 400px; 
+            background: #f8f9fc; 
+            min-height: 100vh; 
+            padding: 24px 20px 40px; 
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Subtle ambient background glow */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(76, 110, 245, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .header { 
+            margin-bottom: 22px; 
+            display: flex; 
+            align-items: center; 
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-size: 17px; 
+            font-weight: 600; 
+            color: #111827; 
+            text-decoration: none; 
+        }
+        
+        .logo-icon { 
+            width: 28px; 
+            height: 28px; 
+            filter: drop-shadow(0 2px 4px rgba(76, 110, 245, 0.2));
+        }
+        
+        .welcome { 
+            margin-bottom: 20px; 
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .welcome h1 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            margin-bottom: 6px; 
+            color: #0f172a; 
+            letter-spacing: -0.3px; 
+        }
+        
+        .welcome p { 
+            font-size: 14px; 
+            color: #64748b; 
+            font-weight: 400; 
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Premium Balance Card */
+        .balance-card { 
+            background: linear-gradient(135deg, #4c6ef5 0%, #3b5bdb 50%, #1e3aa9 100%); 
+            border-radius: 24px; 
+            padding: 26px 24px; 
+            margin-bottom: 28px; 
+            color: white; 
+            position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 20px 40px rgba(30, 58, 169, 0.25), 
+                        0 0 0 1px rgba(255,255,255,0.1) inset,
+                        inset 0 1px 0 rgba(255,255,255,0.2);
+            animation: fadeInUp 0.7s ease-out 0.1s both;
+            z-index: 1;
+        }
+        
+        /* Glass shimmer effect */
+        .balance-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 8s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        .balance-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 13px; 
+            font-weight: 500; 
+            color: rgba(255,255,255,0.75); 
+            margin-bottom: 10px; 
+        }
+        
+        .eye-btn { 
+            background: rgba(255,255,255,0.15); 
+            border: none; 
+            cursor: pointer; 
+            padding: 6px; 
+            border-radius: 8px;
+            color: rgba(255,255,255,0.85); 
+            display: flex; 
+            align-items: center; 
+            transition: all 0.2s ease; 
+            backdrop-filter: blur(10px);
+        }
+        
+        .eye-btn:hover { 
+            color: white; 
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+        
+        .eye-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .balance-amount { 
+            font-size: 34px; 
+            font-weight: 700; 
+            margin-bottom: 8px; 
+            letter-spacing: -0.5px; 
+            min-height: 44px; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .balance-change { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #34d399; 
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(52, 211, 153, 0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .balance-chart { 
+            position: absolute; 
+            right: 14px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            width: 155px; 
+            height: 78px; 
+            opacity: 0.9;
+        }
+        
+        /* Action Buttons */
+        .actions { 
+            display: flex; 
+            justify-content: space-between; 
+            gap: 12px; 
+            margin-bottom: 32px; 
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.7s ease-out 0.2s both;
+        }
+        
+        .action-btn { 
+            flex: 1; 
+            background: #ffffff; 
+            border: none; 
+            border-radius: 18px; 
+            padding: 20px 10px 18px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 10px; 
+            cursor: pointer; 
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(76, 110, 245, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .action-btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 24px rgba(76, 110, 245, 0.12), 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .action-btn:hover::before {
+            opacity: 1;
+        }
+        
+        .action-btn:active { 
+            transform: translateY(-1px) scale(0.97); 
+        }
+        
+        .action-icon { 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 14px; 
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #4c6ef5; 
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(76, 110, 245, 0.08);
+        }
+        
+        .action-btn:hover .action-icon {
+            background: linear-gradient(135deg, #4c6ef5 0%, #3b5bdb 100%);
+            color: white;
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(76, 110, 245, 0.3);
+        }
+        
+        .action-label { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #1e293b; 
+            transition: color 0.3s ease;
+        }
+        
+        .action-btn:hover .action-label {
+            color: #4c6ef5;
+        }
+
+        /* Market Rates Section */
+        .rates-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 18px; 
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.7s ease-out 0.3s both;
+        }
+        
+        .rates-header h2 { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: #0f172a; 
+            letter-spacing: -0.2px;
+        }
+        
+        .view-all { 
+            font-size: 13px; 
+            color: #4c6ef5; 
+            text-decoration: none; 
+            font-weight: 600; 
+            transition: all 0.2s ease;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        
+        .view-all:hover { 
+            color: #3b5bdb;
+            background: rgba(76, 110, 245, 0.08);
+        }
+
+        .rates-container {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.7s ease-out 0.35s both;
+        }
+        
+        .rate-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 14px 16px; 
+            background: #ffffff;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        
+        .rate-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            border-color: rgba(76, 110, 245, 0.15);
+        }
+        
+        .rate-item:active {
+            transform: translateX(2px) scale(0.99);
+        }
+        
+        .coin-icon { 
+            width: 44px; 
+            height: 44px; 
+            border-radius: 50%; 
+            margin-right: 14px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 700; 
+            font-size: 17px; 
+            color: white; 
+            flex-shrink: 0; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            transition: transform 0.3s ease;
+        }
+        
+        .rate-item:hover .coin-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+        
+        .coin-info { 
+            flex: 1; 
+            min-width: 0; 
+        }
+        
+        .coin-name { 
+            font-size: 15px; 
+            font-weight: 600; 
+            margin-bottom: 2px; 
+            color: #0f172a; 
+        }
+        
+        .coin-ticker { 
+            font-size: 12px; 
+            color: #94a3b8; 
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .mini-chart { 
+            width: 72px; 
+            height: 32px; 
+            margin-right: 14px; 
+            flex-shrink: 0; 
+        }
+        
+        .rate-value { 
+            text-align: right; 
+            flex-shrink: 0; 
+        }
+        
+        .rate-price { 
+            font-size: 15px; 
+            font-weight: 700; 
+            margin-bottom: 2px; 
+            color: #0f172a; 
+            letter-spacing: -0.2px;
+        }
+        
+        .rate-change { 
+            font-size: 12px; 
+            font-weight: 700; 
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        
+        .positive { 
+            color: #16a34a; 
+            background: rgba(22, 163, 74, 0.1);
+        }
+        
+        .negative {
+            color: #dc2626;
+            background: rgba(220, 38, 38, 0.1);
+        }
+        
+        .logout-btn { 
+            margin-top: 28px; 
+            width: 100%; 
+            padding: 14px; 
+            background: #ffffff; 
+            color: #ef4444; 
+            border: 1.5px solid #fee2e2; 
+            border-radius: 14px; 
+            font-weight: 700; 
+            font-size: 14px;
+            cursor: pointer; 
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.7s ease-out 0.4s both;
+            letter-spacing: 0.3px;
+        }
+        
+        .logout-btn:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+        }
+        
+        .logout-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Loading shimmer for greeting */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        #greeting {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="logo">
+                <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 2L4 9v14l12 7 12-7V9L16 2z" stroke="#4c6ef5" stroke-width="2.2" fill="none"/>
+                    <path d="M16 8v16M10 12l6-4 6 4" stroke="#4c6ef5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg> Solvra
+            </a>
+        </div>
+
+        <div class="welcome">
+            <h1>Dashboard</h1>
+            <p id="greeting">Connecting to backend... ⌛</p>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-header">
+                Total Balance
+                <button class="eye-btn" id="eyeBtn">
+                    <svg id="eyeOpen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <svg id="eyeClosed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="balance-amount" id="balanceAmount">$0.00</div>
+            <div class="balance-change" id="balanceChange">+0.00% (24h)</div>
+            <svg class="balance-chart" viewBox="0 0 155 78" preserveAspectRatio="none">
+                <defs><linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#34d399;stop-opacity:0.2" /><stop offset="100%" style="stop-color:#34d399;stop-opacity:0" /></linearGradient></defs>
+                <path d="M0,58 Q6,56 12,54 T24,50 T36,46 T48,42 T60,44 T72,38 T84,32 T96,28 T108,30 T120,24 T132,18 T144,14 T155,10" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="155" cy="10" r="4.5" fill="#34d399"/>
+                <path d="M0,58 Q6,56 12,54 T24,50 T36,46 T48,42 T60,44 T72,38 T84,32 T96,28 T108,30 T120,24 T132,18 T144,14 T155,10 L155,78 L0,78 Z" fill="url(#chartGrad)"/>
+            </svg>
+        </div>
+
+        <div class="actions">
+            <button class="action-btn">
+                <div class="action-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
+                <span class="action-label">Deposit</span>
+            </button>
+            <button class="action-btn">
+                <div class="action-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+                <span class="action-label">Withdraw</span>
+            </button>
+            <button class="action-btn">
+                <div class="action-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4-4"/><path d="M17 14H3l4 4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></div>
+                <span class="action-label">Rate</span>
+            </button>
+        </div>
+
+        <div class="rates-header">
+            <h2>Market Rates</h2>
+            <a href="#" class="view-all">View all</a>
+        </div>
+
+        <div class="rates-container" id="ratesList"></div>
+        <button class="logout-btn" onclick="handleLogout()">Logout Account</button>
+    </div>
+
+    <script>
+        // 1. SUPABASE CONFIG
+        const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
+        const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 2. SESSION GATEKEEPER & DATA FETCH
+        async function checkUser() {
+            const { data: { session } } = await _supabase.auth.getSession();
+
+            if (!session) {
+                window.location.href = 'signin.html';
+                return;
+            }
+
+            const user = session.user;
+            const name = user.user_metadata.full_name || user.email;
+            document.getElementById('greeting').textContent = `Welcome back, ${name.split(' ')[0]} 👋`;
+
+            // --- FETCH BALANCE FROM BACKEND ---
+            const { data: profile, error } = await _supabase
+                .from('profiles')
+                .select('balance')
+                .eq('id', user.id)
+                .single();
+
+            let realBalance = 0; // default if no row exists yet
+            if (profile) {
+                realBalance = profile.balance;
+            }
+
+            // Pass the backend balance to the UI renderer
+            renderDashboard(realBalance);
+        }
+
+        async function handleLogout() {
+            await _supabase.auth.signOut();
+            window.location.href = 'signin.html';
+        }
+
+        // 3. UI RENDERER
+        function renderDashboard(userBalance) {
+            const balanceAmountEl = document.getElementById('balanceAmount');
+            const balanceChangeEl = document.getElementById('balanceChange');
+            
+            const realBalanceText = '$' + userBalance.toLocaleString('en-US', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            });
+
+            balanceAmountEl.textContent = realBalanceText;
+            balanceChangeEl.textContent = `+2.59% (24h)`; // You can automate this too later
+
+            // Market Rates Data - Now with 10 coins total (5 original + 5 new)
+            const rates = [
+                { name: "US Dollar", ticker: "USD", icon: "$", price: 1.00, change: 0.02, color: "#22c55e", chartColor: "#22c55e" },
+                { name: "British Pound", ticker: "GBP", icon: "£", price: 1.30, change: 0.15, color: "#3b82f6", chartColor: "#3b82f6" },
+                { name: "Bitcoin", ticker: "BTC", icon: "₿", price: 67842.21, change: 2.59, color: "#f7931a", chartColor: "#22c55e" },
+                { name: "Ethereum", ticker: "ETH", icon: "◆", price: 3312.18, change: 1.45, color: "#6366f1", chartColor: "#22c55e" },
+                { name: "Tether", ticker: "USDT", icon: "₮", price: 1.00, change: 0.01, color: "#26a17b", chartColor: "#22c55e" },
+                // 5 New Crypto Coins
+                { name: "Solana", ticker: "SOL", icon: "S", price: 142.85, change: 4.32, color: "#14f195", chartColor: "#22c55e" },
+                { name: "Cardano", ticker: "ADA", icon: "A", price: 0.48, change: -1.24, color: "#0033ad", chartColor: "#dc2626" },
+                { name: "XRP", ticker: "XRP", icon: "X", price: 0.62, change: 3.18, color: "#23292f", chartColor: "#22c55e" },
+                { name: "Polkadot", ticker: "DOT", icon: "D", price: 7.24, change: -0.85, color: "#e6007a", chartColor: "#dc2626" },
+                { name: "Chainlink", ticker: "LINK", icon: "L", price: 14.67, change: 5.41, color: "#375bd2", chartColor: "#22c55e" }
+            ];
+
+            const ratesListEl = document.getElementById('ratesList');
+            ratesListEl.innerHTML = '';
+            
+            rates.forEach((rate, index) => {
+                const item = document.createElement('div');
+                item.className = 'rate-item';
+                item.style.animationDelay = `${0.4 + (index * 0.05)}s`;
+                item.style.animation = 'fadeInUp 0.5s ease-out both';
+                
+                const isPositive = rate.change >= 0;
+                const changeClass = isPositive ? 'positive' : 'negative';
+                const changePrefix = isPositive ? '+' : '';
+                const wavePath = `M0,20 Q9,${isPositive ? '18' : '22'} 18,${isPositive ? '19' : '21'} T36,${isPositive ? '17' : '23'} T54,${isPositive ? '19' : '21'}`;
+                
+                item.innerHTML = `
+                    <div class="coin-icon" style="background: ${rate.color};">${rate.icon}</div>
+                    <div class="coin-info">
+                        <div class="coin-name">${rate.name}</div>
+                        <div class="coin-ticker">${rate.ticker}</div>
+                    </div>
+                    <svg class="mini-chart" viewBox="0 0 72 32">
+                        <path d="${wavePath}" fill="none" stroke="${rate.chartColor}" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                    <div class="rate-value">
+                        <div class="rate-price">$${rate.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        <div class="rate-change ${changeClass}">${changePrefix}${rate.change}%</div>
+                    </div>`;
+                ratesListEl.appendChild(item);
+            });
+
+            // Eye Toggle Logic
+            document.getElementById('eyeBtn').onclick = function() {
+                const amount = document.getElementById('balanceAmount');
+                if (amount.textContent === '•••••••') {
+                    amount.textContent = realBalanceText;
+                    document.getElementById('eyeOpen').style.display = 'block';
+                    document.getElementById('eyeClosed').style.display = 'none';
+                } else {
+                    amount.textContent = '•••••••';
+                    document.getElementById('eyeOpen').style.display = 'none';
+                    document.getElementById('eyeClosed').style.display = 'block';
+                }
+            };
+        }
+
+        checkUser();
+    </script>
+</body>
+</html>
