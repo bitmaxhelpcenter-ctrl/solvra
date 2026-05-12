@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solvra — Withdraw Funds</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F8FAFC;
+            --surface: #FFFFFF;
+            --primary: #1A2FCC;
+            --primary-dark: #0D1B4B;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border: #F1F5F9;
+            --red: #EF4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; -webkit-font-smoothing: antialiased; }
+
+        .container { width: 100%; max-width: 440px; padding: 24px 20px 60px; }
+
+        /* ── HEADER ── */
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+        .back-btn { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 14px; }
+        .logo { font-weight: 800; font-size: 20px; color: var(--primary-dark); text-decoration: none; }
+
+        h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+        .subtitle { color: var(--text-muted); font-size: 15px; margin-bottom: 30px; }
+
+        /* ── BALANCE PREVIEW ── */
+        .balance-preview { background: var(--primary-dark); border-radius: 24px; padding: 20px 24px; color: white; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
+        .balance-preview span { font-size: 13px; opacity: 0.7; font-weight: 500; }
+        .balance-preview h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+
+        /* ── METHOD SELECTOR ── */
+        .tabs { display: flex; background: #E2E8F0; padding: 4px; border-radius: 14px; margin-bottom: 30px; }
+        .tab-btn { flex: 1; border: none; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; background: transparent; color: var(--text-muted); }
+        .tab-btn.active { background: var(--surface); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        /* ── FORM ── */
+        .card { background: var(--surface); border-radius: 28px; padding: 28px; border: 1.5px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+        .field { margin-bottom: 20px; }
+        .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text-main); }
+        .input-group { position: relative; }
+        .input-group input, .input-group select { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--border); font-family: inherit; font-size: 15px; font-weight: 500; outline: none; transition: border-color 0.2s; }
+        .input-group input:focus { border-color: var(--primary); }
+        .input-group .currency { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--text-muted); font-size: 14px; }
+
+        .hidden { display: none; }
+
+        /* ── BUTTONS ── */
+        .btn-submit { width: 100%; padding: 18px; border: none; border-radius: 18px; background: var(--primary); color: white; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:disabled { background: #CBD5E1; cursor: not-allowed; }
+
+        /* ── ALERT ── */
+        .alert { padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 20px; display: none; text-align: center; }
+        .alert.error { background: #FEE2E2; color: #DC2626; border: 1px solid #FCA5A5; }
+        .alert.success { background: #DCFCE7; color: #15803D; border: 1px solid #86EFAC; }
+
+        .trust-info { text-align: center; margin-top: 25px; font-size: 12px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="dashboard.html" class="back-btn">← Back</a>
+            <span class="logo">Solvra</span>
+        </div>
+
+        <h1>Withdraw</h1>
+        <p class="subtitle">Securely transfer funds to your external account.</p>
+
+        <div class="balance-preview">
+            <div><span>Available Balance</span><h2 id="displayBalance">$0.00</h2></div>
+            <div style="text-align: right;">💳</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchMethod('bank')">EU Banking</button>
+            <button class="tab-btn" onclick="switchMethod('crypto')">Crypto</button>
+        </div>
+
+        <div id="statusAlert" class="alert"></div>
+
+        <div class="card">
+            <div class="field">
+                <label>Amount to Withdraw</label>
+                <div class="input-group">
+                    <input type="number" id="amount" placeholder="0.00" step="0.01">
+                    <span class="currency">USD</span>
+                </div>
+            </div>
+
+            <div id="bankForm">
+                <div class="field"><label>Beneficiary Name</label><div class="input-group"><input type="text" id="bankName" placeholder="Full account name"></div></div>
+                <div class="field"><label>IBAN Number</label><div class="input-group"><input type="text" id="iban" placeholder="DE00 0000 0000..."></div></div>
+                <div class="field"><label>SWIFT / BIC Code</label><div class="input-group"><input type="text" id="swift" placeholder="ABCDEFGHXXX"></div></div>
+            </div>
+
+            <div id="cryptoForm" class="hidden">
+                <div class="field">
+                    <label>Network</label>
+                    <div class="input-group">
+                        <select id="network">
+                            <option value="btc">Bitcoin (BTC)</option>
+                            <option value="erc20">Ethereum (ERC20)</option>
+                            <option value="trc20">Tether (TRC20)</option>
+                            <option value="bep20">Binance Smart Chain (BEP20)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field"><label>Wallet Address</label><div class="input-group"><input type="text" id="wallet" placeholder="Paste your address here"></div></div>
+            </div>
+
+            <button class="btn-submit" id="withdrawBtn" onclick="handleWithdraw()">Process Withdrawal</button>
+        </div>
+
+        <div class="trust-info">
+            <span>🔒 SSL Encrypted</span>
+            <span>🛡️ SEPA Verified</span>
+            <span>✅ Instant Processing</span>
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
+        const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentBalance = 0;
+        let activeMethod = 'bank';
+
+        async function init() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) { window.location.href = 'signin.html'; return; }
+
+            const { data: profile } = await _supabase.from('profiles').select('balance').eq('id', session.user.id).single();
+            if (profile) {
+                currentBalance = profile.balance;
+                document.getElementById('displayBalance').textContent = '$' + currentBalance.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            }
+        }
+
+        function switchMethod(method) {
+            activeMethod = method;
+            const btns = document.querySelectorAll('.tab-btn');
+            btns[0].classList.toggle('active', method === 'bank');
+            btns[1].classList.toggle('active', method === 'crypto');
+            
+            document.getElementById('bankForm').classList.toggle('hidden', method !== 'bank');
+            document.getElementById('cryptoForm').classList.toggle('hidden', method !== 'crypto');
+        }
+
+        function showAlert(msg, type) {
+            const el = document.getElementById('statusAlert');
+            el.textContent = msg;
+            el.className = `alert ${type}`;
+            el.style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        async function handleWithdraw() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const btn = document.getElementById('withdrawBtn');
+
+            if (!amount || amount <= 0) { showAlert('Please enter a valid amount.', 'error'); return; }
+            if (amount > currentBalance) { showAlert('Insufficient funds.', 'error'); return; }
+
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            // Simulate withdrawal processing
+            setTimeout(() => {
+                showAlert('Withdrawal request submitted successfully! Funds will arrive in 1-3 business days.', 'success');
+                btn.textContent = 'Submitted';
+                // You can add logic here to deduct balance in Supabase if desired
+            }, 2000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
