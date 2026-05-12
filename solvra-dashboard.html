@@ -491,6 +491,42 @@
         }
         loadFromBackend();
         */
-    </script>
+    </script> <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // 2. Initialize connection
+  const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
+  const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
+  const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+  // 3. The Gatekeeper Logic
+  async function checkUser() {
+    const { data: { user }, error } = await _supabase.auth.getUser();
+
+    if (error || !user) {
+      // No one is logged in! Send them back to sign in.
+      window.location.href = 'signin.html';
+    } else {
+      // Someone is here! Let's show their email or name.
+      console.log("Welcome,", user.email);
+      
+      // If you have an element with ID "userName", this will fill it:
+      const userDisplay = document.getElementById('userName');
+      if (userDisplay) {
+        userDisplay.textContent = user.user_metadata.full_name || user.email;
+      }
+    }
+  }
+
+  // 4. Logout Function (Add this to your "Logout" button)
+  async function handleLogout() {
+    await _supabase.auth.signOut();
+    window.location.href = 'signin.html';
+  }
+
+  // Run the check as soon as the page loads
+  checkUser();
+</script>
+    
 </body>
 </html>
