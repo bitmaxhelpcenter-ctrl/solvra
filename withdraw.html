@@ -672,8 +672,8 @@
             <!-- Summary -->
             <div class="summary-box">
                 <div class="summary-row">
-                    <span>Network Fee</span>
-                    <span id="networkFee">0.0005 BTC</span>
+                    <span>Estimated Arrival</span>
+                    <span>5-30 minutes</span>
                 </div>
                 <div class="summary-row total">
                     <span>You Will Receive</span>
@@ -939,7 +939,6 @@
             const usdValue = amount * selectedCoin.price;
 
             document.getElementById('usdEquivalent').textContent = '≈ $' + usdValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            document.getElementById('networkFee').textContent = fee + ' ' + selectedCoin.ticker;
             document.getElementById('receiveAmount').textContent = receive.toFixed(8) + ' ' + selectedCoin.ticker;
 
             checkFormValidity();
