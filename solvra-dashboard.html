@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solvra Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue:        #1B3FEE;
+            --blue-mid:    #3b5bdb;
+            --blue-light:  #4c6ef5;
+            --blue-glow:   rgba(76,110,245,0.18);
+            --green:       #22c55e;
+            --red:         #ef4444;
+            --bg:          #eef1fb;
+            --surface:     #ffffff;
+            --surface2:    #f7f9ff;
+            --border:      #e4e9ff;
+            --border2:     #c7d2fe;
+            --text:        #0b1437;
+            --text2:       #4a5578;
+            --text3:       #8a94b8;
+            --radius-xl:   24px;
+            --radius-lg:   18px;
+            --radius-md:   12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated mesh background ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 65% 50% at 15% 0%, rgba(76,110,245,0.13) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 85% 85%, rgba(99,102,241,0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 45% 35% at 55% 40%, rgba(27,63,238,0.06) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Floating blur orbs ── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(70px);
+            animation: orbDrift 14s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 260px; height: 260px;
+            background: radial-gradient(circle, rgba(76,110,245,0.18), transparent 70%);
+            top: -80px; left: -80px;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(99,102,241,0.14), transparent 70%);
+            bottom: 5%; right: -60px;
+            animation-delay: -6s;
+        }
+        @keyframes orbDrift {
+            0%, 100% { transform: translateY(0) scale(1); }
+            40%       { transform: translateY(-20px) scale(1.05); }
+            70%       { transform: translateY(14px) scale(0.97); }
+        }
+
+        /* ── Container ── */
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: transparent;
+            min-height: 100vh;
+            padding: 22px 18px 52px;
+            position: relative;
+            overflow-x: hidden;
+            z-index: 1;
+        }
+
+        /* ── Header ── */
+        .header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+            animation: fadeInDown 0.5s ease-out both;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text);
+            text-decoration: none;
+            letter-spacing: -0.3px;
+        }
+        .logo-icon {
+            width: 30px; height: 30px;
+            filter: drop-shadow(0 3px 6px rgba(76,110,245,0.3));
+        }
+
+        /* Live indicator next to logo */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .live-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.28);
+            border-radius: 20px;
+            padding: 5px 11px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #15803d;
+        }
+        .live-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: livePulse 1.8s ease-in-out infinite;
+        }
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
+            50%       { opacity: 0.7; box-shadow: 0 0 0 5px rgba(34,197,94,0); }
+        }
+
+        /* ── Welcome ── */
+        .welcome {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.55s ease-out 0.05s both;
+        }
+        .welcome h1 {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 4px;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .welcome p {
+            font-size: 14px;
+            color: var(--text3);
+            font-weight: 500;
+        }
+
+        /* ── Balance Card ── */
+        .balance-card {
+            background: linear-gradient(135deg, #1B3FEE 0%, #3b5bdb 45%, #1e3aa9 100%);
+            border-radius: var(--radius-xl);
+            padding: 26px 22px 22px;
+            margin-bottom: 22px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 24px 48px rgba(27,63,238,0.32),
+                0 0 0 1px rgba(255,255,255,0.12) inset,
+                inset 0 1px 0 rgba(255,255,255,0.25);
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+            z-index: 1;
+        }
+
+        /* Dot-grid overlay */
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+        }
+
+        /* Shimmer sweep */
+        .balance-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 55%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
+            animation: cardShimmer 7s ease-in-out infinite;
+        }
+        @keyframes cardShimmer {
+            0%   { left: -55%; }
+            18%  { left: 110%; }
+            100% { left: 110%; }
+        }
+
+        /* Top-right glow orb on card */
+        .card-orb {
+            position: absolute;
+            top: -30px; right: -30px;
+            width: 130px; height: 130px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(147,197,253,0.22) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .balance-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .eye-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            color: rgba(255,255,255,0.85);
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            margin-left: 2px;
+        }
+        .eye-btn:hover {
+            color: white;
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+        .eye-btn:active { transform: scale(0.95); }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            min-height: 46px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-change {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #86efac;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(34,197,94,0.18);
+            border: 1px solid rgba(34,197,94,0.25);
+            padding: 5px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .balance-chart {
+            width: 140px;
+            height: 60px;
+            opacity: 0.9;
+        }
+
+        /* ── Quick Stats Row ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.55s ease-out 0.18s both;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 12px rgba(27,63,238,0.06);
+        }
+        .stat-icon {
+            width: 38px; height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .stat-icon.green { background: linear-gradient(135deg,#E6F9F0,#B9F6CA); }
+        .stat-icon.blue  { background: linear-gradient(135deg,#EEF0FF,#DDE2FF); }
+        .stat-label { font-size: 11px; font-weight: 600; color: var(--text3); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-val   { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+
+        /* ── Action Buttons ── */
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.55s ease-out 0.22s both;
+        }
+
+        .action-btn {
+            flex: 1;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 18px 8px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 10px rgba(27,63,238,0.06);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(76,110,245,0.06), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .action-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(76,110,245,0.16);
+            border-color: var(--border2);
+        }
+        .action-btn:hover::before { opacity: 1; }
+        .action-btn:active { transform: translateY(-1px) scale(0.97); }
+
+        .action-icon {
+            width: 50px; height: 50px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue-light);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Per-button icon colours */
+        .action-btn:nth-child(1) .action-icon { background: linear-gradient(135deg,#E6F9F0,#B9F6CA); color: #15803d; }
+        .action-btn:nth-child(2) .action-icon { background: linear-gradient(135deg,#FFF3E0,#FFE0B2); color: #c2410c; }
+        .action-btn:nth-child(3) .action-icon { background: linear-gradient(135deg,#EEF0FF,#DDE2FF); color: var(--blue-light); }
+
+        .action-btn:hover .action-icon {
+            transform: scale(1.10);
+            box-shadow: 0 6px 16px rgba(76,110,245,0.22);
+        }
+        .action-btn:nth-child(1):hover .action-icon { background: linear-gradient(135deg,#22c55e,#16a34a); color: white; }
+        .action-btn:nth-child(2):hover .action-icon { background: linear-gradient(135deg,#f97316,#ea580c); color: white; }
+        .action-btn:nth-child(3):hover .action-icon { background: linear-gradient(135deg,var(--blue-light),var(--blue-mid)); color: white; }
+
+        .action-label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text2);
+            transition: color 0.3s ease;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.1px;
+        }
+        .action-btn:hover .action-label { color: var(--blue-light); }
+
+        /* ── Rates Header ── */
+        .rates-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.55s ease-out 0.28s both;
+        }
+        .rates-header h2 {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+        .view-all {
+            font-size: 12.5px;
+            color: var(--blue-light);
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: rgba(76,110,245,0.07);
+            border: 1px solid rgba(76,110,245,0.15);
+        }
+        .view-all:hover {
+            background: rgba(76,110,245,0.14);
+            color: var(--blue-mid);
+        }
+
+        /* ── Rates Container & Items ── */
+        .rates-container {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.55s ease-out 0.32s both;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rate-item {
+            display: flex;
+            align-items: center;
+            padding: 13px 14px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 10px rgba(27,63,238,0.05);
+            cursor: pointer;
+            border: 1.5px solid transparent;
+        }
+        .rate-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(27,63,238,0.10);
+            border-color: var(--border);
+            background: var(--surface2);
+        }
+        .rate-item:active { transform: translateX(2px) scale(0.99); }
+
+        .coin-icon {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            margin-right: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 17px;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.14);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        .coin-icon::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.3);
+        }
+        .rate-item:hover .coin-icon { transform: scale(1.10) rotate(-5deg); }
+
+        .coin-info { flex: 1; min-width: 0; }
+        .coin-name {
+            font-size: 14.5px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: var(--text);
+            letter-spacing: -0.1px;
+        }
+        .coin-ticker {
+            font-size: 11.5px;
+            color: var(--text3);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .mini-chart {
+            width: 70px; height: 32px;
+            margin-right: 13px;
+            flex-shrink: 0;
+        }
+
+        .rate-value { text-align: right; flex-shrink: 0; }
+        .rate-price {
+            font-size: 14.5px;
+            font-weight: 800;
+            margin-bottom: 3px;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+        .rate-change {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        .positive { color: #16a34a; background: rgba(22,163,74,0.10); }
+        .negative { color: var(--red); background: rgba(239,68,68,0.10); }
+
+        /* ── Logout ── */
+        .logout-btn {
+            margin-top: 24px;
+            width: 100%;
+            padding: 14px;
+            background: var(--surface);
+            color: var(--red);
+            border: 1.5px solid #fee2e2;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.55s ease-out 0.38s both;
+            letter-spacing: -0.1px;
+            font-family: 'Inter', inherit;
+        }
+        .logout-btn:hover {
+            background: #fff1f2;
+            border-color: #fecaca;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239,68,68,0.12);
+        }
+        .logout-btn:active { transform: translateY(0) scale(0.98); }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+        /* ── Animations ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Compat with original pulse keyframe ── */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.5; }
+        }
+        #greeting { transition: all 0.3s ease; }
+    </style>
+</head>
+<body>
+    <!-- Decorative floating orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="/" class="logo">
+                <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 2L4 9v14l12 7 12-7V9L16 2z" stroke="#4c6ef5" stroke-width="2.2" fill="none"/>
+                    <path d="M16 8v16M10 12l6-4 6 4" stroke="#4c6ef5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Solvra
+            </a>
+            <div class="header-right">
+                <div class="live-pill">
+                    <div class="live-dot"></div>
+                    Live
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome -->
+        <div class="welcome">
+            <h1>Dashboard</h1>
+            <p id="greeting">Connecting to backend... ⌛</p>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="card-orb"></div>
+            <div class="balance-header">
+                Total Balance
+                <button class="eye-btn" id="eyeBtn">
+                    <svg id="eyeOpen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <svg id="eyeClosed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="balance-amount" id="balanceAmount">$0.00</div>
+            <div class="balance-footer">
+                <div class="balance-change" id="balanceChange">+0.00% (24h)</div>
+                <svg class="balance-chart" viewBox="0 0 155 78" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#34d399;stop-opacity:0.25"/>
+                            <stop offset="100%" style="stop-color:#34d399;stop-opacity:0"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,58 Q6,56 12,54 T24,50 T36,46 T48,42 T60,44 T72,38 T84,32 T96,28 T108,30 T120,24 T132,18 T144,14 T155,10" fill="none" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="155" cy="10" r="5" fill="#34d399"/>
+                    <circle cx="155" cy="10" r="9" fill="rgba(52,211,153,0.2)"/>
+                    <path d="M0,58 Q6,56 12,54 T24,50 T36,46 T48,42 T60,44 T72,38 T84,32 T96,28 T108,30 T120,24 T132,18 T144,14 T155,10 L155,78 L0,78 Z" fill="url(#chartGrad)"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Quick Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon green">📈</div>
+                <div>
+                    <div class="stat-label">Portfolio</div>
+                    <div class="stat-val">+12.4%</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">⚡</div>
+                <div>
+                    <div class="stat-label">Transfer Speed</div>
+                    <div class="stat-val">&lt; 1 sec</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <a href="deposit.html" class="action-btn">
+                <div class="action-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                </div>
+                <span class="action-label">Deposit</span>
+            </a>
+            <a href="withdraw.html" class="action-btn">
+                <div class="action-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                </div>
+                <span class="action-label">Withdraw</span>
+            </a>
+            <a href="rate.html" class="action-btn">
+                <div class="action-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4-4"/><path d="M17 14H3l4 4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>
+                </div>
+                <span class="action-label">Gas wallet</span>
+            </a>
+        </div>
+
+        <!-- Market Rates -->
+        <div class="rates-header">
+            <h2>Market Rates</h2>
+            <a href="#" class="view-all">View all</a>
+        </div>
+
+        <div class="rates-container" id="ratesList"></div>
+
+        <button class="logout-btn" onclick="handleLogout()">Logout Account</button>
+    </div>
+
+    <script>
+        // 1. SUPABASE CONFIG
+        const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
+        const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 2. SESSION GATEKEEPER & DATA FETCH
+        async function checkUser() {
+            const { data: { session } } = await _supabase.auth.getSession();
+
+            if (!session) {
+                window.location.href = 'signin.html';
+                return;
+            }
+
+            const user = session.user;
+            const name = user.user_metadata.full_name || user.email;
+            document.getElementById('greeting').textContent = `Welcome back, ${name.split(' ')[0]} 👋`;
+
+            // --- FETCH BALANCE FROM BACKEND ---
+            const { data: profile, error } = await _supabase
+                .from('profiles')
+                .select('balance')
+                .eq('id', user.id)
+                .single();
+
+            let realBalance = 0; // default if no row exists yet
+            if (profile) {
+                realBalance = profile.balance;
+            }
+
+            // Pass the backend balance to the UI renderer
+            renderDashboard(realBalance);
+        }
+
+        async function handleLogout() {
+            await _supabase.auth.signOut();
+            window.location.href = 'signin.html';
+        }
+
+        // 3. UI RENDERER
+        function renderDashboard(userBalance) {
+            const balanceAmountEl = document.getElementById('balanceAmount');
+            const balanceChangeEl = document.getElementById('balanceChange');
+            
+            const realBalanceText = '$' + userBalance.toLocaleString('en-US', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            });
+
+            balanceAmountEl.textContent = realBalanceText;
+            balanceChangeEl.textContent = `+2.59% (24h)`; // You can automate this too later
+
+            // Market Rates Data - Now with 10 coins total (5 original + 5 new)
+            const rates = [
+                { name: "US Dollar", ticker: "USD", icon: "$", price: 1.00, change: 0.02, color: "#22c55e", chartColor: "#22c55e" },
+                { name: "British Pound", ticker: "GBP", icon: "£", price: 1.30, change: 0.15, color: "#3b82f6", chartColor: "#3b82f6" },
+                { name: "Bitcoin", ticker: "BTC", icon: "₿", price: 67842.21, change: 2.59, color: "#f7931a", chartColor: "#22c55e" },
+                { name: "Ethereum", ticker: "ETH", icon: "◆", price: 3312.18, change: 1.45, color: "#6366f1", chartColor: "#22c55e" },
+                { name: "Tether", ticker: "USDT", icon: "₮", price: 1.00, change: 0.01, color: "#26a17b", chartColor: "#22c55e" },
+                // 5 New Crypto Coins
+                { name: "Solana", ticker: "SOL", icon: "S", price: 142.85, change: 4.32, color: "#14f195", chartColor: "#22c55e" },
+                { name: "Cardano", ticker: "ADA", icon: "A", price: 0.48, change: -1.24, color: "#0033ad", chartColor: "#dc2626" },
+                { name: "XRP", ticker: "XRP", icon: "X", price: 0.62, change: 3.18, color: "#23292f", chartColor: "#22c55e" },
+                { name: "Polkadot", ticker: "DOT", icon: "D", price: 7.24, change: -0.85, color: "#e6007a", chartColor: "#dc2626" },
+                { name: "Chainlink", ticker: "LINK", icon: "L", price: 14.67, change: 5.41, color: "#375bd2", chartColor: "#22c55e" }
+            ];
+
+            const ratesListEl = document.getElementById('ratesList');
+            ratesListEl.innerHTML = '';
+            
+            rates.forEach((rate, index) => {
+                const item = document.createElement('div');
+                item.className = 'rate-item';
+                item.style.animationDelay = `${0.35 + (index * 0.05)}s`;
+                item.style.animation = 'fadeInUp 0.5s ease-out both';
+                
+                const isPositive = rate.change >= 0;
+                const changeClass = isPositive ? 'positive' : 'negative';
+                const changePrefix = isPositive ? '+' : '';
+                const wavePath = `M0,20 Q9,${isPositive ? '18' : '22'} 18,${isPositive ? '19' : '21'} T36,${isPositive ? '17' : '23'} T54,${isPositive ? '19' : '21'}`;
+                
+                item.innerHTML = `
+                    <div class="coin-icon" style="background: ${rate.color};">${rate.icon}</div>
+                    <div class="coin-info">
+                        <div class="coin-name">${rate.name}</div>
+                        <div class="coin-ticker">${rate.ticker}</div>
+                    </div>
+                    <svg class="mini-chart" viewBox="0 0 72 32">
+                        <path d="${wavePath}" fill="none" stroke="${rate.chartColor}" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                    <div class="rate-value">
+                        <div class="rate-price">$${rate.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        <div class="rate-change ${changeClass}">${changePrefix}${rate.change}%</div>
+                    </div>`;
+                ratesListEl.appendChild(item);
+            });
+
+            // Eye Toggle Logic
+            document.getElementById('eyeBtn').onclick = function() {
+                const amount = document.getElementById('balanceAmount');
+                if (amount.textContent === '•••••••') {
+                    amount.textContent = realBalanceText;
+                    document.getElementById('eyeOpen').style.display = 'block';
+                    document.getElementById('eyeClosed').style.display = 'none';
+                } else {
+                    amount.textContent = '•••••••';
+                    document.getElementById('eyeOpen').style.display = 'none';
+                    document.getElementById('eyeClosed').style.display = 'block';
+                }
+            };
+        }
+
+        checkUser();
+    </script>
+</body>
+</html>
