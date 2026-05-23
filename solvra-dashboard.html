@@ -7,39 +7,40 @@
     <title>Solvra Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --blue:        #1B3FEE;
-            --blue-mid:    #3b5bdb;
-            --blue-light:  #4c6ef5;
-            --blue-glow:   rgba(76,110,245,0.18);
-            --green:       #22c55e;
-            --red:         #ef4444;
-            --bg:          #eef1fb;
-            --surface:     #ffffff;
-            --surface2:    #f7f9ff;
-            --border:      #e4e9ff;
-            --border2:     #c7d2fe;
-            --text:        #0b1437;
-            --text2:       #4a5578;
-            --text3:       #8a94b8;
-            --radius-xl:   24px;
-            --radius-lg:   18px;
-            --radius-md:   12px;
+            --blue:       #1B3FEE;
+            --blue-mid:   #3b5bdb;
+            --blue-light: #4c6ef5;
+            --green:      #22c55e;
+            --green-dark: #16a34a;
+            --red:        #ef4444;
+            --red-dark:   #dc2626;
+            --amber:      #f59e0b;
+            --bg:         #ecf0fc;
+            --surface:    #ffffff;
+            --surface2:   #f5f7ff;
+            --border:     #e2e8ff;
+            --border2:    #c7d2fe;
+            --text:       #0b1437;
+            --text2:      #3d4d7a;
+            --text3:      #8896c0;
+            --rx:         22px;
+            --rl:         16px;
+            --rm:         11px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             -webkit-font-smoothing: antialiased;
-            position: relative;
             overflow-x: hidden;
         }
 
@@ -49,562 +50,213 @@
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(ellipse 65% 50% at 15% 0%, rgba(76,110,245,0.13) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 40% at 85% 85%, rgba(99,102,241,0.10) 0%, transparent 60%),
-                radial-gradient(ellipse 45% 35% at 55% 40%, rgba(27,63,238,0.06) 0%, transparent 55%);
+                radial-gradient(ellipse 70% 55% at 10% -5%,  rgba(76,110,245,0.14) 0%, transparent 60%),
+                radial-gradient(ellipse 55% 45% at 90% 90%,  rgba(99,102,241,0.11) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 35% at 50% 45%,  rgba(27,63,238,0.06)  0%, transparent 55%);
             pointer-events: none;
             z-index: 0;
         }
 
-        /* ── Floating blur orbs ── */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            filter: blur(70px);
-            animation: orbDrift 14s ease-in-out infinite;
-        }
-        .orb-1 {
-            width: 260px; height: 260px;
-            background: radial-gradient(circle, rgba(76,110,245,0.18), transparent 70%);
-            top: -80px; left: -80px;
-            animation-delay: 0s;
-        }
-        .orb-2 {
-            width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(99,102,241,0.14), transparent 70%);
-            bottom: 5%; right: -60px;
-            animation-delay: -6s;
-        }
-        @keyframes orbDrift {
-            0%, 100% { transform: translateY(0) scale(1); }
-            40%       { transform: translateY(-20px) scale(1.05); }
-            70%       { transform: translateY(14px) scale(0.97); }
-        }
+        /* Floating orbs */
+        .orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(72px); }
+        .orb-1 { width:280px;height:280px; background:radial-gradient(circle,rgba(76,110,245,0.17),transparent 70%); top:-90px;left:-90px; animation:orbDrift 15s ease-in-out infinite; }
+        .orb-2 { width:220px;height:220px; background:radial-gradient(circle,rgba(99,102,241,0.13),transparent 70%); bottom:3%;right:-60px; animation:orbDrift 15s ease-in-out infinite; animation-delay:-7s; }
+        @keyframes orbDrift { 0%,100%{transform:translateY(0)scale(1)} 40%{transform:translateY(-22px)scale(1.05)} 70%{transform:translateY(15px)scale(0.97)} }
 
         /* ── Container ── */
-        .container {
-            width: 100%;
-            max-width: 420px;
-            background: transparent;
-            min-height: 100vh;
-            padding: 22px 18px 52px;
-            position: relative;
-            overflow-x: hidden;
-            z-index: 1;
-        }
+        .container { width:100%; max-width:420px; min-height:100vh; padding:20px 16px 56px; position:relative; overflow-x:hidden; z-index:1; }
 
         /* ── Header ── */
         .header {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            z-index: 1;
-            animation: fadeInDown 0.5s ease-out both;
+            display:flex; align-items:center; justify-content:space-between;
+            margin-bottom:18px; z-index:10; position:relative;
+            animation:fadeDown .5s ease-out both;
         }
+        .logo { display:inline-flex; align-items:center; gap:9px; font-size:17px; font-weight:800; color:var(--text); text-decoration:none; letter-spacing:-.3px; }
+        .logo-icon { width:30px;height:30px; filter:drop-shadow(0 3px 7px rgba(76,110,245,.35)); }
 
-        .logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            font-size: 17px;
-            font-weight: 800;
-            color: var(--text);
-            text-decoration: none;
-            letter-spacing: -0.3px;
-        }
-        .logo-icon {
-            width: 30px; height: 30px;
-            filter: drop-shadow(0 3px 6px rgba(76,110,245,0.3));
-        }
-
-        /* Live indicator next to logo */
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .live-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(34,197,94,0.12);
-            border: 1px solid rgba(34,197,94,0.28);
-            border-radius: 20px;
-            padding: 5px 11px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #15803d;
-        }
-        .live-dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            background: var(--green);
-            animation: livePulse 1.8s ease-in-out infinite;
-        }
-        @keyframes livePulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
-            50%       { opacity: 0.7; box-shadow: 0 0 0 5px rgba(34,197,94,0); }
-        }
+        .header-right { display:flex; align-items:center; gap:8px; }
+        .live-pill { display:inline-flex; align-items:center; gap:6px; background:rgba(34,197,94,.11); border:1px solid rgba(34,197,94,.28); border-radius:20px; padding:5px 11px; font-size:11px; font-weight:700; color:#15803d; }
+        .live-dot { width:7px;height:7px; border-radius:50%; background:var(--green); animation:livePulse 1.8s ease-in-out infinite; }
+        @keyframes livePulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,197,94,.5)} 50%{opacity:.7;box-shadow:0 0 0 5px rgba(34,197,94,0)} }
 
         /* ── Welcome ── */
-        .welcome {
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.55s ease-out 0.05s both;
-        }
-        .welcome h1 {
-            font-size: 26px;
-            font-weight: 900;
-            margin-bottom: 4px;
-            color: var(--text);
-            letter-spacing: -0.5px;
-        }
-        .welcome p {
-            font-size: 14px;
-            color: var(--text3);
-            font-weight: 500;
-        }
+        .welcome { margin-bottom:18px; z-index:1; position:relative; animation:fadeUp .5s .05s both; }
+        .welcome h1 { font-size:24px; font-weight:900; color:var(--text); letter-spacing:-.5px; margin-bottom:3px; }
+        .welcome p  { font-size:13.5px; color:var(--text3); font-weight:500; }
 
         /* ── Balance Card ── */
         .balance-card {
-            background: linear-gradient(135deg, #1B3FEE 0%, #3b5bdb 45%, #1e3aa9 100%);
-            border-radius: var(--radius-xl);
-            padding: 26px 22px 22px;
-            margin-bottom: 22px;
+            background: linear-gradient(135deg, #1B3FEE 0%, #3b5bdb 50%, #1a38b0 100%);
+            border-radius: var(--rx);
+            padding: 22px 20px 18px;
+            margin-bottom: 14px;
             color: white;
             position: relative;
             overflow: hidden;
-            box-shadow:
-                0 24px 48px rgba(27,63,238,0.32),
-                0 0 0 1px rgba(255,255,255,0.12) inset,
-                inset 0 1px 0 rgba(255,255,255,0.25);
-            animation: fadeInUp 0.6s ease-out 0.1s both;
-            z-index: 1;
+            box-shadow: 0 22px 50px rgba(27,63,238,.35), 0 0 0 1px rgba(255,255,255,.12) inset, inset 0 1px 0 rgba(255,255,255,.22);
+            animation: fadeUp .6s .1s both;
+            z-index:1;
         }
-
-        /* Dot-grid overlay */
+        /* Dot-grid texture */
         .balance-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
-            background-size: 20px 20px;
-            pointer-events: none;
+            content:''; position:absolute; inset:0;
+            background-image: radial-gradient(circle, rgba(255,255,255,.11) 1px, transparent 1px);
+            background-size: 18px 18px;
+            pointer-events:none;
         }
-
         /* Shimmer sweep */
         .balance-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 55%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
-            animation: cardShimmer 7s ease-in-out infinite;
+            content:''; position:absolute; top:0; left:-60%; width:50%; height:100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.09), transparent);
+            animation: sweep 8s ease-in-out infinite;
         }
-        @keyframes cardShimmer {
-            0%   { left: -55%; }
-            18%  { left: 110%; }
-            100% { left: 110%; }
-        }
+        @keyframes sweep { 0%{left:-60%} 20%{left:110%} 100%{left:110%} }
 
-        /* Top-right glow orb on card */
-        .card-orb {
-            position: absolute;
-            top: -30px; right: -30px;
-            width: 130px; height: 130px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(147,197,253,0.22) 0%, transparent 70%);
-            pointer-events: none;
-        }
+        .card-glow { position:absolute; top:-40px;right:-40px; width:160px;height:160px; border-radius:50%; background:radial-gradient(circle,rgba(147,197,253,.2) 0%,transparent 70%); pointer-events:none; }
 
-        .balance-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: rgba(255,255,255,0.65);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
-            position: relative;
-            z-index: 1;
-        }
+        .balance-header { display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:rgba(255,255,255,.6); margin-bottom:8px; text-transform:uppercase; letter-spacing:.8px; position:relative; z-index:1; }
+        .eye-btn { background:rgba(255,255,255,.15); border:none; cursor:pointer; padding:6px; border-radius:8px; color:rgba(255,255,255,.85); display:flex; align-items:center; transition:all .2s ease; backdrop-filter:blur(10px); margin-left:2px; }
+        .eye-btn:hover { color:white; background:rgba(255,255,255,.25); transform:scale(1.05); }
+        .eye-btn:active { transform:scale(0.95); }
 
-        .eye-btn {
-            background: rgba(255,255,255,0.15);
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 8px;
-            color: rgba(255,255,255,0.85);
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-            margin-left: 2px;
-        }
-        .eye-btn:hover {
-            color: white;
-            background: rgba(255,255,255,0.25);
-            transform: scale(1.05);
-        }
-        .eye-btn:active { transform: scale(0.95); }
+        .balance-amount { font-size:38px; font-weight:900; letter-spacing:-1.5px; min-height:48px; text-shadow:0 2px 10px rgba(0,0,0,.15); transition:all .3s ease; position:relative; z-index:1; margin-bottom:14px; font-family:'JetBrains Mono','Inter',monospace; }
 
-        .balance-amount {
-            font-size: 36px;
-            font-weight: 900;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-            min-height: 46px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
+        .balance-meta { display:flex; align-items:flex-end; justify-content:space-between; position:relative; z-index:1; }
+        .balance-left {}
+        .balance-change { font-size:12px; font-weight:700; color:#86efac; display:inline-flex; align-items:center; gap:4px; background:rgba(34,197,94,.18); border:1px solid rgba(34,197,94,.25); padding:4px 11px; border-radius:20px; backdrop-filter:blur(10px); margin-bottom:6px; }
+        .balance-sub { font-size:11px; font-weight:500; color:rgba(255,255,255,.5); margin-top:2px; }
 
-        .balance-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            z-index: 1;
-        }
+        /* Real sparkline drawn by JS */
+        #balanceSparkline { width:140px; height:55px; }
 
-        .balance-change {
-            font-size: 12.5px;
-            font-weight: 700;
-            color: #86efac;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(34,197,94,0.18);
-            border: 1px solid rgba(34,197,94,0.25);
-            padding: 5px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .balance-chart {
-            width: 140px;
-            height: 60px;
-            opacity: 0.9;
-        }
-
-        /* ── Quick Stats Row ── */
-        .stats-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 22px;
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.55s ease-out 0.18s both;
-        }
-        .stat-card {
-            background: var(--surface);
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 12px rgba(27,63,238,0.06);
-        }
-        .stat-icon {
-            width: 38px; height: 38px;
-            border-radius: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-        .stat-icon.green { background: linear-gradient(135deg,#E6F9F0,#B9F6CA); }
-        .stat-icon.blue  { background: linear-gradient(135deg,#EEF0FF,#DDE2FF); }
-        .stat-label { font-size: 11px; font-weight: 600; color: var(--text3); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-val   { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+        /* ── Crypto Ticker Strip ── */
+        .ticker-wrap { overflow:hidden; margin-bottom:18px; position:relative; z-index:1; animation:fadeUp .5s .15s both; }
+        .ticker-wrap::before,.ticker-wrap::after { content:''; position:absolute; top:0; bottom:0; width:24px; z-index:2; pointer-events:none; }
+        .ticker-wrap::before { left:0; background:linear-gradient(90deg,var(--bg),transparent); }
+        .ticker-wrap::after  { right:0; background:linear-gradient(-90deg,var(--bg),transparent); }
+        .ticker-track { display:flex; gap:6px; animation:tickerScroll 32s linear infinite; width:max-content; }
+        .ticker-track:hover { animation-play-state:paused; }
+        @keyframes tickerScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        .ticker-item { display:inline-flex; align-items:center; gap:7px; background:var(--surface); border:1.5px solid var(--border); border-radius:10px; padding:7px 12px; white-space:nowrap; flex-shrink:0; }
+        .ti-dot { width:6px;height:6px; border-radius:50%; flex-shrink:0; }
+        .ti-name { font-size:11.5px; font-weight:700; color:var(--text2); }
+        .ti-price { font-size:11.5px; font-weight:800; color:var(--text); font-family:'JetBrains Mono',monospace; }
+        .ti-chg { font-size:10.5px; font-weight:700; padding:1px 6px; border-radius:5px; }
+        .ti-up   { color:var(--green-dark); background:rgba(22,163,74,.1); }
+        .ti-dn   { color:var(--red-dark);   background:rgba(220,38,38,.1); }
 
         /* ── Action Buttons ── */
-        .actions {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 28px;
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.55s ease-out 0.22s both;
-        }
+        .actions { display:flex; gap:10px; margin-bottom:20px; position:relative; z-index:1; animation:fadeUp .5s .18s both; }
+        .action-btn { flex:1; background:var(--surface); border:1.5px solid var(--border); border-radius:var(--rl); padding:17px 8px 15px; display:flex; flex-direction:column; align-items:center; gap:9px; cursor:pointer; transition:all .25s cubic-bezier(.4,0,.2,1); box-shadow:0 2px 10px rgba(27,63,238,.06); position:relative; overflow:hidden; text-decoration:none; }
+        .action-btn::before { content:''; position:absolute; inset:0; opacity:0; transition:opacity .3s; }
+        .action-btn:hover { transform:translateY(-4px); box-shadow:0 14px 30px rgba(76,110,245,.16); border-color:var(--border2); }
+        .action-btn:hover::before { opacity:1; }
+        .action-btn:active { transform:translateY(-1px) scale(0.97); }
 
-        .action-btn {
-            flex: 1;
-            background: var(--surface);
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 18px 8px 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 10px rgba(27,63,238,0.06);
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-        }
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(76,110,245,0.06), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .action-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 28px rgba(76,110,245,0.16);
-            border-color: var(--border2);
-        }
-        .action-btn:hover::before { opacity: 1; }
-        .action-btn:active { transform: translateY(-1px) scale(0.97); }
+        .action-btn:nth-child(1) .action-icon { background:linear-gradient(135deg,#E6F9F0,#B9F6CA); color:#15803d; }
+        .action-btn:nth-child(2) .action-icon { background:linear-gradient(135deg,#FFF3E0,#FFE0B2); color:#c2410c; }
+        .action-btn:nth-child(3) .action-icon { background:linear-gradient(135deg,#EEF0FF,#DDE2FF); color:var(--blue-light); }
+        .action-btn:nth-child(1):hover .action-icon { background:linear-gradient(135deg,#22c55e,#16a34a); color:white; }
+        .action-btn:nth-child(2):hover .action-icon { background:linear-gradient(135deg,#f97316,#ea580c); color:white; }
+        .action-btn:nth-child(3):hover .action-icon { background:linear-gradient(135deg,var(--blue-light),var(--blue-mid)); color:white; }
 
-        .action-icon {
-            width: 50px; height: 50px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--blue-light);
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
+        .action-icon { width:50px;height:50px; border-radius:15px; display:flex; align-items:center; justify-content:center; transition:all .3s ease; position:relative; z-index:1; }
+        .action-btn:hover .action-icon { transform:scale(1.1); box-shadow:0 6px 18px rgba(76,110,245,.22); }
+        .action-label { font-size:12px; font-weight:700; color:var(--text2); transition:color .3s; z-index:1; position:relative; letter-spacing:-.1px; }
+        .action-btn:hover .action-label { color:var(--blue-light); }
 
-        /* Per-button icon colours */
-        .action-btn:nth-child(1) .action-icon { background: linear-gradient(135deg,#E6F9F0,#B9F6CA); color: #15803d; }
-        .action-btn:nth-child(2) .action-icon { background: linear-gradient(135deg,#FFF3E0,#FFE0B2); color: #c2410c; }
-        .action-btn:nth-child(3) .action-icon { background: linear-gradient(135deg,#EEF0FF,#DDE2FF); color: var(--blue-light); }
+        /* ── Market Section Header & Tabs ── */
+        .market-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; position:relative; z-index:1; animation:fadeUp .5s .24s both; }
+        .market-head h2 { font-size:17px; font-weight:800; color:var(--text); letter-spacing:-.3px; }
+        .view-all { font-size:12px; color:var(--blue-light); text-decoration:none; font-weight:700; padding:4px 10px; border-radius:8px; background:rgba(76,110,245,.07); border:1px solid rgba(76,110,245,.15); transition:all .2s; }
+        .view-all:hover { background:rgba(76,110,245,.14); }
 
-        .action-btn:hover .action-icon {
-            transform: scale(1.10);
-            box-shadow: 0 6px 16px rgba(76,110,245,0.22);
-        }
-        .action-btn:nth-child(1):hover .action-icon { background: linear-gradient(135deg,#22c55e,#16a34a); color: white; }
-        .action-btn:nth-child(2):hover .action-icon { background: linear-gradient(135deg,#f97316,#ea580c); color: white; }
-        .action-btn:nth-child(3):hover .action-icon { background: linear-gradient(135deg,var(--blue-light),var(--blue-mid)); color: white; }
+        /* Filter Tabs */
+        .filter-tabs { display:flex; gap:6px; margin-bottom:14px; position:relative; z-index:1; animation:fadeUp .5s .26s both; }
+        .ftab { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; border:1.5px solid var(--border); background:var(--surface); color:var(--text3); user-select:none; }
+        .ftab:hover { border-color:var(--border2); color:var(--text2); }
+        .ftab.active { background:var(--blue); color:white; border-color:var(--blue); box-shadow:0 4px 14px rgba(27,63,238,.25); }
 
-        .action-label {
-            font-size: 12.5px;
-            font-weight: 700;
-            color: var(--text2);
-            transition: color 0.3s ease;
-            position: relative;
-            z-index: 1;
-            letter-spacing: -0.1px;
-        }
-        .action-btn:hover .action-label { color: var(--blue-light); }
+        /* ── Rates Container ── */
+        .rates-container { display:flex; flex-direction:column; gap:7px; position:relative; z-index:1; animation:fadeUp .5s .28s both; }
 
-        /* ── Rates Header ── */
-        .rates-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.55s ease-out 0.28s both;
-        }
-        .rates-header h2 {
-            font-size: 17px;
-            font-weight: 800;
-            color: var(--text);
-            letter-spacing: -0.3px;
-        }
-        .view-all {
-            font-size: 12.5px;
-            color: var(--blue-light);
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.2s ease;
-            padding: 4px 10px;
-            border-radius: 8px;
-            background: rgba(76,110,245,0.07);
-            border: 1px solid rgba(76,110,245,0.15);
-        }
-        .view-all:hover {
-            background: rgba(76,110,245,0.14);
-            color: var(--blue-mid);
-        }
+        /* ── Rate Item ── */
+        .rate-item { display:flex; align-items:center; padding:12px 13px; background:var(--surface); border-radius:var(--rl); transition:all .25s cubic-bezier(.4,0,.2,1); box-shadow:0 2px 10px rgba(27,63,238,.05); cursor:pointer; border:1.5px solid transparent; position:relative; overflow:hidden; }
+        /* Flash overlay */
+        .rate-item::after { content:''; position:absolute; inset:0; border-radius:var(--rl); opacity:0; pointer-events:none; transition:opacity .1s; }
+        .rate-item.flash-up::after   { background:rgba(34,197,94,.08);  opacity:1; }
+        .rate-item.flash-dn::after   { background:rgba(239,68,68,.08);  opacity:1; }
+        .rate-item:hover { transform:translateX(4px); box-shadow:0 8px 24px rgba(27,63,238,.10); border-color:var(--border); background:var(--surface2); }
+        .rate-item:active { transform:translateX(2px) scale(.99); }
 
-        /* ── Rates Container & Items ── */
-        .rates-container {
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.55s ease-out 0.32s both;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        /* Rank badge */
+        .coin-rank { font-size:10px; font-weight:800; color:var(--text3); width:18px; text-align:center; margin-right:8px; flex-shrink:0; font-family:'JetBrains Mono',monospace; }
 
-        .rate-item {
-            display: flex;
-            align-items: center;
-            padding: 13px 14px;
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 10px rgba(27,63,238,0.05);
-            cursor: pointer;
-            border: 1.5px solid transparent;
-        }
-        .rate-item:hover {
-            transform: translateX(4px);
-            box-shadow: 0 6px 20px rgba(27,63,238,0.10);
-            border-color: var(--border);
-            background: var(--surface2);
-        }
-        .rate-item:active { transform: translateX(2px) scale(0.99); }
+        .coin-icon { width:42px;height:42px; border-radius:50%; margin-right:11px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; color:white; flex-shrink:0; box-shadow:0 4px 12px rgba(0,0,0,.14); transition:transform .3s; position:relative; }
+        .coin-icon::after { content:''; position:absolute; inset:-1px; border-radius:50%; border:1.5px solid rgba(255,255,255,.28); }
+        .rate-item:hover .coin-icon { transform:scale(1.1) rotate(-5deg); }
 
-        .coin-icon {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            margin-right: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 17px;
-            color: white;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.14);
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-        .coin-icon::after {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 50%;
-            border: 1.5px solid rgba(255,255,255,0.3);
-        }
-        .rate-item:hover .coin-icon { transform: scale(1.10) rotate(-5deg); }
+        .coin-info { flex:1; min-width:0; }
+        .coin-name { font-size:14px; font-weight:700; color:var(--text); letter-spacing:-.1px; }
+        .coin-ticker { font-size:11px; color:var(--text3); font-weight:600; letter-spacing:.4px; margin-top:1px; }
 
-        .coin-info { flex: 1; min-width: 0; }
-        .coin-name {
-            font-size: 14.5px;
-            font-weight: 700;
-            margin-bottom: 2px;
-            color: var(--text);
-            letter-spacing: -0.1px;
-        }
-        .coin-ticker {
-            font-size: 11.5px;
-            color: var(--text3);
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
+        /* Volume bar */
+        .vol-bar-wrap { width:36px; margin-right:10px; flex-shrink:0; }
+        .vol-label { font-size:9.5px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
+        .vol-track { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+        .vol-fill { height:100%; border-radius:2px; transition:width .6s ease; }
 
-        .mini-chart {
-            width: 70px; height: 32px;
-            margin-right: 13px;
-            flex-shrink: 0;
-        }
+        /* Sparkline */
+        .mini-chart { width:64px;height:32px; margin-right:10px; flex-shrink:0; }
 
-        .rate-value { text-align: right; flex-shrink: 0; }
-        .rate-price {
-            font-size: 14.5px;
-            font-weight: 800;
-            margin-bottom: 3px;
-            color: var(--text);
-            letter-spacing: -0.3px;
-        }
-        .rate-change {
-            font-size: 11.5px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 6px;
-            display: inline-block;
-        }
-        .positive { color: #16a34a; background: rgba(22,163,74,0.10); }
-        .negative { color: var(--red); background: rgba(239,68,68,0.10); }
+        .rate-value { text-align:right; flex-shrink:0; }
+        .rate-price { font-size:14px; font-weight:800; color:var(--text); letter-spacing:-.3px; font-family:'JetBrains Mono',monospace; }
+        .rate-change { font-size:11px; font-weight:700; padding:2px 7px; border-radius:5px; display:inline-block; margin-top:3px; }
+        .positive { color:var(--green-dark); background:rgba(22,163,74,.10); }
+        .negative { color:var(--red-dark);   background:rgba(220,38,38,.10); }
+
+        /* ── Market Mood Bar ── */
+        .mood-bar { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--rl); padding:14px 16px; margin-bottom:18px; position:relative; z-index:1; animation:fadeUp .5s .2s both; }
+        .mood-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+        .mood-title { font-size:12px; font-weight:700; color:var(--text2); letter-spacing:-.1px; }
+        .mood-score { font-size:12px; font-weight:800; color:var(--amber); background:rgba(245,158,11,.1); padding:3px 10px; border-radius:20px; }
+        .mood-track { height:8px; background:linear-gradient(90deg,#ef4444 0%,#f97316 25%,#f59e0b 50%,#84cc16 75%,#22c55e 100%); border-radius:4px; position:relative; overflow:visible; }
+        .mood-needle { position:absolute; top:50%; transform:translate(-50%,-50%); width:14px;height:14px; border-radius:50%; background:white; border:3px solid var(--amber); box-shadow:0 2px 6px rgba(0,0,0,.18); transition:left .8s cubic-bezier(.34,1.56,.64,1); }
+        .mood-labels { display:flex; justify-content:space-between; margin-top:6px; }
+        .mood-labels span { font-size:10px; font-weight:600; color:var(--text3); }
 
         /* ── Logout ── */
-        .logout-btn {
-            margin-top: 24px;
-            width: 100%;
-            padding: 14px;
-            background: var(--surface);
-            color: var(--red);
-            border: 1.5px solid #fee2e2;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.55s ease-out 0.38s both;
-            letter-spacing: -0.1px;
-            font-family: 'Inter', inherit;
-        }
-        .logout-btn:hover {
-            background: #fff1f2;
-            border-color: #fecaca;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(239,68,68,0.12);
-        }
-        .logout-btn:active { transform: translateY(0) scale(0.98); }
+        .logout-btn { margin-top:22px; width:100%; padding:14px; background:var(--surface); color:var(--red); border:1.5px solid #fee2e2; border-radius:var(--rm); font-weight:700; font-size:14px; cursor:pointer; transition:all .25s cubic-bezier(.4,0,.2,1); position:relative; z-index:1; animation:fadeUp .5s .4s both; font-family:'Inter',inherit; letter-spacing:-.1px; }
+        .logout-btn:hover { background:#fff1f2; border-color:#fecaca; transform:translateY(-2px); box-shadow:0 6px 16px rgba(239,68,68,.12); }
+        .logout-btn:active { transform:translateY(0) scale(.98); }
 
-        /* ── Scrollbar ── */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+        ::-webkit-scrollbar { width:4px; }
+        ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
 
-        /* ── Animations ── */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(14px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-12px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ── Compat with original pulse keyframe ── */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.5; }
-        }
-        #greeting { transition: all 0.3s ease; }
+        @keyframes fadeUp   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.5} }
+        #greeting { transition:all .3s ease; }
     </style>
 </head>
 <body>
-    <!-- Decorative floating orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
     <div class="container">
+
         <!-- Header -->
         <div class="header">
             <a href="/" class="logo">
-                <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
                     <path d="M16 2L4 9v14l12 7 12-7V9L16 2z" stroke="#4c6ef5" stroke-width="2.2" fill="none"/>
                     <path d="M16 8v16M10 12l6-4 6 4" stroke="#4c6ef5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 Solvra
             </a>
             <div class="header-right">
-                <div class="live-pill">
-                    <div class="live-dot"></div>
-                    Live
-                </div>
+                <div class="live-pill"><div class="live-dot"></div>Live</div>
             </div>
         </div>
 
@@ -616,80 +268,67 @@
 
         <!-- Balance Card -->
         <div class="balance-card">
-            <div class="card-orb"></div>
+            <div class="card-glow"></div>
             <div class="balance-header">
                 Total Balance
                 <button class="eye-btn" id="eyeBtn">
-                    <svg id="eyeOpen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    <svg id="eyeClosed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>
-                    </svg>
+                    <svg id="eyeOpen" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg id="eyeClosed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                 </button>
             </div>
             <div class="balance-amount" id="balanceAmount">$0.00</div>
-            <div class="balance-footer">
-                <div class="balance-change" id="balanceChange">+0.00% (24h)</div>
-                <svg class="balance-chart" viewBox="0 0 155 78" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#34d399;stop-opacity:0.25"/>
-                            <stop offset="100%" style="stop-color:#34d399;stop-opacity:0"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M0,58 Q6,56 12,54 T24,50 T36,46 T48,42 T60,44 T72,38 T84,32 T96,28 T108,30 T120,24 T132,18 T144,14 T155,10" fill="none" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="155" cy="10" r="5" fill="#34d399"/>
-                    <circle cx="155" cy="10" r="9" fill="rgba(52,211,153,0.2)"/>
-                    <path d="M0,58 Q6,56 12,54 T24,50 T36,46 T48,42 T60,44 T72,38 T84,32 T96,28 T108,30 T120,24 T132,18 T144,14 T155,10 L155,78 L0,78 Z" fill="url(#chartGrad)"/>
-                </svg>
+            <div class="balance-meta">
+                <div class="balance-left">
+                    <div class="balance-change" id="balanceChange">+0.00% (24h)</div>
+                    <div class="balance-sub">Updated just now</div>
+                </div>
+                <svg id="balanceSparkline" viewBox="0 0 140 55" preserveAspectRatio="none"></svg>
             </div>
         </div>
 
-        <!-- Quick Stats Row -->
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-icon green">📈</div>
-                <div>
-                    <div class="stat-label">Portfolio</div>
-                    <div class="stat-val">+12.4%</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon blue">⚡</div>
-                <div>
-                    <div class="stat-label">Transfer Speed</div>
-                    <div class="stat-val">&lt; 1 sec</div>
-                </div>
-            </div>
+        <!-- Crypto Ticker Strip -->
+        <div class="ticker-wrap">
+            <div class="ticker-track" id="tickerTrack"><!-- filled by JS --></div>
         </div>
 
-        <!-- Actions -->
+        <!-- Action Buttons -->
         <div class="actions">
             <a href="deposit.html" class="action-btn">
-                <div class="action-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-                </div>
+                <div class="action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
                 <span class="action-label">Deposit</span>
             </a>
             <a href="withdraw.html" class="action-btn">
-                <div class="action-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-                </div>
+                <div class="action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
                 <span class="action-label">Withdraw</span>
             </a>
             <a href="rate.html" class="action-btn">
-                <div class="action-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4-4"/><path d="M17 14H3l4 4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>
-                </div>
-                <span class="action-label">Gas wallet</span>
+                <div class="action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h14l-4-4"/><path d="M17 14H3l4 4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></div>
+                <span class="action-label">Gas Wallet</span>
             </a>
         </div>
 
-        <!-- Market Rates -->
-        <div class="rates-header">
-            <h2>Market Rates</h2>
-            <a href="#" class="view-all">View all</a>
+        <!-- Market Mood Bar -->
+        <div class="mood-bar">
+            <div class="mood-top">
+                <span class="mood-title">⚡ Market Sentiment</span>
+                <span class="mood-score" id="moodScore">Greed · 64</span>
+            </div>
+            <div class="mood-track">
+                <div class="mood-needle" id="moodNeedle" style="left:64%"></div>
+            </div>
+            <div class="mood-labels"><span>Fear</span><span>Neutral</span><span>Greed</span></div>
+        </div>
+
+        <!-- Market Rates Header + Tabs -->
+        <div class="market-head">
+            <h2>Markets</h2>
+            <a href="#" class="view-all">View all →</a>
+        </div>
+
+        <div class="filter-tabs">
+            <div class="ftab active" data-filter="all">All</div>
+            <div class="ftab" data-filter="gainers">🚀 Gainers</div>
+            <div class="ftab" data-filter="losers">📉 Losers</div>
         </div>
 
         <div class="rates-container" id="ratesList"></div>
@@ -698,37 +337,23 @@
     </div>
 
     <script>
-        // 1. SUPABASE CONFIG
+        // =====================================================
+        // BACKEND CODE — UNTOUCHED
+        // =====================================================
         const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
         const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // 2. SESSION GATEKEEPER & DATA FETCH
         async function checkUser() {
             const { data: { session } } = await _supabase.auth.getSession();
-
-            if (!session) {
-                window.location.href = 'signin.html';
-                return;
-            }
-
+            if (!session) { window.location.href = 'signin.html'; return; }
             const user = session.user;
             const name = user.user_metadata.full_name || user.email;
             document.getElementById('greeting').textContent = `Welcome back, ${name.split(' ')[0]} 👋`;
-
-            // --- FETCH BALANCE FROM BACKEND ---
             const { data: profile, error } = await _supabase
-                .from('profiles')
-                .select('balance')
-                .eq('id', user.id)
-                .single();
-
-            let realBalance = 0; // default if no row exists yet
-            if (profile) {
-                realBalance = profile.balance;
-            }
-
-            // Pass the backend balance to the UI renderer
+                .from('profiles').select('balance').eq('id', user.id).single();
+            let realBalance = 0;
+            if (profile) realBalance = profile.balance;
             renderDashboard(realBalance);
         }
 
@@ -737,63 +362,27 @@
             window.location.href = 'signin.html';
         }
 
-        // 3. UI RENDERER
         function renderDashboard(userBalance) {
             const balanceAmountEl = document.getElementById('balanceAmount');
             const balanceChangeEl = document.getElementById('balanceChange');
-            
-            const realBalanceText = '$' + userBalance.toLocaleString('en-US', { 
-                minimumFractionDigits: 2, 
-                maximumFractionDigits: 2 
-            });
+            const realBalanceText = '$' + userBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-            balanceAmountEl.textContent = realBalanceText;
-            balanceChangeEl.textContent = `+2.59% (24h)`; // You can automate this too later
+            // Animated counter
+            animateCounter(balanceAmountEl, userBalance, realBalanceText);
+            balanceChangeEl.textContent = `+2.59% (24h)`;
 
-            // Market Rates Data - Now with 10 coins total (5 original + 5 new)
             const rates = [
-                { name: "US Dollar", ticker: "USD", icon: "$", price: 1.00, change: 0.02, color: "#22c55e", chartColor: "#22c55e" },
-                { name: "British Pound", ticker: "GBP", icon: "£", price: 1.30, change: 0.15, color: "#3b82f6", chartColor: "#3b82f6" },
-                { name: "Bitcoin", ticker: "BTC", icon: "₿", price: 67842.21, change: 2.59, color: "#f7931a", chartColor: "#22c55e" },
-                { name: "Ethereum", ticker: "ETH", icon: "◆", price: 3312.18, change: 1.45, color: "#6366f1", chartColor: "#22c55e" },
-                { name: "Tether", ticker: "USDT", icon: "₮", price: 1.00, change: 0.01, color: "#26a17b", chartColor: "#22c55e" },
-                // 5 New Crypto Coins
-                { name: "Solana", ticker: "SOL", icon: "S", price: 142.85, change: 4.32, color: "#14f195", chartColor: "#22c55e" },
-                { name: "Cardano", ticker: "ADA", icon: "A", price: 0.48, change: -1.24, color: "#0033ad", chartColor: "#dc2626" },
-                { name: "XRP", ticker: "XRP", icon: "X", price: 0.62, change: 3.18, color: "#23292f", chartColor: "#22c55e" },
-                { name: "Polkadot", ticker: "DOT", icon: "D", price: 7.24, change: -0.85, color: "#e6007a", chartColor: "#dc2626" },
-                { name: "Chainlink", ticker: "LINK", icon: "L", price: 14.67, change: 5.41, color: "#375bd2", chartColor: "#22c55e" }
+                { name:"US Dollar",      ticker:"USD",  icon:"$", price:1.00,     change:0.02,  color:"#22c55e", rank:null,  vol:0.30 },
+                { name:"British Pound",  ticker:"GBP",  icon:"£", price:1.30,     change:0.15,  color:"#3b82f6", rank:null,  vol:0.20 },
+                { name:"Bitcoin",        ticker:"BTC",  icon:"₿", price:67842.21, change:2.59,  color:"#f7931a", rank:1,     vol:1.00 },
+                { name:"Ethereum",       ticker:"ETH",  icon:"◆", price:3312.18,  change:1.45,  color:"#6366f1", rank:2,     vol:0.72 },
+                { name:"Tether",         ticker:"USDT", icon:"₮", price:1.00,     change:0.01,  color:"#26a17b", rank:3,     vol:0.85 },
+                { name:"Solana",         ticker:"SOL",  icon:"S", price:142.85,   change:4.32,  color:"#14f195", rank:5,     vol:0.48 },
+                { name:"Cardano",        ticker:"ADA",  icon:"A", price:0.48,     change:-1.24, color:"#0033ad", rank:8,     vol:0.22 },
+                { name:"XRP",            ticker:"XRP",  icon:"X", price:0.62,     change:3.18,  color:"#23292f", rank:6,     vol:0.41 },
+                { name:"Polkadot",       ticker:"DOT",  icon:"D", price:7.24,     change:-0.85, color:"#e6007a", rank:14,    vol:0.18 },
+                { name:"Chainlink",      ticker:"LINK", icon:"L", price:14.67,    change:5.41,  color:"#375bd2", rank:12,    vol:0.27 }
             ];
-
-            const ratesListEl = document.getElementById('ratesList');
-            ratesListEl.innerHTML = '';
-            
-            rates.forEach((rate, index) => {
-                const item = document.createElement('div');
-                item.className = 'rate-item';
-                item.style.animationDelay = `${0.35 + (index * 0.05)}s`;
-                item.style.animation = 'fadeInUp 0.5s ease-out both';
-                
-                const isPositive = rate.change >= 0;
-                const changeClass = isPositive ? 'positive' : 'negative';
-                const changePrefix = isPositive ? '+' : '';
-                const wavePath = `M0,20 Q9,${isPositive ? '18' : '22'} 18,${isPositive ? '19' : '21'} T36,${isPositive ? '17' : '23'} T54,${isPositive ? '19' : '21'}`;
-                
-                item.innerHTML = `
-                    <div class="coin-icon" style="background: ${rate.color};">${rate.icon}</div>
-                    <div class="coin-info">
-                        <div class="coin-name">${rate.name}</div>
-                        <div class="coin-ticker">${rate.ticker}</div>
-                    </div>
-                    <svg class="mini-chart" viewBox="0 0 72 32">
-                        <path d="${wavePath}" fill="none" stroke="${rate.chartColor}" stroke-width="1.8" stroke-linecap="round"/>
-                    </svg>
-                    <div class="rate-value">
-                        <div class="rate-price">$${rate.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                        <div class="rate-change ${changeClass}">${changePrefix}${rate.change}%</div>
-                    </div>`;
-                ratesListEl.appendChild(item);
-            });
 
             // Eye Toggle Logic
             document.getElementById('eyeBtn').onclick = function() {
@@ -808,9 +397,181 @@
                     document.getElementById('eyeClosed').style.display = 'block';
                 }
             };
+
+            // Store for filter
+            window._ratesData = rates;
+            renderRates(rates);
+            buildTicker(rates);
+            drawBalanceSparkline();
         }
 
         checkUser();
+
+        // =====================================================
+        // UI HELPERS (additive — no backend logic changed)
+        // =====================================================
+
+        // Seeded LCG pseudo-random for consistent sparklines
+        function seededRand(seed) {
+            let s = seed;
+            return function() {
+                s = (s * 1664525 + 1013904223) & 0xffffffff;
+                return (s >>> 0) / 0xffffffff;
+            };
+        }
+
+        // Generate a realistic-looking crypto sparkline path (jagged, not smooth)
+        function genSparklinePath(isPositive, seed, w, h) {
+            const rand = seededRand(seed);
+            const pts = 16;
+            const xStep = w / (pts - 1);
+            // trend: positive = down in SVG y = up visually
+            const trend = isPositive ? -(h * 0.38) / pts : (h * 0.38) / pts;
+            let y = isPositive ? h * 0.72 : h * 0.28;
+            const points = [];
+            for (let i = 0; i < pts; i++) {
+                const x = i * xStep;
+                const noise = (rand() - 0.48) * (h * 0.30);
+                y = Math.max(3, Math.min(h - 3, y + trend + noise));
+                points.push([x, y]);
+            }
+            const d = points.map((p, i) => (i === 0 ? `M${p[0].toFixed(1)},${p[1].toFixed(1)}` : `L${p[0].toFixed(1)},${p[1].toFixed(1)}`)).join(' ');
+            // area fill
+            const area = d + ` L${w},${h} L0,${h} Z`;
+            const last = points[points.length - 1];
+            return { d, area, last };
+        }
+
+        // Animated balance counter
+        function animateCounter(el, target, finalText) {
+            if (target === 0) { el.textContent = finalText; return; }
+            const dur = 1200, fps = 60, steps = dur / (1000 / fps);
+            let i = 0;
+            const tick = () => {
+                i++;
+                const progress = Math.min(i / steps, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                const val = target * ease;
+                el.textContent = '$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                if (progress < 1) requestAnimationFrame(tick);
+                else el.textContent = finalText;
+            };
+            requestAnimationFrame(tick);
+        }
+
+        // Flash a rate item green/red briefly
+        function flashItem(el, isPositive) {
+            const cls = isPositive ? 'flash-up' : 'flash-dn';
+            el.classList.add(cls);
+            setTimeout(() => el.classList.remove(cls), 500);
+        }
+
+        // Build ticker strip (doubled for seamless loop)
+        function buildTicker(rates) {
+            const cryptos = rates.filter(r => r.rank !== null);
+            const track = document.getElementById('tickerTrack');
+            const makeItem = r => {
+                const up = r.change >= 0;
+                return `<div class="ticker-item">
+                    <div class="ti-dot" style="background:${r.color}"></div>
+                    <span class="ti-name">${r.ticker}</span>
+                    <span class="ti-price">$${r.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                    <span class="ti-chg ${up?'ti-up':'ti-dn'}">${up?'+':''}${r.change}%</span>
+                </div>`;
+            };
+            const html = [...cryptos,...cryptos].map(makeItem).join('');
+            track.innerHTML = html;
+        }
+
+        // Render rate items with filter support
+        function renderRates(rates) {
+            const container = document.getElementById('ratesList');
+            container.innerHTML = '';
+            rates.forEach((rate, index) => {
+                const isPositive = rate.change >= 0;
+                const changeClass = isPositive ? 'positive' : 'negative';
+                const changePrefix = isPositive ? '+' : '';
+                const color = isPositive ? '#22c55e' : '#ef4444';
+                const { d, area, last } = genSparklinePath(isPositive, index * 137 + 42, 64, 32);
+                const volPct = Math.round(rate.vol * 100);
+                const rankHtml = rate.rank ? `<div class="coin-rank">#${rate.rank}</div>` : `<div class="coin-rank" style="opacity:0">#</div>`;
+                const priceStr = rate.price >= 1000
+                    ? '$' + rate.price.toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2})
+                    : '$' + rate.price.toFixed(rate.price < 1 ? 4 : 2);
+
+                const item = document.createElement('div');
+                item.className = 'rate-item';
+                item.style.cssText = `animation:fadeUp 0.45s ease-out ${0.05 * index}s both;opacity:0`;
+                item.innerHTML = `
+                    ${rankHtml}
+                    <div class="coin-icon" style="background:${rate.color}">${rate.icon}</div>
+                    <div class="coin-info">
+                        <div class="coin-name">${rate.name}</div>
+                        <div class="coin-ticker">${rate.ticker}</div>
+                    </div>
+                    <div class="vol-bar-wrap">
+                        <div class="vol-label">Vol</div>
+                        <div class="vol-track"><div class="vol-fill" style="width:0%;background:${color}" data-pct="${volPct}"></div></div>
+                    </div>
+                    <svg class="mini-chart" viewBox="0 0 64 32" preserveAspectRatio="none">
+                        <defs><linearGradient id="sg${index}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity=".18"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+                        <path d="${area}" fill="url(#sg${index})"/>
+                        <path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.5" fill="${color}"/>
+                    </svg>
+                    <div class="rate-value">
+                        <div class="rate-price">${priceStr}</div>
+                        <div class="rate-change ${changeClass}">${changePrefix}${rate.change}%</div>
+                    </div>`;
+
+                container.appendChild(item);
+
+                // Animate volume bars after item enters
+                setTimeout(() => {
+                    const fill = item.querySelector('.vol-fill');
+                    if (fill) fill.style.width = fill.dataset.pct + '%';
+                    flashItem(item, isPositive);
+                }, 80 + index * 50);
+            });
+        }
+
+        // Draw the balance card sparkline with a realistic canvas-like SVG
+        function drawBalanceSparkline() {
+            const svg = document.getElementById('balanceSparkline');
+            const w = 140, h = 55;
+            const { d, area } = genSparklinePath(true, 999, w, h);
+            svg.innerHTML = `
+                <defs>
+                    <linearGradient id="bsg" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#34d399" stop-opacity=".28"/>
+                        <stop offset="100%" stop-color="#34d399" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+                <path d="${area}" fill="url(#bsg)"/>
+                <path d="${d}" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="${w}" cy="${(function(){const rand=seededRand(999);let y=h*.72;const tr=-(h*.38)/16;for(let i=0;i<15;i++){const n=(rand()-.48)*(h*.30);y=Math.max(3,Math.min(h-3,y+tr+n));}return y.toFixed(1)})()}" r="4.5" fill="#34d399"/>
+                <circle cx="${w}" cy="${(function(){const rand=seededRand(999);let y=h*.72;const tr=-(h*.38)/16;for(let i=0;i<15;i++){const n=(rand()-.48)*(h*.30);y=Math.max(3,Math.min(h-3,y+tr+n));}return y.toFixed(1)})()}" r="8" fill="rgba(52,211,153,.22)"/>`;
+        }
+
+        // Filter Tabs
+        document.querySelectorAll('.ftab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const f = tab.dataset.filter;
+                if (!window._ratesData) return;
+                let filtered = window._ratesData;
+                if (f === 'gainers') filtered = window._ratesData.filter(r => r.change > 0).sort((a,b) => b.change - a.change);
+                if (f === 'losers')  filtered = window._ratesData.filter(r => r.change < 0).sort((a,b) => a.change - b.change);
+                renderRates(filtered);
+            });
+        });
+
+        // Animate market mood needle on load
+        setTimeout(() => {
+            const needle = document.getElementById('moodNeedle');
+            if (needle) needle.style.left = '64%';
+        }, 600);
     </script>
 </body>
 </html>
