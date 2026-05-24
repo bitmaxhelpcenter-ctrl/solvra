@@ -15,9 +15,7 @@
             --blue-light: #4c6ef5;
             --green:      #22c55e;
             --green-dark: #16a34a;
-            --amber:      #f59e0b;
             --red:        #ef4444;
-            --orange:     #f97316;
             --bg:         #ecf0fc;
             --surface:    #ffffff;
             --surface2:   #f5f7ff;
@@ -44,26 +42,23 @@
             overflow-x: hidden;
         }
 
-        /* Mesh background */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(ellipse 65% 50% at 15% 0%,  rgba(76,110,245,.13) 0%, transparent 60%),
+                radial-gradient(ellipse 65% 50% at 15% 0%,  rgba(76,110,245,.14) 0%, transparent 60%),
                 radial-gradient(ellipse 50% 40% at 85% 85%, rgba(99,102,241,.10) 0%, transparent 60%),
-                radial-gradient(ellipse 40% 35% at 55% 40%, rgba(249,115,22,.05)  0%, transparent 55%);
+                radial-gradient(ellipse 40% 35% at 55% 40%, rgba(27,63,238,.06)  0%, transparent 55%);
             pointer-events: none;
             z-index: 0;
         }
 
-        /* Floating orbs */
         .orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(68px); }
-        .orb-1 { width:260px;height:260px; background:radial-gradient(circle,rgba(76,110,245,.16),transparent 70%); top:-80px;left:-80px; animation:orbDrift 15s ease-in-out infinite; }
-        .orb-2 { width:200px;height:200px; background:radial-gradient(circle,rgba(249,115,22,.10),transparent 70%);  bottom:5%;right:-60px; animation:orbDrift 15s ease-in-out infinite; animation-delay:-7s; }
+        .orb-1 { width:260px;height:260px; background:radial-gradient(circle,rgba(76,110,245,.17),transparent 70%); top:-80px;left:-80px; animation:orbDrift 15s ease-in-out infinite; }
+        .orb-2 { width:200px;height:200px; background:radial-gradient(circle,rgba(99,102,241,.13),transparent 70%); bottom:5%;right:-60px; animation:orbDrift 15s ease-in-out infinite; animation-delay:-7s; }
         @keyframes orbDrift { 0%,100%{transform:translateY(0)scale(1)} 40%{transform:translateY(-22px)scale(1.05)} 70%{transform:translateY(14px)scale(0.97)} }
 
-        /* Container */
         .container { width:100%; max-width:420px; min-height:100vh; padding:22px 18px 56px; position:relative; overflow-x:hidden; z-index:1; }
 
         /* ── Header ── */
@@ -74,32 +69,30 @@
 
         .header-title { font-size:17px; font-weight:800; color:var(--text); position:absolute; left:50%; transform:translateX(-50%); letter-spacing:-.3px; }
 
-        .live-pill { display:inline-flex; align-items:center; gap:6px; background:rgba(249,115,22,.10); border:1px solid rgba(249,115,22,.28); border-radius:20px; padding:5px 11px; font-size:11px; font-weight:700; color:#c2410c; }
-        .live-dot { width:7px;height:7px; border-radius:50%; background:var(--orange); animation:livePulse 1.8s ease-in-out infinite; }
-        @keyframes livePulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(249,115,22,.5)} 50%{opacity:.7;box-shadow:0 0 0 5px rgba(249,115,22,0)} }
+        .live-pill { display:inline-flex; align-items:center; gap:6px; background:rgba(34,197,94,.11); border:1px solid rgba(34,197,94,.28); border-radius:20px; padding:5px 11px; font-size:11px; font-weight:700; color:#15803d; }
+        .live-dot { width:7px;height:7px; border-radius:50%; background:var(--green); animation:livePulse 1.8s ease-in-out infinite; }
+        @keyframes livePulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,197,94,.5)} 50%{opacity:.7;box-shadow:0 0 0 5px rgba(34,197,94,0)} }
 
         /* ── Balance Card ── */
         .balance-card {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+            background: linear-gradient(135deg, #1B3FEE 0%, #3b5bdb 50%, #1a38b0 100%);
             border-radius: var(--rx);
             padding: 22px 20px 20px;
             margin-bottom: 18px;
             color: white;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 22px 50px rgba(249,115,22,.30), 0 0 0 1px rgba(255,255,255,.12) inset, inset 0 1px 0 rgba(255,255,255,.22);
+            box-shadow: 0 22px 50px rgba(27,63,238,.35), 0 0 0 1px rgba(255,255,255,.12) inset, inset 0 1px 0 rgba(255,255,255,.22);
             animation: fadeUp .6s .05s both;
             z-index: 1;
         }
-        /* Dot-grid texture */
         .balance-card::before { content:''; position:absolute; inset:0; background-image:radial-gradient(circle,rgba(255,255,255,.10) 1px,transparent 1px); background-size:18px 18px; pointer-events:none; }
-        /* Shimmer */
-        .balance-card::after { content:''; position:absolute; top:0; left:-60%; width:50%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent); animation:sweep 8s ease-in-out infinite; }
+        .balance-card::after  { content:''; position:absolute; top:0;left:-60%; width:50%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent); animation:sweep 8s ease-in-out infinite; }
         @keyframes sweep { 0%{left:-60%} 22%{left:110%} 100%{left:110%} }
 
-        .card-glow { position:absolute; top:-40px;right:-40px; width:160px;height:160px; border-radius:50%; background:radial-gradient(circle,rgba(255,213,170,.22) 0%,transparent 70%); pointer-events:none; }
+        .card-glow { position:absolute; top:-40px;right:-40px; width:160px;height:160px; border-radius:50%; background:radial-gradient(circle,rgba(147,197,253,.22) 0%,transparent 70%); pointer-events:none; }
 
-        .balance-label { font-size:11px; font-weight:700; color:rgba(255,255,255,.65); margin-bottom:6px; text-transform:uppercase; letter-spacing:.8px; position:relative; z-index:1; }
+        .balance-label { font-size:11px; font-weight:700; color:rgba(255,255,255,.6); margin-bottom:6px; text-transform:uppercase; letter-spacing:.8px; position:relative; z-index:1; }
         .balance-amount { font-size:36px; font-weight:900; letter-spacing:-1.5px; text-shadow:0 2px 10px rgba(0,0,0,.15); position:relative; z-index:1; margin-bottom:10px; }
         .balance-footer { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
         .balance-sub { font-size:13px; font-weight:600; color:rgba(255,255,255,.75); }
@@ -107,8 +100,8 @@
 
         /* ── Warning Banner ── */
         .warn-banner {
-            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-            border: 1.5px solid #fed7aa;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1.5px solid #bfdbfe;
             border-radius: var(--rx);
             padding: 14px 16px;
             margin-bottom: 16px;
@@ -118,15 +111,12 @@
             animation: fadeUp .45s .08s both;
             position: relative;
             z-index: 1;
-            box-shadow: 0 2px 12px rgba(249,115,22,.08);
+            box-shadow: 0 2px 12px rgba(59,130,246,.08);
         }
-        .warn-banner::before { content:''; position:absolute; left:0;top:0;bottom:0; width:4px; background:linear-gradient(to bottom,#fb923c,#f97316); border-radius:4px 0 0 4px; }
-        .warn-banner svg { width:18px;height:18px; color:#f97316; flex-shrink:0; margin-top:2px; }
-        .warn-banner h3 { font-size:13px; font-weight:800; color:#9a3412; margin-bottom:2px; }
-        .warn-banner p  { font-size:12px; color:#c2410c; font-weight:500; line-height:1.55; }
-
-        /* ── Section Label ── */
-        .section-label { font-size:11px; font-weight:700; color:var(--text3); margin-bottom:9px; text-transform:uppercase; letter-spacing:.9px; }
+        .warn-banner::before { content:''; position:absolute; left:0;top:0;bottom:0; width:4px; background:linear-gradient(to bottom,#60a5fa,#3b82f6); border-radius:4px 0 0 4px; }
+        .warn-banner svg { width:18px;height:18px; color:#3b82f6; flex-shrink:0; margin-top:2px; }
+        .warn-banner h3 { font-size:13px; font-weight:800; color:#1e40af; margin-bottom:2px; }
+        .warn-banner p  { font-size:12px; color:#3b82f6; font-weight:500; line-height:1.55; }
 
         /* ── Form Card ── */
         .form-card {
@@ -141,8 +131,7 @@
             overflow: hidden;
             animation: fadeUp .45s .12s both;
         }
-        /* Gradient top bar */
-        .form-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:linear-gradient(90deg,var(--orange),#fb923c,var(--orange)); background-size:200% 100%; animation:shimmerBar 3s linear infinite; }
+        .form-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:linear-gradient(90deg,var(--blue),#818cf8,var(--blue-light)); background-size:200% 100%; animation:shimmerBar 3s linear infinite; }
         @keyframes shimmerBar { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
 
         .form-inner { padding:22px; }
@@ -151,7 +140,7 @@
 
         label { display:block; font-size:11px; font-weight:700; color:var(--text3); margin-bottom:8px; text-transform:uppercase; letter-spacing:.8px; }
 
-        /* ── Custom Select Dropdown ── */
+        /* ── Custom Select ── */
         .custom-select { position:relative; width:100%; }
         .select-trigger { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--rl); padding:13px 15px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:all .22s ease; user-select:none; box-shadow:0 1px 6px rgba(27,63,238,.05); }
         .select-trigger:hover { border-color:var(--border2); box-shadow:0 4px 16px rgba(76,110,245,.09); }
@@ -184,17 +173,16 @@
         .dropdown-menu::-webkit-scrollbar { width:4px; }
         .dropdown-menu::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
 
-        /* Network tag inside dropdown */
         .network-tag { display:inline-flex; align-items:center; gap:7px; background:var(--surface2); border:1.5px solid var(--border); padding:7px 13px; border-radius:10px; font-size:13px; font-weight:700; color:var(--text2); }
         .network-dot { width:8px;height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
 
         /* ── Network Warning ── */
         .network-warning { display:flex; align-items:flex-start; gap:8px; background:#fffbeb; border:1.5px solid #fef3c7; border-radius:10px; padding:10px 12px; font-size:12px; font-weight:500; color:#92400e; margin-top:10px; line-height:1.45; }
-        .network-warning svg { width:15px;height:15px; color:var(--amber); flex-shrink:0; margin-top:1px; }
+        .network-warning svg { width:15px;height:15px; color:#f59e0b; flex-shrink:0; margin-top:1px; }
 
-        /* ── Text Input ── */
+        /* ── Address Input ── */
         .input-wrapper { position:relative; display:flex; align-items:center; }
-        .input-wrapper input[type="text"] { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--rl); padding:14px 90px 14px 16px; font-size:14px; font-weight:500; color:var(--text); outline:none; transition:all .22s ease; font-family:'Inter',inherit; }
+        .input-wrapper input[type="text"] { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--rl); padding:14px 90px 14px 16px; font-size:13.5px; font-weight:500; color:var(--text); outline:none; transition:all .22s ease; font-family:'Inter',inherit; }
         .input-wrapper input[type="text"]::placeholder { color:var(--text3); font-weight:400; }
         .input-wrapper input[type="text"]:focus { border-color:var(--blue-light); box-shadow:0 0 0 3px rgba(76,110,245,.12); background:var(--surface); }
         .input-wrapper input.valid   { border-color:var(--green); background:var(--surface); }
@@ -212,29 +200,28 @@
         .amount-box input[type="number"] { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--rl); padding:16px 72px 16px 18px; font-size:22px; font-weight:800; color:var(--text); outline:none; transition:all .22s ease; font-family:'Inter',inherit; letter-spacing:-.5px; }
         .amount-box input::placeholder { color:var(--text3); font-size:16px; font-weight:500; letter-spacing:0; }
         .amount-box input:focus { border-color:var(--blue-light); box-shadow:0 0 0 3px rgba(76,110,245,.12); background:var(--surface); }
-        /* Remove arrows */
         .amount-box input::-webkit-outer-spin-button,
         .amount-box input::-webkit-inner-spin-button { -webkit-appearance:none; }
 
-        .max-btn { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:linear-gradient(135deg,var(--orange),#ea580c); border:none; border-radius:10px; padding:8px 14px; font-size:12px; font-weight:800; color:white; cursor:pointer; transition:all .2s ease; box-shadow:0 2px 10px rgba(249,115,22,.30); font-family:'Inter',inherit; letter-spacing:.2px; }
-        .max-btn:hover { transform:translateY(-50%) scale(1.05); box-shadow:0 4px 14px rgba(249,115,22,.40); }
+        .max-btn { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:linear-gradient(135deg,var(--blue-light),var(--blue-mid)); border:none; border-radius:10px; padding:8px 14px; font-size:12px; font-weight:800; color:white; cursor:pointer; transition:all .2s ease; box-shadow:0 2px 10px rgba(76,110,245,.30); font-family:'Inter',inherit; letter-spacing:.2px; }
+        .max-btn:hover { transform:translateY(-50%) scale(1.05); box-shadow:0 4px 14px rgba(76,110,245,.40); }
         .max-btn:active { transform:translateY(-50%) scale(0.95); }
 
         .amount-meta { display:flex; justify-content:space-between; margin-top:8px; font-size:12px; font-weight:500; color:var(--text3); }
 
-        /* ── Summary Box ── */
+        /* ── Summary ── */
         .summary-box { background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--rl); padding:16px; margin-top:14px; }
         .summary-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:13.5px; }
         .summary-row:last-child { margin-bottom:0; padding-top:12px; border-top:1.5px dashed var(--border2); }
         .summary-row span:first-child { color:var(--text3); font-weight:500; }
         .summary-row span:last-child  { color:var(--text); font-weight:700; }
         .summary-row.total span:first-child { color:var(--text2); font-weight:700; font-size:14px; }
-        .summary-row.total span:last-child  { color:var(--orange); font-weight:800; font-size:15px; }
+        .summary-row.total span:last-child  { color:var(--blue-light); font-weight:800; font-size:15px; }
 
         /* ── Withdraw Button ── */
         .withdraw-btn {
             width: 100%;
-            background: linear-gradient(135deg, var(--orange) 0%, #ea580c 100%);
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
             color: white;
             border: none;
             border-radius: var(--rl);
@@ -243,7 +230,7 @@
             font-weight: 800;
             cursor: pointer;
             transition: all .25s cubic-bezier(.4,0,.2,1);
-            box-shadow: 0 6px 20px rgba(249,115,22,.35);
+            box-shadow: 0 6px 20px rgba(27,63,238,.35);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -254,12 +241,12 @@
             position: relative;
             overflow: hidden;
         }
-        .withdraw-btn::before { content:''; position:absolute; top:0;left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent); transition:none; }
+        .withdraw-btn::before { content:''; position:absolute; top:0;left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent); transition:none; }
         .withdraw-btn:not(:disabled):hover::before { animation:btnShimmer .6s ease-out forwards; }
         @keyframes btnShimmer { 0%{left:-60%} 100%{left:110%} }
-        .withdraw-btn:not(:disabled):hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(249,115,22,.42); }
+        .withdraw-btn:not(:disabled):hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(27,63,238,.42); }
         .withdraw-btn:not(:disabled):active { transform:translateY(0) scale(.98); }
-        .withdraw-btn:disabled { background:linear-gradient(135deg,#cbd5e1,#94a3b8); box-shadow:none; cursor:not-allowed; color:white; opacity:.7; }
+        .withdraw-btn:disabled { background:linear-gradient(135deg,#e2e8f0,#cbd5e1); box-shadow:none; cursor:not-allowed; color:#94a3b8; }
 
         /* ── Security Note ── */
         .security-note {
@@ -270,15 +257,22 @@
             border: 1.5px solid var(--border);
             border-radius: var(--rx);
             padding: 16px;
-            margin-top: 0;
             box-shadow: 0 2px 10px rgba(27,63,238,.05);
             animation: fadeUp .45s .28s both;
             position: relative;
             z-index: 1;
         }
         .security-icon { width:38px;height:38px; border-radius:11px; background:linear-gradient(135deg,#EEF0FF,#DDE2FF); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--blue-light); }
-        .security-note p { font-size:12.5px; color:var(--text2); line-height:1.55; font-weight:500; }
+        .security-note p { font-size:12.5px; color:var(--text2); line-height:1.55; font-weight:500; padding-top:2px; }
         .security-note strong { color:var(--text); font-weight:700; }
+
+        /* ── Step indicator ── */
+        .step-row { display:flex; align-items:center; gap:8px; margin-bottom:16px; position:relative; z-index:1; animation:fadeUp .45s .1s both; }
+        .step { display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; color:var(--text3); }
+        .step-num { width:22px;height:22px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:var(--text3); transition:all .3s; }
+        .step.active .step-num { background:var(--blue); color:white; box-shadow:0 3px 10px rgba(27,63,238,.30); }
+        .step.active { color:var(--blue); }
+        .step-line { flex:1; height:1.5px; background:var(--border); border-radius:1px; }
 
         @keyframes fadeUp   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         @keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
@@ -313,12 +307,30 @@
             </div>
         </div>
 
+        <!-- Step indicator -->
+        <div class="step-row">
+            <div class="step active">
+                <div class="step-num">1</div>
+                <span>Details</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <span>Review</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <span>Confirm</span>
+            </div>
+        </div>
+
         <!-- Warning -->
         <div class="warn-banner">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <div>
-                <h3>Important Notice</h3>
-                <p>Blockchain withdrawals are irreversible. Double-check the address and network before confirming.</p>
+                <h3>Before you withdraw</h3>
+                <p>Ensure the wallet address matches the selected network exactly. Crypto transactions cannot be reversed.</p>
             </div>
         </div>
 
@@ -440,16 +452,16 @@
         ];
 
         const networks = [
-            { id: 'bitcoin',   name: 'Bitcoin',            tag: 'BTC',     color: '#f7931a', coins: ['btc'],                              fee: { btc: 0.0005 } },
-            { id: 'erc20',     name: 'Ethereum',           tag: 'ERC20',   color: '#6366f1', coins: ['eth','usdt','usdc','bnb','ada'],     fee: { eth: 0.002, usdt: 5, usdc: 5, bnb: 0.01, ada: 2 } },
-            { id: 'bep20',     name: 'BNB Smart Chain',    tag: 'BEP20',   color: '#f0b90b', coins: ['bnb','usdt','usdc','eth','ada','doge','trx'], fee: { bnb: 0.0005, usdt: 0.5, usdc: 0.5, eth: 0.0005, ada: 0.5, doge: 2, trx: 1 } },
-            { id: 'trc20',     name: 'TRON',               tag: 'TRC20',   color: '#ff060a', coins: ['trx','usdt','usdc'],                fee: { trx: 1, usdt: 1, usdc: 1 } },
-            { id: 'solana',    name: 'Solana',              tag: 'SOL',     color: '#14f195', coins: ['sol','usdc'],                       fee: { sol: 0.0001, usdc: 0.0001 } },
-            { id: 'polygon',   name: 'Polygon PoS',         tag: 'MATIC',   color: '#8247e5', coins: ['eth','usdc','usdt'],                fee: { eth: 0.0001, usdc: 0.1, usdt: 0.1 } },
-            { id: 'arbitrum',  name: 'Arbitrum One',        tag: 'ARB',     color: '#28a0f0', coins: ['eth','usdc','usdt'],                fee: { eth: 0.0001, usdc: 0.5, usdt: 0.5 } },
-            { id: 'optimism',  name: 'Optimism',            tag: 'OP',      color: '#ff0420', coins: ['eth','usdc','usdt'],                fee: { eth: 0.0001, usdc: 0.3, usdt: 0.3 } },
-            { id: 'base',      name: 'Base',                tag: 'BASE',    color: '#0052ff', coins: ['eth','usdc'],                       fee: { eth: 0.0001, usdc: 0.1 } },
-            { id: 'avalanche', name: 'Avalanche C-Chain',   tag: 'C-CHAIN', color: '#e84142', coins: ['usdc','usdt'],                      fee: { usdc: 0.1, usdt: 0.1 } }
+            { id: 'bitcoin',   name: 'Bitcoin',           tag: 'BTC',     color: '#f7931a', coins: ['btc'],                                       fee: { btc: 0.0005 } },
+            { id: 'erc20',     name: 'Ethereum',          tag: 'ERC20',   color: '#6366f1', coins: ['eth','usdt','usdc','bnb','ada'],              fee: { eth: 0.002, usdt: 5, usdc: 5, bnb: 0.01, ada: 2 } },
+            { id: 'bep20',     name: 'BNB Smart Chain',   tag: 'BEP20',   color: '#f0b90b', coins: ['bnb','usdt','usdc','eth','ada','doge','trx'], fee: { bnb: 0.0005, usdt: 0.5, usdc: 0.5, eth: 0.0005, ada: 0.5, doge: 2, trx: 1 } },
+            { id: 'trc20',     name: 'TRON',              tag: 'TRC20',   color: '#ff060a', coins: ['trx','usdt','usdc'],                          fee: { trx: 1, usdt: 1, usdc: 1 } },
+            { id: 'solana',    name: 'Solana',             tag: 'SOL',     color: '#14f195', coins: ['sol','usdc'],                                fee: { sol: 0.0001, usdc: 0.0001 } },
+            { id: 'polygon',   name: 'Polygon PoS',        tag: 'MATIC',   color: '#8247e5', coins: ['eth','usdc','usdt'],                         fee: { eth: 0.0001, usdc: 0.1, usdt: 0.1 } },
+            { id: 'arbitrum',  name: 'Arbitrum One',       tag: 'ARB',     color: '#28a0f0', coins: ['eth','usdc','usdt'],                         fee: { eth: 0.0001, usdc: 0.5, usdt: 0.5 } },
+            { id: 'optimism',  name: 'Optimism',           tag: 'OP',      color: '#ff0420', coins: ['eth','usdc','usdt'],                         fee: { eth: 0.0001, usdc: 0.3, usdt: 0.3 } },
+            { id: 'base',      name: 'Base',               tag: 'BASE',    color: '#0052ff', coins: ['eth','usdc'],                                fee: { eth: 0.0001, usdc: 0.1 } },
+            { id: 'avalanche', name: 'Avalanche C-Chain',  tag: 'C-CHAIN', color: '#e84142', coins: ['usdc','usdt'],                               fee: { usdc: 0.1, usdt: 0.1 } }
         ];
 
         // ================= STATE =================
@@ -592,8 +604,8 @@
             else if (['erc20','bep20','polygon','arbitrum','optimism','base','avalanche'].includes(netId)) { valid = /^0x[a-fA-F0-9]{40}$/.test(address); }
             else if (netId === 'trc20') { valid = /^T[a-zA-Z0-9]{33}$/.test(address); }
             else if (netId === 'solana') { valid = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address); }
-            if (valid) { input.className = 'valid'; msg.textContent = 'Valid address format'; msg.className = 'validation-msg valid'; }
-            else { input.className = 'invalid'; msg.textContent = 'Invalid address for this network'; msg.className = 'validation-msg invalid'; }
+            if (valid) { input.className = 'valid'; msg.textContent = '✓ Valid address format'; msg.className = 'validation-msg valid'; }
+            else { input.className = 'invalid'; msg.textContent = '✗ Invalid address for this network'; msg.className = 'validation-msg invalid'; }
             checkFormValidity();
         }
 
