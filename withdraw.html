@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw - Solvra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue:       #1B3FEE;
+            --blue-mid:   #3b5bdb;
+            --blue-light: #4c6ef5;
+            --green:      #22c55e;
+            --green-dark: #16a34a;
+            --amber:      #f59e0b;
+            --red:        #ef4444;
+            --orange:     #f97316;
+            --bg:         #ecf0fc;
+            --surface:    #ffffff;
+            --surface2:   #f5f7ff;
+            --border:     #e2e8ff;
+            --border2:    #c7d2fe;
+            --text:       #0b1437;
+            --text2:      #3d4d7a;
+            --text3:      #8896c0;
+            --rx:         22px;
+            --rl:         16px;
+            --rm:         11px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Mesh background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 65% 50% at 15% 0%,  rgba(76,110,245,.13) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 85% 85%, rgba(99,102,241,.10) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 35% at 55% 40%, rgba(249,115,22,.05)  0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating orbs */
+        .orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(68px); }
+        .orb-1 { width:260px;height:260px; background:radial-gradient(circle,rgba(76,110,245,.16),transparent 70%); top:-80px;left:-80px; animation:orbDrift 15s ease-in-out infinite; }
+        .orb-2 { width:200px;height:200px; background:radial-gradient(circle,rgba(249,115,22,.10),transparent 70%);  bottom:5%;right:-60px; animation:orbDrift 15s ease-in-out infinite; animation-delay:-7s; }
+        @keyframes orbDrift { 0%,100%{transform:translateY(0)scale(1)} 40%{transform:translateY(-22px)scale(1.05)} 70%{transform:translateY(14px)scale(0.97)} }
+
+        /* Container */
+        .container { width:100%; max-width:420px; min-height:100vh; padding:22px 18px 56px; position:relative; overflow-x:hidden; z-index:1; }
+
+        /* ── Header ── */
+        .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; position:relative; z-index:10; animation:fadeDown .5s ease-out both; }
+
+        .back-btn { width:38px;height:38px; border-radius:12px; background:var(--surface); border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text2); box-shadow:0 2px 8px rgba(27,63,238,.07); transition:all .2s ease; text-decoration:none; }
+        .back-btn:hover { background:var(--surface2); border-color:var(--blue-light); color:var(--blue); transform:translateX(-2px); box-shadow:0 4px 14px rgba(76,110,245,.18); }
+
+        .header-title { font-size:17px; font-weight:800; color:var(--text); position:absolute; left:50%; transform:translateX(-50%); letter-spacing:-.3px; }
+
+        .live-pill { display:inline-flex; align-items:center; gap:6px; background:rgba(249,115,22,.10); border:1px solid rgba(249,115,22,.28); border-radius:20px; padding:5px 11px; font-size:11px; font-weight:700; color:#c2410c; }
+        .live-dot { width:7px;height:7px; border-radius:50%; background:var(--orange); animation:livePulse 1.8s ease-in-out infinite; }
+        @keyframes livePulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(249,115,22,.5)} 50%{opacity:.7;box-shadow:0 0 0 5px rgba(249,115,22,0)} }
+
+        /* ── Balance Card ── */
+        .balance-card {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+            border-radius: var(--rx);
+            padding: 22px 20px 20px;
+            margin-bottom: 18px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 22px 50px rgba(249,115,22,.30), 0 0 0 1px rgba(255,255,255,.12) inset, inset 0 1px 0 rgba(255,255,255,.22);
+            animation: fadeUp .6s .05s both;
+            z-index: 1;
+        }
+        /* Dot-grid texture */
+        .balance-card::before { content:''; position:absolute; inset:0; background-image:radial-gradient(circle,rgba(255,255,255,.10) 1px,transparent 1px); background-size:18px 18px; pointer-events:none; }
+        /* Shimmer */
+        .balance-card::after { content:''; position:absolute; top:0; left:-60%; width:50%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent); animation:sweep 8s ease-in-out infinite; }
+        @keyframes sweep { 0%{left:-60%} 22%{left:110%} 100%{left:110%} }
+
+        .card-glow { position:absolute; top:-40px;right:-40px; width:160px;height:160px; border-radius:50%; background:radial-gradient(circle,rgba(255,213,170,.22) 0%,transparent 70%); pointer-events:none; }
+
+        .balance-label { font-size:11px; font-weight:700; color:rgba(255,255,255,.65); margin-bottom:6px; text-transform:uppercase; letter-spacing:.8px; position:relative; z-index:1; }
+        .balance-amount { font-size:36px; font-weight:900; letter-spacing:-1.5px; text-shadow:0 2px 10px rgba(0,0,0,.15); position:relative; z-index:1; margin-bottom:10px; }
+        .balance-footer { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
+        .balance-sub { font-size:13px; font-weight:600; color:rgba(255,255,255,.75); }
+        .balance-tag { display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.22); border-radius:20px; padding:4px 11px; font-size:11px; font-weight:700; color:rgba(255,255,255,.9); backdrop-filter:blur(10px); }
+
+        /* ── Warning Banner ── */
+        .warn-banner {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 1.5px solid #fed7aa;
+            border-radius: var(--rx);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            animation: fadeUp .45s .08s both;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 2px 12px rgba(249,115,22,.08);
+        }
+        .warn-banner::before { content:''; position:absolute; left:0;top:0;bottom:0; width:4px; background:linear-gradient(to bottom,#fb923c,#f97316); border-radius:4px 0 0 4px; }
+        .warn-banner svg { width:18px;height:18px; color:#f97316; flex-shrink:0; margin-top:2px; }
+        .warn-banner h3 { font-size:13px; font-weight:800; color:#9a3412; margin-bottom:2px; }
+        .warn-banner p  { font-size:12px; color:#c2410c; font-weight:500; line-height:1.55; }
+
+        /* ── Section Label ── */
+        .section-label { font-size:11px; font-weight:700; color:var(--text3); margin-bottom:9px; text-transform:uppercase; letter-spacing:.9px; }
+
+        /* ── Form Card ── */
+        .form-card {
+            background: var(--surface);
+            border-radius: var(--rx);
+            padding: 0;
+            box-shadow: 0 4px 24px rgba(27,63,238,.08), 0 1px 4px rgba(0,0,0,.04);
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+            animation: fadeUp .45s .12s both;
+        }
+        /* Gradient top bar */
+        .form-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:linear-gradient(90deg,var(--orange),#fb923c,var(--orange)); background-size:200% 100%; animation:shimmerBar 3s linear infinite; }
+        @keyframes shimmerBar { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
+
+        .form-inner { padding:22px; }
+        .form-group { margin-bottom:20px; }
+        .form-group:last-child { margin-bottom:0; }
+
+        label { display:block; font-size:11px; font-weight:700; color:var(--text3); margin-bottom:8px; text-transform:uppercase; letter-spacing:.8px; }
+
+        /* ── Custom Select Dropdown ── */
+        .custom-select { position:relative; width:100%; }
+        .select-trigger { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--rl); padding:13px 15px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:all .22s ease; user-select:none; box-shadow:0 1px 6px rgba(27,63,238,.05); }
+        .select-trigger:hover { border-color:var(--border2); box-shadow:0 4px 16px rgba(76,110,245,.09); }
+        .select-trigger.active { border-color:var(--blue-light); box-shadow:0 0 0 3px rgba(76,110,245,.12),0 4px 16px rgba(76,110,245,.10); }
+
+        .selected-content { display:flex; align-items:center; gap:12px; }
+
+        .coin-icon-sm { width:38px;height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:white; flex-shrink:0; box-shadow:0 4px 10px rgba(0,0,0,.14); position:relative; }
+        .coin-icon-sm::after { content:''; position:absolute; inset:-1px; border-radius:50%; border:1.5px solid rgba(255,255,255,.28); }
+
+        .selected-text { display:flex; flex-direction:column; }
+        .selected-name   { font-size:14.5px; font-weight:700; color:var(--text); }
+        .selected-ticker { font-size:11.5px; color:var(--text3); font-weight:500; margin-top:1px; }
+
+        .chevron { width:18px;height:18px; color:var(--text3); transition:transform .22s ease,color .22s ease; flex-shrink:0; }
+        .select-trigger.active .chevron { transform:rotate(180deg); color:var(--blue-light); }
+
+        .dropdown-menu { position:absolute; top:calc(100% + 8px); left:0;right:0; background:var(--surface); border-radius:var(--rx); box-shadow:0 16px 48px rgba(27,63,238,.14),0 4px 12px rgba(0,0,0,.06); border:1.5px solid var(--border); z-index:200; max-height:300px; overflow-y:auto; opacity:0; transform:translateY(-10px) scale(0.97); pointer-events:none; transition:all .25s cubic-bezier(.4,0,.2,1); }
+        .dropdown-menu.open { opacity:1; transform:translateY(0) scale(1); pointer-events:all; }
+
+        .dropdown-item { padding:13px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all .15s ease; border-bottom:1px solid var(--surface2); }
+        .dropdown-item:last-child { border-bottom:none; }
+        .dropdown-item:hover { background:var(--surface2); }
+        .dropdown-item.selected { background:rgba(76,110,245,.06); }
+        .dropdown-item .item-info { flex:1; }
+        .dropdown-item .item-name { font-size:14px; font-weight:700; color:var(--text); }
+        .dropdown-item .item-meta { font-size:11.5px; color:var(--text3); font-weight:500; margin-top:1px; }
+        .check-icon { width:18px;height:18px; color:var(--blue-light); opacity:0; transition:opacity .2s ease; flex-shrink:0; }
+        .dropdown-item.selected .check-icon { opacity:1; }
+        .dropdown-menu::-webkit-scrollbar { width:4px; }
+        .dropdown-menu::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+        /* Network tag inside dropdown */
+        .network-tag { display:inline-flex; align-items:center; gap:7px; background:var(--surface2); border:1.5px solid var(--border); padding:7px 13px; border-radius:10px; font-size:13px; font-weight:700; color:var(--text2); }
+        .network-dot { width:8px;height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
+
+        /* ── Network Warning ── */
+        .network-warning { display:flex; align-items:flex-start; gap:8px; background:#fffbeb; border:1.5px solid #fef3c7; border-radius:10px; padding:10px 12px; font-size:12px; font-weight:500; color:#92400e; margin-top:10px; line-height:1.45; }
+        .network-warning svg { width:15px;height:15px; color:var(--amber); flex-shrink:0; margin-top:1px; }
+
+        /* ── Text Input ── */
+        .input-wrapper { position:relative; display:flex; align-items:center; }
+        .input-wrapper input[type="text"] { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--rl); padding:14px 90px 14px 16px; font-size:14px; font-weight:500; color:var(--text); outline:none; transition:all .22s ease; font-family:'Inter',inherit; }
+        .input-wrapper input[type="text"]::placeholder { color:var(--text3); font-weight:400; }
+        .input-wrapper input[type="text"]:focus { border-color:var(--blue-light); box-shadow:0 0 0 3px rgba(76,110,245,.12); background:var(--surface); }
+        .input-wrapper input.valid   { border-color:var(--green); background:var(--surface); }
+        .input-wrapper input.invalid { border-color:var(--red);   background:#fff1f2; }
+
+        .paste-btn { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:var(--surface); border:1.5px solid var(--border2); border-radius:9px; padding:7px 13px; font-size:12px; font-weight:700; color:var(--blue-light); cursor:pointer; transition:all .2s ease; font-family:'Inter',inherit; white-space:nowrap; }
+        .paste-btn:hover { background:var(--blue-light); color:white; border-color:var(--blue-light); box-shadow:0 4px 12px rgba(76,110,245,.22); }
+
+        .validation-msg { font-size:12px; font-weight:600; margin-top:6px; min-height:18px; transition:all .2s ease; }
+        .validation-msg.valid   { color:var(--green-dark); }
+        .validation-msg.invalid { color:var(--red); }
+
+        /* ── Amount Input ── */
+        .amount-box { position:relative; display:flex; align-items:center; }
+        .amount-box input[type="number"] { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--rl); padding:16px 72px 16px 18px; font-size:22px; font-weight:800; color:var(--text); outline:none; transition:all .22s ease; font-family:'Inter',inherit; letter-spacing:-.5px; }
+        .amount-box input::placeholder { color:var(--text3); font-size:16px; font-weight:500; letter-spacing:0; }
+        .amount-box input:focus { border-color:var(--blue-light); box-shadow:0 0 0 3px rgba(76,110,245,.12); background:var(--surface); }
+        /* Remove arrows */
+        .amount-box input::-webkit-outer-spin-button,
+        .amount-box input::-webkit-inner-spin-button { -webkit-appearance:none; }
+
+        .max-btn { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:linear-gradient(135deg,var(--orange),#ea580c); border:none; border-radius:10px; padding:8px 14px; font-size:12px; font-weight:800; color:white; cursor:pointer; transition:all .2s ease; box-shadow:0 2px 10px rgba(249,115,22,.30); font-family:'Inter',inherit; letter-spacing:.2px; }
+        .max-btn:hover { transform:translateY(-50%) scale(1.05); box-shadow:0 4px 14px rgba(249,115,22,.40); }
+        .max-btn:active { transform:translateY(-50%) scale(0.95); }
+
+        .amount-meta { display:flex; justify-content:space-between; margin-top:8px; font-size:12px; font-weight:500; color:var(--text3); }
+
+        /* ── Summary Box ── */
+        .summary-box { background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--rl); padding:16px; margin-top:14px; }
+        .summary-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:13.5px; }
+        .summary-row:last-child { margin-bottom:0; padding-top:12px; border-top:1.5px dashed var(--border2); }
+        .summary-row span:first-child { color:var(--text3); font-weight:500; }
+        .summary-row span:last-child  { color:var(--text); font-weight:700; }
+        .summary-row.total span:first-child { color:var(--text2); font-weight:700; font-size:14px; }
+        .summary-row.total span:last-child  { color:var(--orange); font-weight:800; font-size:15px; }
+
+        /* ── Withdraw Button ── */
+        .withdraw-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--orange) 0%, #ea580c 100%);
+            color: white;
+            border: none;
+            border-radius: var(--rl);
+            padding: 16px;
+            font-size: 15.5px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all .25s cubic-bezier(.4,0,.2,1);
+            box-shadow: 0 6px 20px rgba(249,115,22,.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: -.1px;
+            font-family: 'Inter', inherit;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .withdraw-btn::before { content:''; position:absolute; top:0;left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent); transition:none; }
+        .withdraw-btn:not(:disabled):hover::before { animation:btnShimmer .6s ease-out forwards; }
+        @keyframes btnShimmer { 0%{left:-60%} 100%{left:110%} }
+        .withdraw-btn:not(:disabled):hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(249,115,22,.42); }
+        .withdraw-btn:not(:disabled):active { transform:translateY(0) scale(.98); }
+        .withdraw-btn:disabled { background:linear-gradient(135deg,#cbd5e1,#94a3b8); box-shadow:none; cursor:not-allowed; color:white; opacity:.7; }
+
+        /* ── Security Note ── */
+        .security-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--rx);
+            padding: 16px;
+            margin-top: 0;
+            box-shadow: 0 2px 10px rgba(27,63,238,.05);
+            animation: fadeUp .45s .28s both;
+            position: relative;
+            z-index: 1;
+        }
+        .security-icon { width:38px;height:38px; border-radius:11px; background:linear-gradient(135deg,#EEF0FF,#DDE2FF); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--blue-light); }
+        .security-note p { font-size:12.5px; color:var(--text2); line-height:1.55; font-weight:500; }
+        .security-note strong { color:var(--text); font-weight:700; }
+
+        @keyframes fadeUp   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <a href="dashboard.html" class="back-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </a>
+            <div class="header-title">Withdraw</div>
+            <div class="live-pill"><div class="live-dot"></div>Secure</div>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="card-glow"></div>
+            <div class="balance-label">Available Balance</div>
+            <div class="balance-amount" id="availableBalance">$0.00</div>
+            <div class="balance-footer">
+                <div class="balance-sub">≈ <span id="cryptoBalance">0.00000000</span> <span id="cryptoTicker">BTC</span></div>
+                <div class="balance-tag">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Protected
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning -->
+        <div class="warn-banner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div>
+                <h3>Important Notice</h3>
+                <p>Blockchain withdrawals are irreversible. Double-check the address and network before confirming.</p>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+            <div class="form-inner">
+
+                <!-- Coin Selector -->
+                <div class="form-group">
+                    <label>Select Coin</label>
+                    <div class="custom-select" id="coinSelectWrapper">
+                        <div class="select-trigger" id="coinTrigger" onclick="toggleDropdown('coinDropdown','coinTrigger')">
+                            <div class="selected-content" id="selectedCoinDisplay">
+                                <div class="coin-icon-sm" style="background:#f7931a">₿</div>
+                                <div class="selected-text">
+                                    <div class="selected-name">Bitcoin</div>
+                                    <div class="selected-ticker">BTC</div>
+                                </div>
+                            </div>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </div>
+                        <div class="dropdown-menu" id="coinDropdown"></div>
+                    </div>
+                </div>
+
+                <!-- Network Selector -->
+                <div class="form-group">
+                    <label>Select Network</label>
+                    <div class="custom-select" id="networkSelectWrapper">
+                        <div class="select-trigger" id="networkTrigger" onclick="toggleDropdown('networkDropdown','networkTrigger')">
+                            <div class="selected-content" id="selectedNetworkDisplay">
+                                <div class="network-tag">
+                                    <span class="network-dot" style="background:#f7931a"></span>
+                                    Bitcoin
+                                </div>
+                            </div>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </div>
+                        <div class="dropdown-menu" id="networkDropdown"></div>
+                    </div>
+                    <div class="network-warning" id="networkWarning">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        Ensure the withdrawal address matches the selected network. Sending to the wrong network will result in permanent loss.
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="form-group">
+                    <label>Withdrawal Address</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="addressInput" placeholder="Enter or paste wallet address" autocomplete="off" oninput="validateAddress()">
+                        <button class="paste-btn" onclick="pasteAddress()">Paste</button>
+                    </div>
+                    <div class="validation-msg" id="addressValidation"></div>
+                </div>
+
+                <!-- Amount -->
+                <div class="form-group">
+                    <label>Amount</label>
+                    <div class="amount-box">
+                        <input type="number" id="amountInput" placeholder="0.00" step="any" min="0" oninput="calculateSummary()">
+                        <button class="max-btn" onclick="setMaxAmount()">MAX</button>
+                    </div>
+                    <div class="amount-meta">
+                        <span id="usdEquivalent">≈ $0.00</span>
+                        <span>Min: <span id="minWithdraw">0.001</span> <span id="minTicker">BTC</span></span>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span>Estimated Arrival</span>
+                        <span>5–30 minutes</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>You Will Receive</span>
+                        <span id="receiveAmount">0.00 BTC</span>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <button class="withdraw-btn" id="withdrawBtn" onclick="submitWithdrawal()" disabled>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                    Confirm Withdrawal
+                </button>
+
+            </div>
+        </div>
+
+        <!-- Security Note -->
+        <div class="security-note">
+            <div class="security-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <p><strong>Blockchain transactions are irreversible.</strong> Always verify your address and network before confirming a withdrawal.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // ================= SUPABASE CONFIG (Same as Dashboard) =================
+        const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
+        const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // ================= DATA =================
+        const coins = [
+            { id: 'btc',  name: 'Bitcoin',   ticker: 'BTC',  icon: '₿', color: '#f7931a', price: 67842.21, min: 0.0005 },
+            { id: 'eth',  name: 'Ethereum',  ticker: 'ETH',  icon: '◆', color: '#6366f1', price: 3312.18,  min: 0.005 },
+            { id: 'usdt', name: 'Tether',    ticker: 'USDT', icon: '₮', color: '#26a17b', price: 1.00,     min: 10 },
+            { id: 'usdc', name: 'USD Coin',  ticker: 'USDC', icon: 'U', color: '#2775ca', price: 1.00,     min: 10 },
+            { id: 'bnb',  name: 'BNB',       ticker: 'BNB',  icon: 'B', color: '#f0b90b', price: 595.40,   min: 0.01 },
+            { id: 'sol',  name: 'Solana',    ticker: 'SOL',  icon: 'S', color: '#14f195', price: 142.85,   min: 0.05 },
+            { id: 'xrp',  name: 'XRP',       ticker: 'XRP',  icon: 'X', color: '#23292f', price: 0.62,     min: 20 },
+            { id: 'ada',  name: 'Cardano',   ticker: 'ADA',  icon: 'A', color: '#0033ad', price: 0.48,     min: 10 },
+            { id: 'doge', name: 'Dogecoin',  ticker: 'DOGE', icon: 'D', color: '#c2a633', price: 0.16,     min: 50 },
+            { id: 'trx',  name: 'TRON',      ticker: 'TRX',  icon: 'T', color: '#ff060a', price: 0.12,     min: 100 }
+        ];
+
+        const networks = [
+            { id: 'bitcoin',   name: 'Bitcoin',            tag: 'BTC',     color: '#f7931a', coins: ['btc'],                              fee: { btc: 0.0005 } },
+            { id: 'erc20',     name: 'Ethereum',           tag: 'ERC20',   color: '#6366f1', coins: ['eth','usdt','usdc','bnb','ada'],     fee: { eth: 0.002, usdt: 5, usdc: 5, bnb: 0.01, ada: 2 } },
+            { id: 'bep20',     name: 'BNB Smart Chain',    tag: 'BEP20',   color: '#f0b90b', coins: ['bnb','usdt','usdc','eth','ada','doge','trx'], fee: { bnb: 0.0005, usdt: 0.5, usdc: 0.5, eth: 0.0005, ada: 0.5, doge: 2, trx: 1 } },
+            { id: 'trc20',     name: 'TRON',               tag: 'TRC20',   color: '#ff060a', coins: ['trx','usdt','usdc'],                fee: { trx: 1, usdt: 1, usdc: 1 } },
+            { id: 'solana',    name: 'Solana',              tag: 'SOL',     color: '#14f195', coins: ['sol','usdc'],                       fee: { sol: 0.0001, usdc: 0.0001 } },
+            { id: 'polygon',   name: 'Polygon PoS',         tag: 'MATIC',   color: '#8247e5', coins: ['eth','usdc','usdt'],                fee: { eth: 0.0001, usdc: 0.1, usdt: 0.1 } },
+            { id: 'arbitrum',  name: 'Arbitrum One',        tag: 'ARB',     color: '#28a0f0', coins: ['eth','usdc','usdt'],                fee: { eth: 0.0001, usdc: 0.5, usdt: 0.5 } },
+            { id: 'optimism',  name: 'Optimism',            tag: 'OP',      color: '#ff0420', coins: ['eth','usdc','usdt'],                fee: { eth: 0.0001, usdc: 0.3, usdt: 0.3 } },
+            { id: 'base',      name: 'Base',                tag: 'BASE',    color: '#0052ff', coins: ['eth','usdc'],                       fee: { eth: 0.0001, usdc: 0.1 } },
+            { id: 'avalanche', name: 'Avalanche C-Chain',   tag: 'C-CHAIN', color: '#e84142', coins: ['usdc','usdt'],                      fee: { usdc: 0.1, usdt: 0.1 } }
+        ];
+
+        // ================= STATE =================
+        let selectedCoin = coins[0];
+        let selectedNetwork = networks[0];
+        let usdBalance = 0;
+
+        // ================= AUTH & BALANCE =================
+        async function init() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) { window.location.href = 'signin.html'; return; }
+            await fetchBalance();
+            renderCoinDropdown();
+            renderNetworkDropdown();
+            updateUI();
+        }
+
+        async function fetchBalance() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            const { data: profile } = await _supabase
+                .from('profiles').select('balance').eq('id', session.user.id).single();
+            usdBalance = profile?.balance || 0;
+            document.getElementById('availableBalance').textContent = '$' + usdBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            updateCryptoBalance();
+        }
+
+        function updateCryptoBalance() {
+            const cryptoAmt = usdBalance / selectedCoin.price;
+            document.getElementById('cryptoBalance').textContent = cryptoAmt.toFixed(8);
+            document.getElementById('cryptoTicker').textContent = selectedCoin.ticker;
+        }
+
+        // ================= DROPDOWNS =================
+        function toggleDropdown(menuId, triggerId) {
+            const menu = document.getElementById(menuId);
+            const trigger = document.getElementById(triggerId);
+            const isOpen = menu.classList.contains('open');
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+            document.querySelectorAll('.select-trigger').forEach(t => t.classList.remove('active'));
+            if (!isOpen) { menu.classList.add('open'); trigger.classList.add('active'); }
+        }
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+            document.querySelectorAll('.select-trigger').forEach(t => t.classList.remove('active'));
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-select')) closeAllDropdowns();
+        });
+
+        function renderCoinDropdown() {
+            const dropdown = document.getElementById('coinDropdown');
+            dropdown.innerHTML = coins.map(coin => `
+                <div class="dropdown-item ${coin.id === selectedCoin.id ? 'selected' : ''}" onclick="selectCoin('${coin.id}')">
+                    <div class="coin-icon-sm" style="background:${coin.color}">${coin.icon}</div>
+                    <div class="item-info">
+                        <div class="item-name">${coin.name}</div>
+                        <div class="item-meta">${coin.ticker}</div>
+                    </div>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+            `).join('');
+        }
+
+        function renderNetworkDropdown() {
+            const compatibleNetworks = networks.filter(n => n.coins.includes(selectedCoin.id));
+            const dropdown = document.getElementById('networkDropdown');
+            if (!compatibleNetworks.find(n => n.id === selectedNetwork.id)) {
+                selectedNetwork = compatibleNetworks[0];
+            }
+            dropdown.innerHTML = compatibleNetworks.map(net => `
+                <div class="dropdown-item ${net.id === selectedNetwork.id ? 'selected' : ''}" onclick="selectNetwork('${net.id}')">
+                    <div class="network-tag" style="margin:0">
+                        <span class="network-dot" style="background:${net.color}"></span>
+                        ${net.name}
+                    </div>
+                    <div class="item-meta" style="margin-left:auto;margin-right:8px">${net.tag}</div>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+            `).join('');
+        }
+
+        function selectCoin(coinId) {
+            selectedCoin = coins.find(c => c.id === coinId);
+            renderCoinDropdown();
+            renderNetworkDropdown();
+            updateUI();
+            closeAllDropdowns();
+            validateAddress();
+            calculateSummary();
+        }
+
+        function selectNetwork(networkId) {
+            selectedNetwork = networks.find(n => n.id === networkId);
+            renderNetworkDropdown();
+            updateUI();
+            closeAllDropdowns();
+            validateAddress();
+            calculateSummary();
+        }
+
+        function updateUI() {
+            document.getElementById('selectedCoinDisplay').innerHTML = `
+                <div class="coin-icon-sm" style="background:${selectedCoin.color}">${selectedCoin.icon}</div>
+                <div class="selected-text">
+                    <div class="selected-name">${selectedCoin.name}</div>
+                    <div class="selected-ticker">${selectedCoin.ticker}</div>
+                </div>`;
+            document.getElementById('selectedNetworkDisplay').innerHTML = `
+                <div class="network-tag">
+                    <span class="network-dot" style="background:${selectedNetwork.color}"></span>
+                    ${selectedNetwork.name}
+                </div>`;
+            updateCryptoBalance();
+            document.getElementById('minWithdraw').textContent = selectedCoin.min;
+            document.getElementById('minTicker').textContent = selectedCoin.ticker;
+        }
+
+        // ================= ADDRESS =================
+        async function pasteAddress() {
+            try {
+                const text = await navigator.clipboard.readText();
+                const input = document.getElementById('addressInput');
+                input.value = text.trim();
+                validateAddress();
+            } catch (err) {
+                document.getElementById('addressInput').focus();
+            }
+        }
+
+        function validateAddress() {
+            const input = document.getElementById('addressInput');
+            const msg = document.getElementById('addressValidation');
+            const address = input.value.trim();
+            if (!address) { input.className = ''; msg.textContent = ''; msg.className = 'validation-msg'; checkFormValidity(); return; }
+            let valid = false;
+            const netId = selectedNetwork.id;
+            if (netId === 'bitcoin') { valid = /^(1|3|bc1)[a-zA-Z0-9]{25,62}$/.test(address); }
+            else if (['erc20','bep20','polygon','arbitrum','optimism','base','avalanche'].includes(netId)) { valid = /^0x[a-fA-F0-9]{40}$/.test(address); }
+            else if (netId === 'trc20') { valid = /^T[a-zA-Z0-9]{33}$/.test(address); }
+            else if (netId === 'solana') { valid = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address); }
+            if (valid) { input.className = 'valid'; msg.textContent = 'Valid address format'; msg.className = 'validation-msg valid'; }
+            else { input.className = 'invalid'; msg.textContent = 'Invalid address for this network'; msg.className = 'validation-msg invalid'; }
+            checkFormValidity();
+        }
+
+        // ================= AMOUNT =================
+        function setMaxAmount() {
+            const fee = getFee();
+            const maxCrypto = Math.max(0, (usdBalance / selectedCoin.price) - fee);
+            const input = document.getElementById('amountInput');
+            input.value = maxCrypto > 0 ? maxCrypto.toFixed(8) : '0';
+            calculateSummary();
+        }
+
+        function getFee() { return selectedNetwork.fee[selectedCoin.id] || 0; }
+
+        function calculateSummary() {
+            const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+            const fee = getFee();
+            const receive = Math.max(0, amount - fee);
+            const usdValue = amount * selectedCoin.price;
+            document.getElementById('usdEquivalent').textContent = '≈ $' + usdValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('receiveAmount').textContent = receive.toFixed(8) + ' ' + selectedCoin.ticker;
+            checkFormValidity();
+        }
+
+        function checkFormValidity() {
+            const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+            const address = document.getElementById('addressInput').value.trim();
+            const fee = getFee();
+            const usdValue = amount * selectedCoin.price;
+            const isValid =
+                address.length > 0 &&
+                document.getElementById('addressInput').className !== 'invalid' &&
+                amount > 0 &&
+                amount >= selectedCoin.min &&
+                (usdValue + (fee * selectedCoin.price)) <= usdBalance;
+            document.getElementById('withdrawBtn').disabled = !isValid;
+        }
+
+        // ================= SUBMIT - REDIRECT TO REVIEW PAGE =================
+        function submitWithdrawal() {
+            const amount = document.getElementById('amountInput').value;
+            const address = document.getElementById('addressInput').value.trim();
+            const params = new URLSearchParams({
+                amount: amount,
+                address: address,
+                coin: selectedCoin.name,
+                ticker: selectedCoin.ticker,
+                network: selectedNetwork.name,
+                netColor: selectedNetwork.color,
+                price: selectedCoin.price
+            });
+            window.location.href = `confirm.html?${params.toString()}`;
+        }
+
+        // ================= INIT =================
+        init();
+    </script>
+</body>
+</html>
