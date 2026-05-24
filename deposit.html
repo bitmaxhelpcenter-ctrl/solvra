@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit - Solvra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue:       #1B3FEE;
+            --blue-mid:   #3b5bdb;
+            --blue-light: #4c6ef5;
+            --blue-glow:  rgba(76,110,245,0.18);
+            --green:      #22c55e;
+            --amber:      #f59e0b;
+            --red:        #ef4444;
+            --bg:         #f0f3ff;
+            --surface:    #ffffff;
+            --surface2:   #f8faff;
+            --border:     #e4e9ff;
+            --border2:    #d0d9ff;
+            --text:       #0b1437;
+            --text2:      #4a5578;
+            --text3:      #8a94b8;
+            --radius-xl:  22px;
+            --radius-lg:  16px;
+            --radius-md:  12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated mesh background ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 20% 10%, rgba(76,110,245,0.11) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(99,102,241,0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 30% at 60% 30%, rgba(27,63,238,0.07) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Floating orbs (decorative) ── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(60px);
+            opacity: 0.5;
+            animation: orbFloat 12s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 240px; height: 240px;
+            background: radial-gradient(circle, rgba(76,110,245,0.22), transparent 70%);
+            top: -60px; left: -60px;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, rgba(99,102,241,0.18), transparent 70%);
+            bottom: 10%; right: -50px;
+            animation-delay: -5s;
+        }
+        .orb-3 {
+            width: 130px; height: 130px;
+            background: radial-gradient(circle, rgba(27,63,238,0.14), transparent 70%);
+            top: 50%; left: 10px;
+            animation-delay: -9s;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            33%       { transform: translateY(-18px) scale(1.04); }
+            66%       { transform: translateY(12px) scale(0.97); }
+        }
+
+        /* ── Container ── */
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: transparent;
+            min-height: 100vh;
+            padding: 24px 18px 52px;
+            position: relative;
+            overflow-x: hidden;
+            z-index: 1;
+        }
+
+        /* ── Live badge in top-right ── */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.3);
+            border-radius: 20px;
+            padding: 5px 11px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #15803d;
+            letter-spacing: 0.3px;
+        }
+        .live-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: livePulse 1.8s ease-in-out infinite;
+        }
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
+            50%       { opacity: 0.7; box-shadow: 0 0 0 5px rgba(34,197,94,0); }
+        }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 10;
+            animation: fadeInDown 0.5s ease-out both;
+        }
+
+        .back-btn {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text2);
+            box-shadow: 0 2px 8px rgba(27,63,238,0.07);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            background: var(--surface2);
+            border-color: var(--blue-light);
+            color: var(--blue);
+            transform: translateX(-2px);
+            box-shadow: 0 4px 14px rgba(76,110,245,0.18);
+        }
+
+        .header-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            letter-spacing: -0.3px;
+        }
+
+        /* ── Warning Banner ── */
+        .warn-banner {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1.5px solid #bfdbfe;
+            border-radius: var(--radius-xl);
+            padding: 15px 16px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            animation: fadeInUp 0.45s ease-out 0.05s both;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 12px rgba(59,130,246,0.08);
+        }
+        .warn-banner::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+            border-radius: 4px 0 0 4px;
+        }
+        .warn-banner svg {
+            width: 20px; height: 20px;
+            color: #3b82f6;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .warn-banner h3 {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #1e40af;
+            margin-bottom: 3px;
+            letter-spacing: -0.1px;
+        }
+        .warn-banner p {
+            font-size: 12.5px;
+            color: #3b82f6;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+
+        /* ── Section Label ── */
+        .section-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--text3);
+            margin-bottom: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* ── Select Coin Section ── */
+        .select-section {
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 50;
+            animation: fadeInUp 0.45s ease-out 0.1s both;
+        }
+
+        /* ── Custom Dropdown ── */
+        .custom-select { position: relative; width: 100%; }
+
+        .select-trigger {
+            width: 100%;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            user-select: none;
+            box-shadow: 0 2px 12px rgba(27,63,238,0.06);
+        }
+        .select-trigger:hover {
+            border-color: var(--border2);
+            box-shadow: 0 6px 20px rgba(76,110,245,0.10);
+        }
+        .select-trigger.active {
+            border-color: var(--blue-light);
+            box-shadow: 0 0 0 3px rgba(76,110,245,0.12), 0 6px 20px rgba(76,110,245,0.12);
+        }
+
+        .selected-content { display: flex; align-items: center; gap: 12px; }
+
+        .coin-icon {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        .coin-icon::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.35);
+        }
+
+        .selected-text { display: flex; flex-direction: column; }
+        .selected-name { font-size: 15px; font-weight: 700; color: var(--text); }
+        .selected-ticker { font-size: 12px; color: var(--text3); font-weight: 500; margin-top: 1px; }
+
+        .chevron {
+            width: 18px; height: 18px;
+            color: var(--text3);
+            transition: transform 0.22s ease, color 0.22s ease;
+            flex-shrink: 0;
+        }
+        .select-trigger.active .chevron { transform: rotate(180deg); color: var(--blue-light); }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0; right: 0;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 16px 48px rgba(27,63,238,0.14), 0 4px 12px rgba(0,0,0,0.06);
+            border: 1.5px solid var(--border);
+            z-index: 200;
+            max-height: 300px;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateY(-10px) scale(0.97);
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dropdown-menu.open {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+
+        .dropdown-item {
+            padding: 13px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border-bottom: 1px solid var(--surface2);
+        }
+        .dropdown-item:last-child { border-bottom: none; }
+        .dropdown-item:hover { background: var(--surface2); }
+        .dropdown-item.selected { background: rgba(76,110,245,0.06); }
+        .dropdown-item .item-info { flex: 1; }
+        .dropdown-item .item-name { font-size: 14.5px; font-weight: 700; color: var(--text); }
+        .dropdown-item .item-meta { font-size: 12px; color: var(--text3); font-weight: 500; margin-top: 1px; }
+
+        .check-icon {
+            width: 18px; height: 18px;
+            color: var(--blue-light);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .dropdown-item.selected .check-icon { opacity: 1; }
+
+        /* ── Details Card ── */
+        .details-card {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 0;
+            box-shadow: 0 4px 24px rgba(27,63,238,0.08), 0 1px 4px rgba(0,0,0,0.04);
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.45s ease-out 0.15s both;
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+        }
+
+        /* Gradient top bar on card */
+        .details-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue), #818cf8, var(--blue-light));
+            background-size: 200% 100%;
+            animation: shimmerBar 3s linear infinite;
+        }
+        @keyframes shimmerBar {
+            0%   { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        /* Scan-line sweep across card */
+        .details-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+            animation: scanSweep 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes scanSweep {
+            0%   { left: -60%; }
+            100% { left: 110%; }
+        }
+
+        .details-inner { padding: 22px 22px 22px; }
+
+        .details-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1.5px solid var(--border);
+        }
+
+        .details-header-icon {
+            width: 46px; height: 46px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-mid));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 6px 18px rgba(76,110,245,0.32);
+            flex-shrink: 0;
+        }
+
+        .details-header-text h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.2px;
+        }
+        .details-header-text p {
+            font-size: 12.5px;
+            color: var(--text3);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* ── Detail Group ── */
+        .detail-group { margin-bottom: 18px; }
+        .detail-group:last-child { margin-bottom: 0; }
+
+        .detail-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .detail-label svg { width: 13px; height: 13px; color: var(--text3); }
+
+        /* Address box */
+        .address-box {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 13px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            transition: all 0.22s ease;
+        }
+        .address-box:hover {
+            border-color: var(--blue-light);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(76,110,245,0.09);
+        }
+
+        .address-text {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #334155;
+            word-break: break-all;
+            line-height: 1.55;
+            letter-spacing: 0.2px;
+        }
+
+        .copy-btn {
+            background: var(--surface);
+            border: 1.5px solid var(--border2);
+            border-radius: 10px;
+            padding: 7px 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: var(--blue-light);
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+        .copy-btn:hover {
+            background: var(--blue-light);
+            color: #ffffff;
+            border-color: var(--blue-light);
+            box-shadow: 0 6px 16px rgba(76,110,245,0.28);
+            transform: translateY(-1px);
+        }
+        .copy-btn:active { transform: scale(0.95); }
+        .copy-btn.copied {
+            background: var(--green);
+            color: #ffffff;
+            border-color: var(--green);
+            box-shadow: 0 6px 16px rgba(34,197,94,0.28);
+        }
+
+        /* ── Network Badge ── */
+        .network-row { display: flex; align-items: center; gap: 10px; }
+
+        .network-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1.5px solid #bfdbfe;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #1e40af;
+            letter-spacing: -0.1px;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+        }
+
+        .network-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 0 rgba(34,197,94,0.4);
+            animation: netPulse 2s ease-in-out infinite;
+        }
+        @keyframes netPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.45); }
+            70%  { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
+            100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+        }
+
+        /* ── Amount Section ── */
+        .amount-section {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 22px;
+            box-shadow: 0 4px 24px rgba(27,63,238,0.08), 0 1px 4px rgba(0,0,0,0.04);
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.45s ease-out 0.2s both;
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+        }
+        .amount-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--green), #4ade80, var(--green));
+            background-size: 200% 100%;
+            animation: shimmerBar 3s linear infinite;
+            animation-delay: 1.5s;
+        }
+
+        .amount-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            margin-bottom: 10px;
+        }
+
+        .amount-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .amount-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px 70px 16px 18px;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            outline: none;
+            transition: all 0.22s ease;
+            font-family: 'Inter', inherit;
+            letter-spacing: -0.5px;
+        }
+        .amount-input::placeholder {
+            color: var(--text3);
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0;
+        }
+        .amount-input:focus {
+            border-color: var(--blue-light);
+            box-shadow: 0 0 0 3px rgba(76,110,245,0.12);
+            background: var(--surface);
+        }
+
+        /* ── Fiat Currency Picker ── */
+        .curr-picker {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--surface);
+            border: 1.5px solid var(--border2);
+            border-radius: 10px;
+            padding: 6px 10px;
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--blue-light);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .curr-picker:hover {
+            background: var(--surface2);
+            border-color: var(--blue-light);
+            box-shadow: 0 3px 10px rgba(76,110,245,0.14);
+        }
+        .curr-picker.open {
+            border-color: var(--blue-light);
+            box-shadow: 0 0 0 3px rgba(76,110,245,0.12);
+        }
+        .curr-picker svg { transition: transform 0.2s ease; }
+        .curr-picker.open svg { transform: rotate(180deg); }
+
+        .curr-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 12px 36px rgba(27,63,238,0.13), 0 3px 8px rgba(0,0,0,0.06);
+            z-index: 300;
+            min-width: 130px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-8px) scale(0.96);
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .curr-dropdown.open {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+        .curr-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 14px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.15s ease;
+            border-bottom: 1px solid var(--surface2);
+            gap: 10px;
+        }
+        .curr-option:last-child { border-bottom: none; }
+        .curr-option:hover { background: var(--surface2); }
+        .curr-option.selected { background: rgba(76,110,245,0.06); color: var(--blue-light); }
+        .curr-option .curr-name { font-size: 11px; font-weight: 500; color: var(--text3); }
+        .curr-check { width: 15px; height: 15px; color: var(--blue-light); opacity: 0; flex-shrink: 0; }
+        .curr-option.selected .curr-check { opacity: 1; }
+
+        /* ── Amount Warning ── */
+        .amount-warning {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            background: #fff7ed;
+            border: 1.5px solid #fed7aa;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+        }
+        .amount-warning svg { width: 15px; height: 15px; color: var(--amber); flex-shrink: 0; margin-top: 1px; }
+        .amount-warning p { font-size: 12px; color: #92400e; font-weight: 600; line-height: 1.55; }
+
+        /* ── Submit Button ── */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            font-size: 15.5px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(27,63,238,0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: -0.1px;
+            font-family: 'Inter', inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Shimmer sweep on button */
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+            transition: none;
+        }
+        .submit-btn:not(:disabled):hover::before {
+            animation: btnShimmer 0.6s ease-out forwards;
+        }
+        @keyframes btnShimmer {
+            0%   { left: -60%; }
+            100% { left: 110%; }
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(27,63,238,0.42);
+        }
+        .submit-btn:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+        .submit-btn:disabled {
+            background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+            box-shadow: none;
+            cursor: not-allowed;
+            color: #f8fafc;
+            opacity: 0.7;
+        }
+
+        /* ── Confirmation Modal ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11,20,55,0.65);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+        .modal-card {
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 40px 30px 36px;
+            width: 90%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 24px 80px rgba(27,63,238,0.22), 0 4px 16px rgba(0,0,0,0.12);
+            transform: translateY(24px) scale(0.94);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1.5px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .modal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue), #818cf8, var(--blue-light));
+        }
+        .modal-overlay.open .modal-card { transform: translateY(0) scale(1); }
+
+        .modal-icon {
+            width: 76px; height: 76px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 22px;
+            animation: pulseRing 2.5s ease-out infinite;
+            box-shadow: 0 0 0 0 rgba(59,130,246,0.3);
+            position: relative;
+        }
+        .modal-icon::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px dashed rgba(59,130,246,0.2);
+            animation: spinSlow 10s linear infinite;
+        }
+        @keyframes spinSlow { to { transform: rotate(360deg); } }
+        @keyframes pulseRing {
+            0%   { box-shadow: 0 0 0 0 rgba(59,130,246,0.35); }
+            70%  { box-shadow: 0 0 0 18px rgba(59,130,246,0); }
+            100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+        }
+        .modal-icon svg { width: 32px; height: 32px; color: #3b82f6; }
+
+        .modal-title {
+            font-size: 21px;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        .modal-text {
+            font-size: 14px;
+            color: var(--text2);
+            line-height: 1.65;
+            font-weight: 500;
+            margin-bottom: 26px;
+        }
+        .modal-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            padding: 15px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px rgba(27,63,238,0.32);
+            font-family: 'Inter', inherit;
+        }
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(27,63,238,0.4);
+        }
+
+        /* ── Bottom Note ── */
+        .bottom-note {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 15px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.45s ease-out 0.25s both;
+            border: 1.5px solid var(--border);
+            box-shadow: 0 2px 10px rgba(27,63,238,0.05);
+        }
+        .bottom-note svg { width: 16px; height: 16px; color: var(--amber); flex-shrink: 0; margin-top: 2px; }
+        .bottom-note p { font-size: 12px; color: var(--text2); line-height: 1.65; font-weight: 500; }
+
+        /* ── Scrollbar ── */
+        .dropdown-menu::-webkit-scrollbar { width: 5px; }
+        .dropdown-menu::-webkit-scrollbar-track { background: transparent; }
+        .dropdown-menu::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+        /* ── Animations ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Pulse (network dot original compat) ── */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative floating orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="rate.html" class="back-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </a>
+            <div class="header-title">Deposit</div>
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                Live
+            </div>
+        </div>
+
+        <!-- Warning Banner -->
+        <div class="warn-banner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div>
+                <h3>Send Only to Correct Network</h3>
+                <p>Sending funds to the wrong network will result in permanent loss. Always verify the network before transferring.</p>
+            </div>
+        </div>
+
+        <!-- Select Coin -->
+        <div class="select-section">
+            <div class="section-label">Select Asset</div>
+            <div class="custom-select" id="coinSelectWrapper">
+                <div class="select-trigger" id="coinTrigger" onclick="toggleDropdown()">
+                    <div class="selected-content" id="selectedCoinDisplay">
+                        <div class="coin-icon" style="background:#2775ca">U</div>
+                        <div class="selected-text">
+                            <div class="selected-name">USD Coin</div>
+                            <div class="selected-ticker">USDC</div>
+                        </div>
+                    </div>
+                    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+                <div class="dropdown-menu" id="coinDropdown"></div>
+            </div>
+        </div>
+
+        <!-- Deposit Details -->
+        <div class="details-card" id="detailsCard">
+            <div class="details-inner">
+                <div class="details-header">
+                    <div class="details-header-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div class="details-header-text">
+                        <h3>Deposit Address</h3>
+                        <p>Send only <span id="coinName">USDC</span> to this address</p>
+                    </div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                        Wallet Address
+                    </div>
+                    <div class="address-box">
+                        <span class="address-text" id="walletAddress">0x11168D3E99d2815E8c2546E0b91109E2f48741D8</span>
+                        <button class="copy-btn" id="copyBtn" onclick="copyAddress()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        Network
+                    </div>
+                    <div class="network-row">
+                        <span class="network-badge">
+                            <span class="network-dot"></span>
+                            <span id="networkName">Arbitrum (ARB)</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Amount Sent Section -->
+        <div class="amount-section">
+            <div class="amount-label">Amount Sent</div>
+            <div class="amount-input-wrap">
+                <input type="number" class="amount-input" id="amountInput" placeholder="Enter amount you sent" step="any" min="0" oninput="checkForm()" style="padding-right:90px">
+                <div class="curr-picker" id="currPicker" onclick="toggleCurrDropdown(event)">
+                    <span id="currLabel">USD</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    <div class="curr-dropdown" id="currDropdown"></div>
+                </div>
+            </div>
+
+            <!-- Warning Caption -->
+            <div class="amount-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <p>Enter the exact amount you sent. Inaccurate or falsified submissions will be rejected.</p>
+            </div>
+
+            <button class="submit-btn" id="submitBtn" onclick="submitDeposit()" disabled>
+                <span>I Have Sent the Funds</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+
+        <!-- Bottom Note -->
+        <div class="bottom-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <p>Deposits typically arrive within 5-30 minutes depending on network congestion. Minimum deposit varies by asset.</p>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div class="modal-title">Payment Under Review</div>
+            <div class="modal-text">
+                Your deposit is being reviewed for confirmation. Once verified, your gas wallet will be funded automatically.
+            </div>
+            <button class="modal-btn" onclick="closeModal()">Got It</button>
+        </div>
+    </div>
+
+    <script>
+        // ================= SUPABASE CONFIG =================
+        const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
+        const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // ================= DATA =================
+        const depositCoins = [
+            {
+                id: 'usdc',
+                name: 'USD Coin',
+                ticker: 'USDC',
+                icon: 'U',
+                color: '#2775ca',
+                address: '0x11168D3E99d2815E8c2546E0b91109E2f48741D8',
+                network: 'Arbitrum (ARB)',
+                min: '10 USDC'
+            },
+            {
+                id: 'usdt',
+                name: 'Tether',
+                ticker: 'USDT',
+                icon: '₮',
+                color: '#26a17b',
+                address: '0x11168D3E99d2815E8c2546E0b91109E2f48741D8',
+                network: 'ERC20',
+                min: '10 USDT'
+            },
+            {
+                id: 'eth',
+                name: 'Ethereum',
+                ticker: 'ETH',
+                icon: '◆',
+                color: '#6366f1',
+                address: '0x11168D3E99d2815E8c2546E0b91109E2f48741D8',
+                network: 'ERC20',
+                min: '0.005 ETH'
+            },
+            {
+                id: 'btc',
+                name: 'Bitcoin',
+                ticker: 'BTC',
+                icon: '₿',
+                color: '#f7931a',
+                address: 'bc1qa733xj7w9jlvf6tsmstuywuwud5cphplyqwwnt',
+                network: 'Bitcoin',
+                min: '0.0005 BTC'
+            }
+        ];
+
+        let selectedCoin = depositCoins[0];
+
+        // ================= AUTH CHECK =================
+        async function checkAuth() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'signin.html';
+                return;
+            }
+            renderDropdown();
+            updateDetails();
+        }
+
+        // ================= DROPDOWN =================
+        function toggleDropdown() {
+            const menu = document.getElementById('coinDropdown');
+            const trigger = document.getElementById('coinTrigger');
+            const isOpen = menu.classList.contains('open');
+            
+            if (!isOpen) {
+                menu.classList.add('open');
+                trigger.classList.add('active');
+            } else {
+                closeDropdown();
+            }
+        }
+
+        function closeDropdown() {
+            document.getElementById('coinDropdown').classList.remove('open');
+            document.getElementById('coinTrigger').classList.remove('active');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-select')) closeDropdown();
+        });
+
+        function renderDropdown() {
+            const dropdown = document.getElementById('coinDropdown');
+            dropdown.innerHTML = depositCoins.map(coin => `
+                <div class="dropdown-item ${coin.id === selectedCoin.id ? 'selected' : ''}" onclick="selectCoin('${coin.id}')">
+                    <div class="coin-icon" style="background:${coin.color}">${coin.icon}</div>
+                    <div class="item-info">
+                        <div class="item-name">${coin.name}</div>
+                        <div class="item-meta">${coin.ticker} • ${coin.network}</div>
+                    </div>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+            `).join('');
+        }
+
+        function selectCoin(coinId) {
+            selectedCoin = depositCoins.find(c => c.id === coinId);
+            renderDropdown();
+            updateDetails();
+            closeDropdown();
+        }
+
+        function updateDetails() {
+            document.getElementById('selectedCoinDisplay').innerHTML = `
+                <div class="coin-icon" style="background:${selectedCoin.color}">${selectedCoin.icon}</div>
+                <div class="selected-text">
+                    <div class="selected-name">${selectedCoin.name}</div>
+                    <div class="selected-ticker">${selectedCoin.ticker}</div>
+                </div>
+            `;
+
+            document.getElementById('coinName').textContent = selectedCoin.ticker;
+            document.getElementById('walletAddress').textContent = selectedCoin.address;
+            document.getElementById('networkName').textContent = selectedCoin.network;
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.classList.remove('copied');
+            copyBtn.innerHTML = `
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>Copy</span>
+            `;
+
+            checkForm();
+        }
+
+        // ================= COPY =================
+        async function copyAddress() {
+            const address = selectedCoin.address;
+            const btn = document.getElementById('copyBtn');
+            
+            try {
+                await navigator.clipboard.writeText(address);
+                
+                btn.classList.add('copied');
+                btn.innerHTML = `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                    <span>Copied</span>
+                `;
+                
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = `
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <span>Copy</span>
+                    `;
+                }, 2000);
+            } catch (err) {
+                const textarea = document.createElement('textarea');
+                textarea.value = address;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                btn.classList.add('copied');
+                btn.innerHTML = `<span>Copied</span>`;
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = `<span>Copy</span>`;
+                }, 2000);
+            }
+        }
+
+        // ================= FORM & SUBMIT =================
+        function checkForm() {
+            const amount = document.getElementById('amountInput').value;
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = !amount || parseFloat(amount) <= 0;
+        }
+
+        function submitDeposit() {
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<span>Verifying...</span>`;
+
+            setTimeout(() => {
+                btn.innerHTML = `
+                    <span>I Have Sent the Funds</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                `;
+                btn.disabled = false;
+                document.getElementById('modalOverlay').classList.add('open');
+            }, 1500);
+        }
+
+        function closeModal(e) {
+            if (!e || e.target === document.getElementById('modalOverlay')) {
+                document.getElementById('modalOverlay').classList.remove('open');
+            }
+        }
+
+        // ================= CURRENCY PICKER =================
+        const currencies = [
+            { code: 'USD', name: 'US Dollar' },
+            { code: 'EUR', name: 'Euro' },
+            { code: 'CAD', name: 'Canadian Dollar' },
+            { code: 'GBP', name: 'British Pound' },
+            { code: 'JPY', name: 'Japanese Yen' }
+        ];
+        let selectedCurrency = currencies[0];
+
+        function renderCurrDropdown() {
+            document.getElementById('currDropdown').innerHTML = currencies.map(c => `
+                <div class="curr-option ${c.code === selectedCurrency.code ? 'selected' : ''}" onclick="selectCurrency('${c.code}', event)">
+                    <div>
+                        <div>${c.code}</div>
+                        <div class="curr-name">${c.name}</div>
+                    </div>
+                    <svg class="curr-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+            `).join('');
+        }
+
+        function toggleCurrDropdown(e) {
+            e.stopPropagation();
+            const picker = document.getElementById('currPicker');
+            const dropdown = document.getElementById('currDropdown');
+            const isOpen = dropdown.classList.contains('open');
+            // Close coin dropdown first
+            closeDropdown();
+            if (!isOpen) {
+                dropdown.classList.add('open');
+                picker.classList.add('open');
+            } else {
+                dropdown.classList.remove('open');
+                picker.classList.remove('open');
+            }
+        }
+
+        function selectCurrency(code, e) {
+            e.stopPropagation();
+            selectedCurrency = currencies.find(c => c.code === code);
+            document.getElementById('currLabel').textContent = selectedCurrency.code;
+            renderCurrDropdown();
+            document.getElementById('currDropdown').classList.remove('open');
+            document.getElementById('currPicker').classList.remove('open');
+        }
+
+        // Close currency dropdown on outside click
+        document.addEventListener('click', () => {
+            document.getElementById('currDropdown').classList.remove('open');
+            document.getElementById('currPicker').classList.remove('open');
+        });
+
+        renderCurrDropdown();
+
+        checkAuth();
+    </script>
+</body>
+</html>
