@@ -478,22 +478,23 @@
             border-top: 1px solid rgba(255,255,255,0.12);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 10px;
             animation: fadeInUp 0.7s ease-out 0.25s both;
         }
         .countdown-label {
             font-size: 11px;
             font-weight: 700;
-            color: rgba(255,255,255,0.55);
+            color: rgba(255,255,255,0.65);
             text-transform: uppercase;
             letter-spacing: 1.2px;
             white-space: nowrap;
+            line-height: 1.3;
         }
         .countdown-digits {
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-wrap: wrap;
         }
         .countdown-unit {
             display: flex;
@@ -502,18 +503,19 @@
             min-width: 36px;
         }
         .countdown-num {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 800;
-            color: #fff;
+            color: #fb7185;
             line-height: 1;
             font-variant-numeric: tabular-nums;
             letter-spacing: -0.5px;
         }
         .countdown-sep {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
-            color: rgba(255,255,255,0.3);
-            margin-top: -4px;
+            color: rgba(255,255,255,0.25);
+            margin-top: -10px;
+            align-self: flex-start;
         }
         .countdown-name {
             font-size: 9px;
@@ -523,8 +525,6 @@
             letter-spacing: 0.8px;
             margin-top: 3px;
         }
-        .countdown-urgent .countdown-num { color: #fbbf24; }
-        .countdown-critical .countdown-num { color: #f87171; }
     </style>
 </head>
 <body>
@@ -696,14 +696,11 @@
         function getNextFridayDeadline() {
             const now = new Date();
             const day = now.getDay(); // 0=Sun, 5=Fri
-            const hour = now.getHours();
-            const min = now.getMinutes();
-            const sec = now.getSeconds();
-            const ms = now.getMilliseconds();
 
             // Target: next Friday at 23:59:59
             let daysUntilFriday = (5 - day + 7) % 7;
-            if (daysUntilFriday === 0 && (hour > 23 || (hour === 23 && min > 59))) {
+            // If today is Friday, always count to NEXT Friday (7 days from now)
+            if (daysUntilFriday === 0) {
                 daysUntilFriday = 7;
             }
 
@@ -730,10 +727,7 @@
             document.getElementById('cd-mins').textContent = pad(mins);
             document.getElementById('cd-secs').textContent = pad(secs);
 
-            const wrap = document.getElementById('countdownWrap');
-            wrap.classList.remove('countdown-urgent', 'countdown-critical');
-            if (days === 0) wrap.classList.add('countdown-critical');
-            else if (days <= 1) wrap.classList.add('countdown-urgent');
+            // Color stays consistent salmon for professional fintech look
         }
 
         updateCountdown();
