@@ -470,6 +470,61 @@
             from { opacity: 0; transform: translateY(-12px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Countdown Timer */
+        .countdown-wrap {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeInUp 0.7s ease-out 0.25s both;
+        }
+        .countdown-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.55);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            white-space: nowrap;
+        }
+        .countdown-digits {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .countdown-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 36px;
+        }
+        .countdown-num {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.5px;
+        }
+        .countdown-sep {
+            font-size: 16px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.3);
+            margin-top: -4px;
+        }
+        .countdown-name {
+            font-size: 9px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+        }
+        .countdown-urgent .countdown-num { color: #fbbf24; }
+        .countdown-critical .countdown-num { color: #f87171; }
     </style>
 </head>
 <body>
@@ -489,10 +544,24 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 Gas Balance
             </div>
-            <div class="balance-amount" id="gasBalance">$70.00</div>
+            <div class="balance-amount" id="gasBalance">€70.00</div>
             <div class="balance-sub">
                 <span class="dot"></span>
                 Protocol ready for activation
+        </div>
+
+            <!-- Weekly Gas Fee Countdown -->
+            <div class="countdown-wrap" id="countdownWrap">
+                <span class="countdown-label">Next Fee Due</span>
+                <div class="countdown-digits" id="countdownDigits">
+                    <div class="countdown-unit"><span class="countdown-num" id="cd-days">--</span><span class="countdown-name">Days</span></div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit"><span class="countdown-num" id="cd-hours">--</span><span class="countdown-name">Hrs</span></div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit"><span class="countdown-num" id="cd-mins">--</span><span class="countdown-name">Min</span></div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit"><span class="countdown-num" id="cd-secs">--</span><span class="countdown-name">Sec</span></div>
+                </div>
             </div>
             <svg class="balance-chart" viewBox="0 0 140 70" preserveAspectRatio="none">
                 <defs>
@@ -610,7 +679,7 @@
             // Gas balance (this would come from a separate gas_wallet table in production)
             // For now, showing a static low balance to encourage deposit
             const gasBalance = 70.00;
-            document.getElementById('gasBalance').textContent = '$' + gasBalance.toLocaleString('en-US', {
+            document.getElementById('gasBalance').textContent = '€' + gasBalance.toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
@@ -622,6 +691,53 @@
             document.getElementById('pendingTime').textContent = '--';
         }
 
+
+        // ================= COUNTDOWN TIMER =================
+        function getNextFridayDeadline() {
+            const now = new Date();
+            const day = now.getDay(); // 0=Sun, 5=Fri
+            const hour = now.getHours();
+            const min = now.getMinutes();
+            const sec = now.getSeconds();
+            const ms = now.getMilliseconds();
+
+            // Target: next Friday at 23:59:59
+            let daysUntilFriday = (5 - day + 7) % 7;
+            if (daysUntilFriday === 0 && (hour > 23 || (hour === 23 && min > 59))) {
+                daysUntilFriday = 7;
+            }
+
+            const target = new Date(now);
+            target.setDate(now.getDate() + daysUntilFriday);
+            target.setHours(23, 59, 59, 999);
+            return target;
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const target = getNextFridayDeadline();
+            let diff = target - now;
+            if (diff < 0) diff = 0;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            const pad = n => String(n).padStart(2, '0');
+            document.getElementById('cd-days').textContent = pad(days);
+            document.getElementById('cd-hours').textContent = pad(hours);
+            document.getElementById('cd-mins').textContent = pad(mins);
+            document.getElementById('cd-secs').textContent = pad(secs);
+
+            const wrap = document.getElementById('countdownWrap');
+            wrap.classList.remove('countdown-urgent', 'countdown-critical');
+            if (days === 0) wrap.classList.add('countdown-critical');
+            else if (days <= 1) wrap.classList.add('countdown-urgent');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
         checkAuth();
     </script>
 </body>
