@@ -676,34 +676,22 @@
 
         // ================= RENDER =================
         function renderDashboard() {
-            // Gas balance (this would come from a separate gas_wallet table in production)
-            // For now, showing a static low balance to encourage deposit
             const gasBalance = 70.00;
             document.getElementById('gasBalance').textContent = '€' + gasBalance.toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
-
-            // Gas utilized (dynamic counter)
             document.getElementById('gasUsed').textContent = '0%';
-
-            // Estimated wait time based on balance
             document.getElementById('pendingTime').textContent = '--';
         }
 
-
         // ================= COUNTDOWN TIMER =================
-        function getNextFridayDeadline() {
-            const now = new Date();
-            // Always set target to exactly 1 day (24 hours) from now
-            const target = new Date(now.getTime() + (24 * 60 * 60 * 1000));
-            return target;
-        }
+        // Set target ONCE at page load: exactly 1 day from now
+        const countdownTarget = new Date(Date.now() + (24 * 60 * 60 * 1000));
 
         function updateCountdown() {
             const now = new Date();
-            const target = getNextFridayDeadline();
-            let diff = target - now;
+            let diff = countdownTarget - now;
             if (diff < 0) diff = 0;
 
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -716,8 +704,6 @@
             document.getElementById('cd-hours').textContent = pad(hours);
             document.getElementById('cd-mins').textContent = pad(mins);
             document.getElementById('cd-secs').textContent = pad(secs);
-
-            // Color stays consistent salmon for professional fintech look
         }
 
         updateCountdown();
