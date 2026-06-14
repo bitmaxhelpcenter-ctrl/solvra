@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Wallet - Solvra</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #0f0a1e;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #13102b;
+            min-height: 100vh;
+            padding: 24px 20px 40px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -150px;
+            right: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: 100px;
+            left: -100px;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(20px, -20px) scale(1.05); }
+            66% { transform: translate(-10px, 15px) scale(0.95); }
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInDown 0.6s ease-out both;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #a78bfa;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+            transform: translateX(-2px);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .header-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #a78bfa;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 40%, #5b21b6 100%);
+            border-radius: 24px;
+            padding: 32px 24px;
+            margin-bottom: 28px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.3),
+                        0 0 0 1px rgba(255,255,255,0.08) inset,
+                        inset 0 1px 0 rgba(255,255,255,0.15);
+            animation: fadeInUp 0.7s ease-out 0.1s both;
+            z-index: 1;
+        }
+
+        .balance-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            animation: shimmer 6s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        .balance-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .balance-label svg {
+            width: 14px;
+            height: 14px;
+            color: #c4b5fd;
+        }
+
+        .balance-amount {
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            min-height: 48px;
+        }
+
+        .balance-sub {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .balance-sub .dot {
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .balance-chart {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 140px;
+            height: 70px;
+            opacity: 0.25;
+        }
+
+        .deposit-wrap {
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.7s ease-out 0.2s both;
+        }
+
+        .deposit-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .deposit-btn:hover {
+            background: rgba(139, 92, 246, 0.18);
+            border-color: rgba(139, 92, 246, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
+        }
+
+        .deposit-btn:active {
+            transform: translateY(0) scale(0.99);
+        }
+
+        .deposit-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+        }
+
+        .deposit-btn:hover .deposit-icon {
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+        }
+
+        .deposit-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .deposit-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #e2e8f0;
+            letter-spacing: 0.2px;
+        }
+
+        .deposit-hint {
+            font-size: 12px;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        .deposit-arrow {
+            margin-left: auto;
+            width: 18px;
+            height: 18px;
+            color: #a78bfa;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .deposit-btn:hover .deposit-arrow {
+            color: #c4b5fd;
+            transform: translateX(3px);
+        }
+
+        .info-section {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.7s ease-out 0.3s both;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .section-meta {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(139, 92, 246, 0.15);
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a78bfa;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .activity-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .activity-card:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(139, 92, 246, 0.1);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(139, 92, 246, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a78bfa;
+            flex-shrink: 0;
+        }
+
+        .activity-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 2px;
+        }
+
+        .activity-meta {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .activity-amount {
+            font-size: 14px;
+            font-weight: 700;
+            color: #a78bfa;
+            flex-shrink: 0;
+        }
+
+        .bottom-note {
+            margin-top: 24px;
+            padding: 14px;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.7s ease-out 0.4s both;
+        }
+
+        .bottom-note svg {
+            width: 18px;
+            height: 18px;
+            color: #a78bfa;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .bottom-note p {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="dashboard.html" class="back-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </a>
+            <div class="header-title">Gas Wallet</div>
+            <div class="badge">Active</div>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Gas Balance
+            </div>
+            <div class="balance-amount" id="gasBalance">$0.00</div>
+            <div class="balance-sub">
+                <span class="dot"></span>
+                Protocol ready for activation
+            </div>
+            <svg class="balance-chart" viewBox="0 0 140 70" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#c4b5fd;stop-opacity:0.3" />
+                        <stop offset="100%" style="stop-color:#c4b5fd;stop-opacity:0" />
+                    </linearGradient>
+                </defs>
+                <path d="M0,50 Q7,48 14,45 T28,40 T42,35 T56,30 T70,32 T84,25 T98,20 T112,22 T126,15 T140,10" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M0,50 Q7,48 14,45 T28,40 T42,35 T56,30 T70,32 T84,25 T98,20 T112,22 T126,15 T140,10 L140,70 L0,70 Z" fill="url(#purpleGrad)"/>
+            </svg>
+        </div>
+
+        <div class="deposit-wrap">
+            <a href="deposit.html" class="deposit-btn">
+                <div class="deposit-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                </div>
+                <div class="deposit-text">
+                    <span class="deposit-label">Deposit</span>
+                    <span class="deposit-hint">Fund gas wallet to activate</span>
+                </div>
+                <svg class="deposit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <div class="info-section">
+            <div class="section-header">
+                <div class="section-title">Protocol Metrics</div>
+                <div class="section-meta">Real-time</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                    <div class="stat-value" id="gasUsed">0%</div>
+                    <div class="stat-label">Gas Utilized</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="stat-value" id="pendingTime">--</div>
+                    <div class="stat-label">Est. Wait</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="section-header">
+                <div class="section-title">Recent Activity</div>
+                <div class="section-meta">Last 7 days</div>
+            </div>
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                </div>
+                <div class="activity-info">
+                    <div class="activity-title">Gas Pool Replenished</div>
+                    <div class="activity-meta">Automatic top-up • 2 hours ago</div>
+                </div>
+                <div class="activity-amount">+0.05 ETH</div>
+            </div>
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="activity-info">
+                    <div class="activity-title">Protocol Security Check</div>
+                    <div class="activity-meta">Routine scan • 5 hours ago</div>
+                </div>
+                <div class="activity-amount">Passed</div>
+            </div>
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg>
+                </div>
+                <div class="activity-info">
+                    <div class="activity-title">Network Sync Complete</div>
+                    <div class="activity-meta">Node updated • 1 day ago</div>
+                </div>
+                <div class="activity-amount">Done</div>
+            </div>
+        </div>
+
+        <div class="bottom-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            <p>Gas fees are consumed during withdrawal authorization. Ensure sufficient balance to avoid transaction delays.</p>
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://catyifsdiesojvcpsldm.supabase.co';
+        const supabaseKey = 'sb_publishable_nbjquhB25jTJ9-dgI-LAcg_fc2k4wzg';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function checkAuth() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'signin.html';
+                return;
+            }
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            const gasBalance = 0.00;
+            document.getElementById('gasBalance').textContent = '$' + gasBalance.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.getElementById('gasUsed').textContent = '0%';
+            document.getElementById('pendingTime').textContent = '--';
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>
