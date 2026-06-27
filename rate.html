@@ -7,13 +7,13 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gas Wallet - Solvra</title>
+    <title>Payment Dashboard - Solvra</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: #0f0a1e;
+            background: #0a0e1a;
             color: #f8fafc;
             min-height: 100vh;
             display: flex;
@@ -25,351 +25,141 @@
         .container {
             width: 100%;
             max-width: 400px;
-            background: #13102b;
+            background: #0a0e1a;
             min-height: 100vh;
             padding: 24px 20px 40px;
             position: relative;
             overflow-x: hidden;
         }
 
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -150px;
-            right: -100px;
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .container::after {
-            content: '';
-            position: absolute;
-            bottom: 100px;
-            left: -100px;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-            animation: float 10s ease-in-out infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(20px, -20px) scale(1.05); }
-            66% { transform: translate(-10px, 15px) scale(0.95); }
-        }
-
+        /* Header */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             position: relative;
             z-index: 1;
             animation: fadeInDown 0.6s ease-out both;
         }
 
         .back-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.08);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.06);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #a78bfa;
+            color: #94a3b8;
             transition: all 0.2s ease;
             text-decoration: none;
-            backdrop-filter: blur(10px);
         }
 
         .back-btn:hover {
-            background: rgba(139, 92, 246, 0.2);
-            color: #c4b5fd;
-            transform: translateX(-2px);
-            border-color: rgba(139, 92, 246, 0.3);
+            background: rgba(255,255,255,0.08);
+            color: #e2e8f0;
         }
 
         .header-title {
             font-size: 15px;
             font-weight: 600;
-            color: #a78bfa;
-            letter-spacing: 1px;
+            color: #e2e8f0;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
         }
 
         .badge {
-            font-size: 11px;
-            font-weight: 700;
-            color: #22c55e;
-            background: rgba(34, 197, 94, 0.12);
-            padding: 5px 10px;
-            border-radius: 20px;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 40%, #5b21b6 100%);
-            border-radius: 24px;
-            padding: 32px 24px;
-            margin-bottom: 28px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.3),
-                        0 0 0 1px rgba(255,255,255,0.08) inset,
-                        inset 0 1px 0 rgba(255,255,255,0.15);
-            animation: fadeInUp 0.7s ease-out 0.1s both;
-            z-index: 1;
-        }
-
-        .balance-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-            animation: shimmer 6s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            20% { left: 100%; }
-            100% { left: 100%; }
-        }
-
-        .balance-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
             font-size: 12px;
             font-weight: 600;
-            color: rgba(255,255,255,0.65);
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .balance-label svg {
-            width: 14px;
-            height: 14px;
-            color: #c4b5fd;
-        }
-
-        .balance-amount {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            letter-spacing: -1px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            min-height: 48px;
-        }
-
-        .balance-sub {
-            font-size: 14px;
-            color: rgba(255,255,255,0.6);
-            font-weight: 500;
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(34, 197, 94, 0.2);
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .balance-sub .dot {
+        .badge-dot {
             width: 6px;
             height: 6px;
             background: #22c55e;
             border-radius: 50%;
-            display: inline-block;
-            animation: blink 2s ease-in-out infinite;
+            animation: pulse-dot 2s ease-in-out infinite;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.8); }
         }
 
-        .balance-chart {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 140px;
-            height: 70px;
-            opacity: 0.25;
-        }
-
-        .deposit-wrap {
-            margin-bottom: 28px;
+        /* Amount Paid Card */
+        .amount-card {
+            background: linear-gradient(135deg, #1a1f3a 0%, #14182e 100%);
+            border-radius: 20px;
+            padding: 24px 20px;
+            margin-bottom: 16px;
             position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.7s ease-out 0.2s both;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.04);
+            animation: fadeInUp 0.7s ease-out 0.1s both;
         }
 
-        .deposit-btn {
+        .amount-label {
             display: flex;
             align-items: center;
-            gap: 14px;
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 16px;
-            padding: 14px 18px;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-            width: 100%;
-        }
-
-        .deposit-btn:hover {
-            background: rgba(139, 92, 246, 0.18);
-            border-color: rgba(139, 92, 246, 0.35);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
-        }
-
-        .deposit-btn:active {
-            transform: translateY(0) scale(0.99);
-        }
-
-        .deposit-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
-        }
-
-        .deposit-btn:hover .deposit-icon {
-            transform: scale(1.08);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
-        }
-
-        .deposit-text {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .deposit-label {
-            font-size: 15px;
-            font-weight: 700;
-            color: #e2e8f0;
-            letter-spacing: 0.2px;
-        }
-
-        .deposit-hint {
-            font-size: 12px;
-            font-weight: 500;
-            color: #94a3b8;
-        }
-
-        .deposit-arrow {
-            margin-left: auto;
-            width: 18px;
-            height: 18px;
-            color: #a78bfa;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .deposit-btn:hover .deposit-arrow {
-            color: #c4b5fd;
-            transform: translateX(3px);
-        }
-
-        .info-section {
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.7s ease-out 0.3s both;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-
-        .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        .section-meta {
-            font-size: 12px;
-            color: #64748b;
-            font-weight: 500;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-bottom: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
         }
 
-        .stat-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 14px;
-            padding: 16px;
-            transition: all 0.2s ease;
-        }
-
-        .stat-card:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(139, 92, 246, 0.15);
-        }
-
-        .stat-icon {
+        .amount-label-icon {
             width: 32px;
             height: 32px;
-            border-radius: 8px;
-            background: rgba(139, 92, 246, 0.1);
+            border-radius: 10px;
+            background: rgba(59, 130, 246, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #a78bfa;
-            margin-bottom: 10px;
+            color: #60a5fa;
         }
 
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #f1f5f9;
-            margin-bottom: 4px;
+        .amount-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+            line-height: 1;
         }
 
-        .stat-label {
-            font-size: 12px;
-            color: #64748b;
+        .amount-status {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
             font-weight: 500;
         }
 
-        .activity-card {
+        .amount-chart {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 180px;
+            height: 80px;
+            opacity: 0.3;
+        }
+
+        /* Info Row Cards */
+        .info-row {
             background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.04);
             border-radius: 16px;
             padding: 16px 18px;
             margin-bottom: 10px;
@@ -377,24 +167,184 @@
             align-items: center;
             gap: 14px;
             transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            animation: fadeInUp 0.7s ease-out 0.15s both;
+        }
+
+        .info-row:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.08);
+        }
+
+        .info-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-icon.wallet { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
+        .info-icon.warning { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+        .info-icon.fee { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
+        .info-icon.payment { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+
+        .info-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .info-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .info-value.red { color: #f87171; }
+        .info-value.green { color: #22c55e; }
+        .info-value.grey { color: #94a3b8; }
+
+        .info-arrow {
+            color: rgba(255,255,255,0.2);
+            font-size: 20px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .info-row:hover .info-arrow {
+            color: rgba(255,255,255,0.4);
+            transform: translateX(3px);
+        }
+
+        /* Make a Payment Card */
+        .payment-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            animation: fadeInUp 0.7s ease-out 0.2s both;
+        }
+
+        .payment-card:hover {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .payment-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+
+        .payment-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .payment-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 3px;
+        }
+
+        .payment-sub {
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 500;
+        }
+
+        .payment-arrow {
+            color: rgba(255,255,255,0.25);
+            font-size: 20px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .payment-card:hover .payment-arrow {
+            color: #60a5fa;
+            transform: translateX(3px);
+        }
+
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            animation: fadeInUp 0.7s ease-out 0.25s both;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .section-meta {
+            font-size: 12px;
+            color: rgba(255,255,255,0.35);
+            font-weight: 500;
+        }
+
+        /* Activity Feed */
+        .activity-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s ease;
+            animation: fadeInUp 0.7s ease-out 0.3s both;
         }
 
         .activity-card:hover {
             background: rgba(255,255,255,0.05);
-            border-color: rgba(139, 92, 246, 0.1);
         }
 
         .activity-icon {
             width: 40px;
             height: 40px;
             border-radius: 10px;
-            background: rgba(139, 92, 246, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #a78bfa;
             flex-shrink: 0;
         }
+
+        .activity-icon.in { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .activity-icon.warn { background: rgba(239, 68, 68, 0.1); color: #f87171; }
+        .activity-icon.sync { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
 
         .activity-info {
             flex: 1;
@@ -405,51 +355,58 @@
             font-size: 14px;
             font-weight: 600;
             color: #e2e8f0;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .activity-meta {
             font-size: 12px;
-            color: #64748b;
+            color: rgba(255,255,255,0.35);
             font-weight: 500;
         }
 
         .activity-amount {
             font-size: 14px;
             font-weight: 700;
-            color: #a78bfa;
             flex-shrink: 0;
         }
 
+        .activity-amount.green { color: #22c55e; }
+        .activity-amount.red { color: #f87171; }
+        .activity-amount.blue { color: #60a5fa; }
+
+        /* Bottom Note */
         .bottom-note {
-            margin-top: 24px;
-            padding: 14px;
-            background: rgba(139, 92, 246, 0.06);
-            border: 1px solid rgba(139, 92, 246, 0.1);
-            border-radius: 12px;
+            margin-top: 20px;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 14px;
             display: flex;
             align-items: flex-start;
-            gap: 10px;
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.7s ease-out 0.4s both;
+            gap: 12px;
+            animation: fadeInUp 0.7s ease-out 0.35s both;
         }
 
-        .bottom-note svg {
-            width: 18px;
-            height: 18px;
-            color: #a78bfa;
+        .bottom-note-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(59, 130, 246, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #60a5fa;
             flex-shrink: 0;
-            margin-top: 1px;
         }
 
         .bottom-note p {
             font-size: 12px;
-            color: #94a3b8;
-            line-height: 1.5;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.6;
             font-weight: 500;
         }
 
+        /* Animations */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
@@ -463,112 +420,134 @@
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <div class="header">
             <a href="dashboard.html" class="back-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </a>
-            <div class="header-title">Gas Wallet</div>
-            <div class="badge">Active</div>
+            <div class="header-title">Payment Dashboard</div>
+            <div class="badge">
+                <span class="badge-dot"></span>
+                Active
+            </div>
         </div>
 
-        <div class="balance-card">
-            <div class="balance-label">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                Gas Balance
+        <!-- Amount Paid Card -->
+        <div class="amount-card">
+            <div class="amount-label">
+                <div class="amount-label-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                </div>
+                Amount Paid
             </div>
-            <div class="balance-amount" id="gasBalance">€140.00</div>
-            <div class="balance-sub">
-                <span class="dot"></span>
-                Protocol ready for activation
-            </div>
-            <svg class="balance-chart" viewBox="0 0 140 70" preserveAspectRatio="none">
+            <div class="amount-value" id="amountPaid">€140.00</div>
+            <div class="amount-status">Payment Received</div>
+            <svg class="amount-chart" viewBox="0 0 180 80" preserveAspectRatio="none">
                 <defs>
-                    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:#c4b5fd;stop-opacity:0.3" />
-                        <stop offset="100%" style="stop-color:#c4b5fd;stop-opacity:0" />
+                    <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.2" />
+                        <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:0" />
                     </linearGradient>
                 </defs>
-                <path d="M0,50 Q7,48 14,45 T28,40 T42,35 T56,30 T70,32 T84,25 T98,20 T112,22 T126,15 T140,10" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M0,50 Q7,48 14,45 T28,40 T42,35 T56,30 T70,32 T84,25 T98,20 T112,22 T126,15 T140,10 L140,70 L0,70 Z" fill="url(#purpleGrad)"/>
+                <path d="M0,65 Q15,62 30,58 T60,50 T90,42 T120,35 T150,25 T180,15" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+                <path d="M0,65 Q15,62 30,58 T60,50 T90,42 T120,35 T150,25 T180,15 L180,80 L0,80 Z" fill="url(#chartGrad)"/>
+                <circle cx="180" cy="15" r="4" fill="#60a5fa" opacity="0.8"/>
             </svg>
         </div>
 
-        <div class="deposit-wrap">
-            <a href="deposit.html" class="deposit-btn">
-                <div class="deposit-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-                </div>
-                <div class="deposit-text">
-                    <span class="deposit-label">Deposit</span>
-                    <span class="deposit-hint">Fund gas wallet to activate</span>
-                </div>
-                <svg class="deposit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
+        <!-- Remaining Balance -->
+        <a href="balance.html" class="info-row">
+            <div class="info-icon wallet">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>
+            </div>
+            <div class="info-content">
+                <div class="info-label">Remaining Balance</div>
+                <div class="info-value grey" id="remainingBalance">€1,310.00</div>
+            </div>
+            <svg class="info-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <!-- Late Fee -->
+        <a href="late-fee.html" class="info-row">
+            <div class="info-icon warning">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            </div>
+            <div class="info-content">
+                <div class="info-label">Late Fee</div>
+                <div class="info-value red" id="lateFee">€0.00</div>
+            </div>
+            <svg class="info-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <!-- Total Fee -->
+        <a href="total-fee.html" class="info-row">
+            <div class="info-icon fee">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>
+            </div>
+            <div class="info-content">
+                <div class="info-label">Total Fee</div>
+                <div class="info-value green" id="totalFee">€1,450.00</div>
+            </div>
+            <svg class="info-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <!-- Make a Payment -->
+        <a href="deposit.html" class="payment-card">
+            <div class="payment-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+            <div class="payment-content">
+                <div class="payment-title">Make a Payment</div>
+                <div class="payment-sub">Pay towards your balance securely</div>
+            </div>
+            <svg class="payment-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <!-- Recent Activity -->
+        <div class="section-header">
+            <div class="section-title">Recent Activity</div>
+            <div class="section-meta">Last 7 days</div>
         </div>
 
-        <div class="info-section">
-            <div class="section-header">
-                <div class="section-title">Protocol Metrics</div>
-                <div class="section-meta">Real-time</div>
+        <div class="activity-card">
+            <div class="activity-icon in">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
             </div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                    </div>
-                    <div class="stat-value" id="gasUsed">0%</div>
-                    <div class="stat-label">Gas Utilized</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                    <div class="stat-value" id="pendingTime">--</div>
-                    <div class="stat-label">Est. Wait</div>
-                </div>
+            <div class="activity-info">
+                <div class="activity-title">Payment Received</div>
+                <div class="activity-meta">Manual payment • weeks ago</div>
             </div>
+            <div class="activity-amount green">€70.00</div>
         </div>
 
-        <div class="info-section">
-            <div class="section-header">
-                <div class="section-title">Recent Activity</div>
-                <div class="section-meta">Last 7 days</div>
+        <div class="activity-card">
+            <div class="activity-icon warn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
             </div>
-            <div class="activity-card">
-                <div class="activity-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-                </div>
-                <div class="activity-info">
-                    <div class="activity-title">Gas Pool Replenished</div>
-                    <div class="activity-meta">Automatic top-up • 2 hours ago</div>
-                </div>
-                <div class="activity-amount">+0.05 ETH</div>
+            <div class="activity-info">
+                <div class="activity-title">Late Fee Assessed</div>
+                <div class="activity-meta">No late fees • 5 hours ago</div>
             </div>
-            <div class="activity-card">
-                <div class="activity-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                </div>
-                <div class="activity-info">
-                    <div class="activity-title">Protocol Security Check</div>
-                    <div class="activity-meta">Routine scan • 5 hours ago</div>
-                </div>
-                <div class="activity-amount">Passed</div>
-            </div>
-            <div class="activity-card">
-                <div class="activity-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg>
-                </div>
-                <div class="activity-info">
-                    <div class="activity-title">Network Sync Complete</div>
-                    <div class="activity-meta">Node updated • 1 day ago</div>
-                </div>
-                <div class="activity-amount">Done</div>
-            </div>
+            <div class="activity-amount red">€0.00</div>
         </div>
 
+        <div class="activity-card">
+            <div class="activity-icon sync">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div class="activity-info">
+                <div class="activity-title">Account Updated</div>
+                <div class="activity-meta">Balance refreshed • 1 day ago</div>
+            </div>
+            <div class="activity-amount blue">Done</div>
+        </div>
+
+        <!-- Bottom Note -->
         <div class="bottom-note">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-            <p>Gas fees are consumed during withdrawal authorization. Ensure sufficient balance to avoid transaction delays.</p>
+            <div class="bottom-note-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            </div>
+            <p>Fees may be updated periodically.<br>Ensure timely payments to avoid additional charges.</p>
         </div>
     </div>
 
@@ -587,13 +566,10 @@
         }
 
         function renderDashboard() {
-            const gasBalance = 140.00;
-            document.getElementById('gasBalance').textContent = '€' + gasBalance.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            document.getElementById('gasUsed').textContent = '0%';
-            document.getElementById('pendingTime').textContent = '--';
+            document.getElementById('amountPaid').textContent = '€140.00';
+            document.getElementById('remainingBalance').textContent = '€1,310.00';
+            document.getElementById('lateFee').textContent = '€0.00';
+            document.getElementById('totalFee').textContent = '€1,450.00';
         }
 
         checkAuth();
