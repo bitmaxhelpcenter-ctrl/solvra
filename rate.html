@@ -535,6 +535,20 @@
         color: var(--text-secondary);
       }
 
+      /* Waiver fee */
+      .waiver-fee {
+        position: absolute;
+        bottom: 10px;
+        right: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #4ade80;
+        z-index: 2;
+      }
+      .waiver-fee span {
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
       /* ─── RESPONSIVE ──────────────────────────────────────────── */
       @media (max-width: 440px) {
         .phone-frame {
@@ -591,7 +605,7 @@
             <span class="hero-label-text">Amount Paid</span>
           </div>
 
-          <div class="hero-amount">€270.00</div>
+          <div class="hero-amount">€620.00</div>
           <div class="hero-sub">Payment Received</div>
 
           <!-- Inline SVG Chart -->
@@ -681,6 +695,7 @@
               <circle cx="380" cy="4" r="7" fill="rgba(79,125,255,0.25)" />
             </svg>
           </div>
+          <div class="waiver-fee"><span>Waiver Fee:</span> €350</div>
         </div>
 
         <!-- Late Fee — NOT clickable -->
@@ -733,7 +748,7 @@
           </div>
           <div class="menu-body">
             <div class="menu-title">Remaining Balance</div>
-            <div class="menu-value white">€1,180.00</div>
+            <div class="menu-value white">€830.00</div>
           </div>
           <div class="menu-chevron">
             <svg
