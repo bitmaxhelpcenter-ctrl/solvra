@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Payment Dashboard</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg-primary: #080b14;
+        --bg-card: #0e1526;
+        --bg-card-alt: #111827;
+        --bg-card-hover: #141e33;
+        --accent-blue: #3b6cf8;
+        --accent-blue-bright: #4f7dff;
+        --accent-green: #22c55e;
+        --accent-red: #ef4444;
+        --text-primary: #f0f4ff;
+        --text-secondary: #8a9bbf;
+        --text-muted: #4a5a7a;
+        --border-subtle: rgba(255, 255, 255, 0.05);
+        --border-card: rgba(255, 255, 255, 0.07);
+        --glow-blue: rgba(59, 108, 248, 0.15);
+        --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg-primary);
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        color: var(--text-primary);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 0;
+        background:
+          radial-gradient(
+            ellipse at 50% 0%,
+            rgba(30, 50, 120, 0.18) 0%,
+            transparent 65%
+          ),
+          var(--bg-primary);
+      }
+
+      .phone-frame {
+        width: 100%;
+        max-width: 420px;
+        min-height: 100vh;
+        padding: 0 0 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ─── HEADER ─────────────────────────────────────────────── */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 52px 20px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: linear-gradient(
+          to bottom,
+          var(--bg-primary) 70%,
+          transparent
+        );
+      }
+
+      .btn-back {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          transform 0.15s;
+        flex-shrink: 0;
+      }
+
+      .btn-back:hover {
+        background: var(--bg-card-hover);
+        transform: scale(1.05);
+      }
+
+      .btn-back:active {
+        transform: scale(0.97);
+      }
+
+      .btn-back svg {
+        width: 18px;
+        height: 18px;
+        stroke: var(--text-primary);
+      }
+
+      .header-title {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: var(--text-primary);
+        text-transform: uppercase;
+      }
+
+      .status-badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        border-radius: 20px;
+        padding: 5px 12px 5px 9px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #4ade80;
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+        }
+        50% {
+          opacity: 0.7;
+          box-shadow: 0 0 16px rgba(34, 197, 94, 0.5);
+        }
+      }
+
+      /* ─── CONTENT ─────────────────────────────────────────────── */
+      .content {
+        padding: 4px 16px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      /* ─── HERO CARD ───────────────────────────────────────────── */
+      .hero-card {
+        background: linear-gradient(
+          145deg,
+          #0d1f4e 0%,
+          #091535 50%,
+          #060f28 100%
+        );
+        border: 1px solid rgba(59, 108, 248, 0.2);
+        border-radius: 20px;
+        padding: 12px 20px 0;
+        height: 149px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          var(--shadow-card),
+          0 0 40px rgba(59, 108, 248, 0.08);
+      }
+
+      .hero-card::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          rgba(59, 108, 248, 0.12) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .hero-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+
+      .hero-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: rgba(59, 108, 248, 0.2);
+        border: 1px solid rgba(59, 108, 248, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .hero-icon svg {
+        width: 16px;
+        height: 16px;
+        stroke: #7da4ff;
+      }
+
+      .hero-label-text {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+      }
+
+      .hero-amount {
+        font-size: 38px;
+        font-weight: 800;
+        color: var(--text-primary);
+        letter-spacing: -0.03em;
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+
+      .hero-sub {
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--text-secondary);
+        margin-bottom: 0;
+      }
+
+      /* SVG Chart */
+      .chart-container {
+        width: calc(100% + 40px);
+        height: 44px;
+        margin: 0 -20px;
+      }
+
+      .chart-container svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ─── MENU CARDS ──────────────────────────────────────────── */
+      .menu-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 16px;
+        padding: 18px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        cursor: default;
+        transition: background 0.2s;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .menu-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .menu-icon.blue-dark {
+        background: rgba(59, 108, 248, 0.15);
+        border: 1px solid rgba(59, 108, 248, 0.25);
+      }
+
+      .menu-icon.green {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+      }
+
+      .menu-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .menu-body {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .menu-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 3px;
+      }
+
+      .menu-value {
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .menu-value.green {
+        color: var(--accent-green);
+      }
+      .menu-value.blue {
+        color: var(--accent-blue-bright);
+      }
+
+      .menu-sub {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+
+      .menu-chevron {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+      }
+
+      .menu-chevron svg {
+        width: 18px;
+        height: 18px;
+        stroke: var(--text-muted);
+      }
+
+      /* ─── RECENT ACTIVITY ─────────────────────────────────────── */
+      .section-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 10px 4px 4px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .section-meta {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-muted);
+      }
+
+      .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .activity-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 14px;
+        padding: 15px 16px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+
+      .activity-item:nth-child(1) {
+        animation-delay: 0.06s;
+      }
+      .activity-item:nth-child(2) {
+        animation-delay: 0.12s;
+      }
+      .activity-item:nth-child(3) {
+        animation-delay: 0.18s;
+      }
+
+      .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .activity-icon.green {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+      }
+
+      .activity-icon.blue {
+        background: rgba(59, 108, 248, 0.12);
+        border: 1px solid rgba(59, 108, 248, 0.2);
+      }
+
+      .activity-icon svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .activity-body {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .activity-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 3px;
+      }
+
+      .activity-meta {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .activity-value {
+        font-size: 15px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      .activity-value.green {
+        color: #4ade80;
+      }
+      .activity-value.blue {
+        color: var(--accent-blue-bright);
+      }
+
+      /* ─── DISCLAIMER ──────────────────────────────────────────── */
+      .disclaimer {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 14px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-top: 2px;
+      }
+
+      .disclaimer-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: rgba(59, 108, 248, 0.12);
+        border: 1px solid rgba(59, 108, 248, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      .disclaimer-icon svg {
+        width: 16px;
+        height: 16px;
+        stroke: #7da4ff;
+      }
+
+      .disclaimer-text {
+        font-size: 12px;
+        line-height: 1.65;
+        color: var(--text-secondary);
+      }
+
+      /* Ref ID */
+      .ref-id {
+        position: absolute;
+        bottom: 10px;
+        right: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #4ade80;
+        z-index: 2;
+      }
+      .ref-id span {
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+      /* ─── RESPONSIVE ──────────────────────────────────────────── */
+      @media (max-width: 440px) {
+        .phone-frame {
+          max-width: 100%;
+        }
+        .hero-amount {
+          font-size: 38px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone-frame">
+      <!-- ── HEADER ── -->
+      <header class="header">
+        <button class="btn-back" aria-label="Go back">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+
+        <span class="header-title">Payment Dashboard</span>
+
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          Active
+        </div>
+      </header>
+
+      <!-- ── MAIN CONTENT ── -->
+      <main class="content">
+        <!-- Hero Card -->
+        <div class="hero-card">
+          <div class="hero-label">
+            <div class="hero-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 8 12 16" />
+                <polyline points="8 12 12 16 16 12" />
+              </svg>
+            </div>
+            <span class="hero-label-text">Amount Paid</span>
+          </div>
+
+          <div class="hero-amount">€1,645.00</div>
+          <div class="hero-sub">Payment Received</div>
+
+          <!-- Inline SVG Chart -->
+          <div class="chart-container">
+            <svg
+              viewBox="0 0 380 90"
+              preserveAspectRatio="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#3b6cf8" stop-opacity="0.28" />
+                  <stop offset="100%" stop-color="#3b6cf8" stop-opacity="0" />
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+                  <feMerge>
+                    <feMergeNode in="coloredBlur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- Subtle vertical grid lines -->
+              <line x1="76" y1="0" x2="76" y2="80" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3,4" />
+              <line x1="152" y1="0" x2="152" y2="80" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3,4" />
+              <line x1="228" y1="0" x2="228" y2="80" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3,4" />
+              <line x1="304" y1="0" x2="304" y2="80" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="3,4" />
+
+              <!-- Area fill -->
+              <path
+                d="M0,72 C30,70 55,68 80,65 C110,62 130,60 155,56 C180,52 200,46 225,40 C248,34 265,26 290,20 C315,14 340,10 380,4 L380,90 L0,90 Z"
+                fill="url(#chartGrad)"
+              />
+
+              <!-- Chart line -->
+              <path
+                d="M0,72 C30,70 55,68 80,65 C110,62 130,60 155,56 C180,52 200,46 225,40 C248,34 265,26 290,20 C315,14 340,10 380,4"
+                fill="none"
+                stroke="#4f7dff"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                filter="url(#glow)"
+              />
+
+              <!-- End dot -->
+              <circle cx="380" cy="4" r="4" fill="#4f7dff" filter="url(#glow)" />
+              <circle cx="380" cy="4" r="7" fill="rgba(79,125,255,0.25)" />
+            </svg>
+          </div>
+          <div class="ref-id"><span>Ref:</span> TX-9948A</div>
+        </div>
+
+        <!-- Total Withdrawable Amount -->
+        <div class="menu-card" role="presentation">
+          <div class="menu-icon blue-dark">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke="#7da4ff"
+            >
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            </svg>
+          </div>
+          <div class="menu-body">
+            <div class="menu-title">Total Withdrawable Amount</div>
+            <div class="menu-value blue">$85,200.00</div>
+          </div>
+          <div class="menu-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Recent Activity header -->
+        <div class="section-header">
+          <span class="section-title">Recent Activity</span>
+          <span class="section-meta">Last 7 days</span>
+        </div>
+
+        <!-- Activity list -->
+        <div class="activity-list">
+          <!-- Payment Received -->
+          <div class="activity-item">
+            <div class="activity-icon green">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke="#22c55e"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <polyline points="6 13 12 19 18 13" />
+              </svg>
+            </div>
+            <div class="activity-body">
+              <div class="activity-name">Payment Received</div>
+              <div class="activity-meta">Manual payment &bull; Recently</div>
+            </div>
+            <div class="activity-value green">€155.00</div>
+          </div>
+
+          <!-- Withdrawal Initiated -->
+          <div class="activity-item">
+            <div class="activity-icon blue">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke="#4f7dff"
+              >
+                <path d="M12 19V5M5 12l7-7 7 7" />
+              </svg>
+            </div>
+            <div class="activity-body">
+              <div class="activity-name">Withdrawal Initiated</div>
+              <div class="activity-meta">0 hours ago</div>
+            </div>
+            <div class="activity-value blue">Pending</div>
+          </div>
+        </div>
+        <!-- /activity-list -->
+
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+          <div class="disclaimer-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <p class="disclaimer-text">
+            Withdrawals are subject to standard security review.<br />
+            Please allow up to 48 hours for authorization to complete.
+          </p>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
