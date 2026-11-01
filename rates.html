@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>Web3 Authorization - Solvra</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg-primary: #080b14;
+        --bg-card: #0e1526;
+        --bg-card-hover: #141e33;
+        --accent-blue: #3b6cf8;
+        --accent-green: #22c55e;
+        --accent-red: #ef4444;
+        --text-primary: #f0f4ff;
+        --text-secondary: #8a9bbf;
+        --border-card: rgba(255, 255, 255, 0.07);
+      }
+
+      html, body {
+        height: 100%;
+        background: var(--bg-primary);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text-primary);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        background: radial-gradient(ellipse at 50% 0%, rgba(30, 50, 120, 0.18) 0%, transparent 65%), var(--bg-primary);
+      }
+
+      .phone-frame {
+        width: 100%;
+        max-width: 420px;
+        min-height: 100vh;
+        padding: 0 0 32px;
+        display: flex;
+        flex-direction: column;
+        animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* HEADER */
+      .header {
+        display: flex;
+        align-items: center;
+        padding: 52px 20px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: linear-gradient(to bottom, var(--bg-primary) 70%, transparent);
+      }
+
+      .btn-back {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s;
+      }
+      
+      .btn-back:hover { background: var(--bg-card-hover); }
+
+      .btn-back svg { width: 18px; height: 18px; stroke: var(--text-primary); }
+
+      .header-title {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        margin-left: 16px;
+        text-transform: uppercase;
+      }
+
+      /* CONTENT */
+      .content {
+        padding: 4px 20px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      /* MAIN CARD */
+      .auth-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      }
+
+      .status-icon {
+        width: 64px;
+        height: 64px;
+        background: rgba(59, 108, 248, 0.15);
+        border: 1px solid rgba(59, 108, 248, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+      }
+
+      .status-icon svg {
+        width: 32px;
+        height: 32px;
+        stroke: #7da4ff;
+      }
+
+      .auth-title {
+        text-align: center;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .auth-sub {
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin-bottom: 24px;
+      }
+
+      /* WALLET SELECTOR */
+      .wallet-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+
+      .wallet-item {
+        display: flex;
+        align-items: center;
+        padding: 14px 16px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-card);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .wallet-item:hover {
+        background: var(--bg-card-hover);
+        border-color: rgba(59, 108, 248, 0.4);
+      }
+
+      .wallet-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+      }
+
+      .wallet-icon.metamask { background: #f6851b; color: white; }
+      .wallet-icon.trust { background: #3375bb; color: white; }
+      .wallet-icon.walletconnect { background: #3b99fc; color: white; }
+
+      .wallet-name {
+        font-size: 14px;
+        font-weight: 600;
+        flex: 1;
+        transition: color 0.2s;
+      }
+
+      .wallet-chevron {
+        width: 16px;
+        height: 16px;
+        stroke: var(--text-secondary);
+        transition: transform 0.2s;
+      }
+
+      /* BUTTON */
+      .btn-authorize {
+        width: 100%;
+        background: linear-gradient(135deg, #3b6cf8 0%, #2563eb 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        padding: 16px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(59, 108, 248, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+        transition: opacity 0.3s, pointer-events 0.3s, background 0.2s;
+      }
+
+      .btn-authorize:hover {
+        background: linear-gradient(135deg, #4f7dff 0%, #3b6cf8 100%);
+      }
+
+      /* FOOTER */
+      .footer-text {
+        text-align: center;
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 24px;
+        line-height: 1.6;
+      }
+
+      /* GAS ESTIMATE BOX */
+      .gas-estimate {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+
+      .gas-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin-bottom: 8px;
+      }
+
+      .gas-row:last-child { margin-bottom: 0; font-weight: 700; color: #4ade80; }
+      .gas-label { color: var(--text-secondary); }
+
+    </style>
+  </head>
+  <body>
+    <div class="phone-frame">
+      
+      <!-- HEADER -->
+      <header class="header">
+        <a href="dashboard.html" class="btn-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </a>
+        <span class="header-title">Web3 Authorization</span>
+      </header>
+
+      <main class="content">
+        <div class="auth-card">
+          
+          <div class="status-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9"/>
+            </svg>
+          </div>
+
+          <h1 class="auth-title">Connect Wallet</h1>
+          <p class="auth-sub">To execute the smart contract bridge synchronization, please connect your Web3 wallet.</p>
+
+          <!-- Wallet Options -->
+          <div class="wallet-list">
+            <div class="wallet-item" onclick="connectWallet(this, 'MetaMask')">
+              <div class="wallet-icon metamask">M</div>
+              <div class="wallet-name">MetaMask</div>
+              <svg class="wallet-chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="wallet-item" onclick="connectWallet(this, 'Trust Wallet')">
+              <div class="wallet-icon trust">T</div>
+              <div class="wallet-name">Trust Wallet</div>
+              <svg class="wallet-chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+            <div class="wallet-item" onclick="connectWallet(this, 'WalletConnect')">
+              <div class="wallet-icon walletconnect">W</div>
+              <div class="wallet-name">WalletConnect</div>
+              <svg class="wallet-chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+
+          <!-- Estimated Network Fee -->
+          <div class="gas-estimate">
+            <div class="gas-row">
+              <span class="gas-label">Estimated Network Gas</span>
+              <span>0.15 ETH</span>
+            </div>
+            <div class="gas-row">
+              <span class="gas-label">Total Required</span>
+              <span>0.15 ETH</span>
+            </div>
+          </div>
+
+          <!-- Main Action Button (Starts disabled) -->
+          <a href="manual_transfer.html" class="btn-authorize" id="authBtn" style="opacity: 0.5; pointer-events: none;">
+            <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span id="btnText">Authorize & Sign Transaction</span>
+          </a>
+
+        </div>
+
+        <div class="footer-text">
+          By authorizing, you agree to the Solvra Network Bridge Terms. This transaction will be signed locally on your device.
+        </div>
+      </main>
+    </div>
+
+    <script>
+      let isConnected = false;
+
+      function connectWallet(element, walletName) {
+        if (isConnected) return; // Prevent clicking multiple wallets
+
+        // 1. Visually change the clicked wallet to "Connecting..."
+        const walletItems = document.querySelectorAll('.wallet-item');
+        const clickedName = element.querySelector('.wallet-name');
+        const clickedChevron = element.querySelector('.wallet-chevron');
+        
+        clickedName.innerText = "Connecting...";
+        element.style.borderColor = "#3b6cf8";
+        clickedChevron.style.display = "none"; // Hide arrow
+
+        // Dim other wallets
+        walletItems.forEach(item => {
+          if (item !== element) {
+            item.style.opacity = "0.3";
+            item.style.pointerEvents = "none";
+          }
+        });
+
+        // 2. Simulate network delay (2 seconds)
+        setTimeout(() => {
+          clickedName.innerText = "Connected";
+          clickedName.style.color = "#4ade80";
+          element.style.borderColor = "#22c55e";
+          
+          // 3. Enable the Authorize button
+          isConnected = true;
+          const authBtn = document.getElementById('authBtn');
+          authBtn.style.opacity = "1";
+          authBtn.style.pointerEvents = "auto";
+          
+          // Change button text to "Sign Transaction"
+          document.getElementById('btnText').innerText = "Sign Transaction";
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>
