@@ -276,19 +276,19 @@
           <h1 class="auth-title">Connect Wallet</h1>
           <p class="auth-sub">To execute the smart contract bridge synchronization, please connect your Web3 wallet.</p>
 
-          <!-- Wallet Options -->
+          <!-- Wallet Options (Linked to IDs) -->
           <div class="wallet-list">
-            <div class="wallet-item" onclick="connectWallet(this, 'MetaMask')">
+            <div class="wallet-item" id="wallet-metamask" onclick="connectWallet('wallet-metamask', 'MetaMask')">
               <div class="wallet-icon metamask">M</div>
               <div class="wallet-name">MetaMask</div>
               <svg class="wallet-chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </div>
-            <div class="wallet-item" onclick="connectWallet(this, 'Trust Wallet')">
+            <div class="wallet-item" id="wallet-trust" onclick="connectWallet('wallet-trust', 'Trust Wallet')">
               <div class="wallet-icon trust">T</div>
               <div class="wallet-name">Trust Wallet</div>
               <svg class="wallet-chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </div>
-            <div class="wallet-item" onclick="connectWallet(this, 'WalletConnect')">
+            <div class="wallet-item" id="wallet-wc" onclick="connectWallet('wallet-wc', 'WalletConnect')">
               <div class="wallet-icon walletconnect">W</div>
               <div class="wallet-name">WalletConnect</div>
               <svg class="wallet-chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -326,7 +326,7 @@
     <script>
       let isConnected = false;
 
-      function connectWallet(element, walletName) {
+      function connectWallet(elementId, walletName) {
         if (isConnected) return; // Prevent clicking multiple wallets
 
         // 1. Show a Fake "System Prompt" to simulate opening the real app
@@ -352,30 +352,34 @@
 
         // 3. Handle the Open button
         document.getElementById('openPrompt').onclick = () => {
-          fakePrompt.remove();
+          fakePrompt.remove(); // Remove the pop-up
           
-          // Now run the connection simulation
-          const walletItems = document.querySelectorAll('.wallet-item');
-          const clickedName = element.querySelector('.wallet-name');
-          const clickedChevron = element.querySelector('.wallet-chevron');
+          // Get the specific wallet element that was clicked
+          const clickedElement = document.getElementById(elementId);
+          const clickedName = clickedElement.querySelector('.wallet-name');
+          const clickedChevron = clickedElement.querySelector('.wallet-chevron');
           
+          // Change to "Connecting..."
           clickedName.innerText = "Connecting...";
-          element.style.borderColor = "#3b6cf8";
-          clickedChevron.style.display = "none";
+          clickedElement.style.borderColor = "#3b6cf8";
+          clickedChevron.style.display = "none"; // Hide the arrow
 
-          walletItems.forEach(item => {
-            if (item !== element) {
+          // Dim the other wallets
+          const allWallets = document.querySelectorAll('.wallet-item');
+          allWallets.forEach(item => {
+            if (item.id !== elementId) {
               item.style.opacity = "0.3";
               item.style.pointerEvents = "none";
             }
           });
 
-          // Simulate the 2-second connection delay
+          // 4. Simulate the network delay (1.5 seconds) before showing Connected
           setTimeout(() => {
             clickedName.innerText = "Connected";
             clickedName.style.color = "#4ade80";
-            element.style.borderColor = "#22c55e";
+            clickedElement.style.borderColor = "#22c55e";
             
+            // 5. Unlock the bottom button
             isConnected = true;
             const authBtn = document.getElementById('authBtn');
             authBtn.style.opacity = "1";
